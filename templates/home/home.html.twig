@@ -2,32 +2,65 @@
 
 {% block title %}SnowTricks{% endblock %}
 
-{% block body %}
+{% block header %}
     <header>
         <h1>SnowTricks</h1>
         <h2>Les tricks les plus hype !</h2>
         <div class="arrow-down"><i class="fas fa-arrow-circle-down fa-2x"></i></div>
     </header>
+{% endblock %}
 
-    <section class="card-deck py-3" id="trick-list">
-        <div class="card" style="width: 18rem;">
-            <img src="https://via.placeholder.com/320x150?text=MyAwesomeTrick" class="card-img-top" alt="image">
-            <div class="card-body">
-                <h5 class="card-title">Switch rodeo cinq tail grab</h5>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <img src="https://via.placeholder.com/320x150?text=MyAwesomeTrick" class="card-img-top" alt="image">
-            <div class="card-body">
-                <h5 class="card-title">Switch 270 to rail</h5>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <img src="https://via.placeholder.com/320x150?text=MyAwesomeTrick" class="card-img-top" alt="image">
-            <div class="card-body">
-                <h5 class="card-title">Switch rodeo cinq tail grab</h5>
-            </div>
-        </div>
+{% block body %}
+    <section class="py-3 row flex-jc-center" id="trick-list">
+        {% set tricks = [
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch rodeo cinq tail grab'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            },
+            {
+                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
+                'title': 'Switch 270 to rail'
+            }
+        ] %}
+        {% for trick in tricks %}
+            {% include 'home/card.html.twig' %}
+        {% endfor %}
     </section>
     <div class="text-center mb-3">
         <a class="btn btn-primary" href="#">Afficher d'autres tricks</a>
