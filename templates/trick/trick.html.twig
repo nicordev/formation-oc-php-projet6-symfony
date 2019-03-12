@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% import "trick/commands/commands.html.twig" as commands %}
+{% import "trick/macros/commands.html.twig" as commands %}
+{% import "trick/macros/trickParts.html.twig" as trickParts %}
 
 {% block title %}{{ trick.name }}{% endblock %}
 
@@ -10,6 +11,23 @@
             <img src="https://via.placeholder.com/1000x500?text=MainImage" alt="Image principale">
         </figure>
         <h1>{{ trick.name }}</h1>
-        {{ commands.showCommands('#', '#', '<i class="fas fa-pencil-alt"></i>', '<i class="fas fa-trash-alt"></i>') }}
+        {#{{ commands.showCommands('#', '#', '<i class="fas fa-pencil-alt"></i>', '<i class="fas fa-trash-alt"></i>') }}#}{# BUG: the raw filter does not work properly #}
+        {{ commands.showCommands() }}
+    </div>
+
+    <div class="trick-medias">
+        {{ trickParts.trickMedias(trick) }}
+    </div>
+
+    <div class="trick-description">
+        {{ trick.description }}
+    </div>
+
+    <div class="trick-metadata">
+        {{ trickParts.trickMetadata(trick) }}
+    </div>
+
+    <div class="trick-comments">
+
     </div>
 {% endblock %}
