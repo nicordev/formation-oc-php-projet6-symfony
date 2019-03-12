@@ -1,6 +1,6 @@
 <div class="card col-lg-3 m-3">
     <img src="{{ trick.mainImage }}" class="card-img-top" alt="image">
     <div class="card-body">
-        <h5 class="card-title">{{ trick.title }}</h5>
+        <h5 class="card-title"><a href="{#{{ path('trickShow', [trick.id]) }}#}">{{ trick.title }}</a></h5>
     </div>
 </div>
