@@ -1,3 +1,4 @@
+.idea/
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -17,6 +18,3 @@
 /.web-server-pid
 ###< symfony/web-server-bundle ###
 
-###> phpstorm ###
-.idea/
-###< phpstorm ###
