@@ -5,12 +5,26 @@ header {
     padding: 50px 0;
 }
 
+footer {
+    width: 100%;
+    position: absolute;
+    background-color: darkslategray;
+    color: whitesmoke;
+    padding: 20px 0;
+    text-align: center;
+}
+
 .flex-jc-center {
     justify-content: center;
 }
 
-.container {
-    max-width: 100%;
+@media all and (max-width: 576px) {
+    .navbar {
+        position: fixed;
+        bottom: 0;
+        z-index: 100000;
+        width: 100%;
+    }
 }
 
 @media all and (max-width: 624px) {

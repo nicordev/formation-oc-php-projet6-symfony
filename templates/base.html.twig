@@ -11,9 +11,14 @@
     <body>
         {% include 'navBar.html.twig' %}
         {% block header %}{% endblock %}
-        <div class="container">
+        <div class="container-fluid">
             {% block body %}{% endblock %}
         </div>
+        {% block footer %}
+            <footer>
+                <p>Copyright @ 2019</p>
+            </footer>
+        {% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
 </html>
