@@ -1,0 +1,15 @@
+{% if connected %}
+    <li class="nav-item">
+        <a class="nav-link" href="/member-profile">Mon profil</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/disconnection">Déconnexion</a>
+    </li>
+{% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="/registration">Inscription</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/connection">Connexion</a>
+    </li>
+{% endif %}

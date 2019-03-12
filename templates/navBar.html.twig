@@ -13,12 +13,8 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">Tricks</a> {# ASK: What is the purpose of this page? #}
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/register">S'inscrire</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/connect">Se connecter</a>
-            </li>
+            {% set connected = false %}
+            {% include 'member/navConnection.twig' %}
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="text" placeholder="Trick">
