@@ -1,0 +1,12 @@
+/*
+    Commands
+*/
+
+.commands-wrapper {
+    display: flex;
+}
+
+.command {
+    display: block;
+    margin: 3px 5px;
+}

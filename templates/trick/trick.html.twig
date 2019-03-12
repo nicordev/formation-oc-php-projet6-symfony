@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% import "trick/commands/commands.html.twig" as commands %}
+
+{% block title %}{{ trick.name }}{% endblock %}
+
+{% block body %}
+    <div>
+        <figure>
+            <img src="https://via.placeholder.com/1000x500?text=MainImage" alt="Image principale">
+        </figure>
+        <h1>{{ trick.name }}</h1>
+        {{ commands.showCommands('#', '#', '<i class="fas fa-pencil-alt"></i>', '<i class="fas fa-trash-alt"></i>') }}
+    </div>
+{% endblock %}
