@@ -3,14 +3,14 @@
 {% import "trick/macros/commands.html.twig" as commands %}
 {% import "trick/macros/trickParts.html.twig" as trickParts %}
 
-{% block title %}{{ trick.getName }}{% endblock %}
+{% block title %}{{ trick.name }}{% endblock %}
 
 {% block body %}
     <div>
         <figure>
             <img src="https://via.placeholder.com/1000x500?text=MainImage" alt="Image principale">
         </figure>
-        <h1>{{ trick.getName }}</h1>
+        <h1>{{ trick.name }}</h1>
         {#{{ commands.showCommands('#', '#', '<i class="fas fa-pencil-alt"></i>', '<i class="fas fa-trash-alt"></i>') }}#}{# BUG: the raw filter does not work properly #}
         {{ commands.showCommands() }}
     </div>
@@ -20,7 +20,7 @@
     </div>
 
     <div class="trick-description">
-        {{ trick.getDescription|raw }}
+        {{ trick.description|raw }}
     </div>
 
     <div class="trick-metadata">
