@@ -45,8 +45,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/",
-            "MyRandomStuff\\": "src/MyRandomStuff/"
+            "App\\Tests\\": "tests/"
         }
     },
     "replace": {

@@ -17,7 +17,7 @@ class TrickController extends AbstractController
             'id' => 1,
             'name' => 'My awesome trick',
             'creationDate' => '2019-03-12 13:19:52',
-            'description' => MyRandomStuff::randomString('zog'),
+            'description' => 'Ceci est la description du trick',
             'medias' => [
                 ['path' => '#'],
                 ['path' => '#'],
