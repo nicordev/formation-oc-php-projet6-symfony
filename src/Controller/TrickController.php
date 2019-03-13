@@ -9,18 +9,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrickController extends AbstractController
 {
     /**
-     * @Route("/trick/{slug}", name="trickShow")
+     * @Route("/trick/{name}", name="trickShow")
      */
-    public function show($slug)
+    public function show(Trick $trick)
     {
-        $repo = $this->getDoctrine()->getRepository(Trick::class);
-        $trick = null;
-
-        if (is_numeric($slug)) {
-            $trick = $repo->find($slug);
-        } else {
-            $trick = $repo->findByName($slug)[0];
-        }
+//        $repo = $this->getDoctrine()->getRepository(Trick::class);
+//        $trick = null;
+//
+//        if (is_numeric($slug)) {
+//            $trick = $repo->find($slug);
+//        } else {
+//            $trick = $repo->findByName($slug)[0];
+//        }
 
         return $this->render('trick/trick.html.twig', [
             'trick' => $trick
