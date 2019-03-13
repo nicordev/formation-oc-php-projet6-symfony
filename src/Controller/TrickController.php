@@ -2,28 +2,25 @@
 
 namespace App\Controller;
 
-use MyRandomStuff\MyRandomStuff;
+use App\Entity\Trick;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TrickController extends AbstractController
 {
     /**
-     * @Route("/trick/{id}", name="trickShow")
+     * @Route("/trick/{slug}", name="trickShow")
      */
-    public function show()
+    public function show($slug)
     {
-        $trick = [
-            'id' => 1,
-            'name' => 'My awesome trick',
-            'creationDate' => '2019-03-12 13:19:52',
-            'description' => 'Ceci est la description du trick',
-            'medias' => [
-                ['path' => '#'],
-                ['path' => '#'],
-                ['path' => '#']
-            ]
-        ];
+        $repo = $this->getDoctrine()->getRepository(Trick::class);
+        $trick = null;
+
+        if (is_numeric($slug)) {
+            $trick = $repo->find($slug);
+        } else {
+            $trick = $repo->findByName($slug)[0];
+        }
 
         return $this->render('trick/trick.html.twig', [
             'trick' => $trick

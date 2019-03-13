@@ -1,16 +1,16 @@
 {% macro trickMedias(trick) %}
-
+{#
     {% for media in trick.medias %}
         <img src="{{ media.path }}" alt="Média">
     {% endfor %}
-
+#}
 {% endmacro %}
 
 {% macro trickMetadata(trick) %}
 
-    <span class="metadata">Trick créé le {{ trick.creationDate|date('d/m/Y') }} à {{ trick.creationDate|date('H:i') }}</span>
-    {% if trick.modificationDate %}
-        <span class="metadata">Modifié le {{ trick.modificationDate|date('d/m/Y') }} à {{ trick.modificationDate|date('H:i') }}</span>
+    <span class="metadata">Trick créé le {{ trick.getCreatedAt|date('d/m/Y') }} à {{ trick.getCreatedAt|date('H:i') }}</span>
+    {% if trick.getModifiedAt %}
+        <span class="metadata">Modifié le {{ trick.getModifiedAt|date('d/m/Y') }} à {{ trick.getModifiedAt|date('H:i') }}</span>
     {% endif %}
 
 {% endmacro %}
