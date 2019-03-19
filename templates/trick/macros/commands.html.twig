@@ -1,7 +1,0 @@
-{% macro showCommands(editPath, deletePath, editContent, deleteContent) %}
-
-    <div class="commands-wrapper">
-        <a class="command" href="{{ editPath|default('#') }}">{{ editContent|raw|default('🖉') }}</a><a class="command" href="{{ deletePath|default('#') }}">{{ deleteContent|raw|default('🗑') }}</a>
-    </div>
-
-{% endmacro %}
