@@ -1,0 +1,54 @@
+header {
+    background-color: darkslategray;
+    color: whitesmoke;
+    text-align: center;
+    padding: 50px 0;
+}
+
+footer {
+    width: 100%;
+    position: absolute;
+    background-color: darkslategray;
+    color: whitesmoke;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.flex-jc-center {
+    justify-content: center;
+}
+
+@media all and (max-width: 576px) {
+
+    footer {
+        padding: 20px 0 71px 0;
+    }
+
+    .navbar {
+        position: fixed;
+        bottom: 0;
+        z-index: 100000;
+        width: 100%;
+    }
+}
+
+@media all and (max-width: 624px) {
+
+    .card {
+        width: 85%;
+    }
+}
+
+@media all and (min-width: 624px) {
+
+    .card {
+        max-width: 280px;
+    }
+}
+
+@media all and (min-width: 768px) {
+
+    .card {
+        max-width: 320px;
+    }
+}
