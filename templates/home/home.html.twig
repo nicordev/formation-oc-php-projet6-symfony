@@ -3,14 +3,17 @@
 {% block title %}Accueil{% endblock %}
 
 {% block header %}
-    <header>
+    <header class="full-height">
         <h1>SnowTricks</h1>
         <h2>Les tricks les plus hype !</h2>
-        <div class="arrow-down"><i class="fas fa-arrow-circle-down fa-2x"></i></div>
+        <div class="arrow-down" onclick="window.scrollBy(0, window.innerHeight);"><i class="fas fa-arrow-circle-down fa-3x"></i></div>
     </header>
 {% endblock %}
 
 {% block body %}
+    {% if message %}
+        <div class="message" onclick="myApp.eventTarget.hide(event)">{{ message }}</div>
+    {% endif %}
     <section class="py-3 row flex-jc-center" id="trick-list">
         {% for trick in tricks %}
             {% include 'home/card.html.twig' %}

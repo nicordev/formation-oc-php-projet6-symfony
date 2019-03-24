@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
+use App\Form\TrickType;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,8 +26,8 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/create-trick", name="create-trick")
-     * @Route("/edit-trick/{id}", name="edit-trick", requirements={"id": "\d+"})
+     * @Route("/create-trick", name="create_trick")
+     * @Route("/edit-trick/{id}", name="edit_trick", requirements={"id": "\d+"})
      */
     public function createOrEdit(Request $request, ObjectManager $manager, Trick $trick = null)
     {
@@ -34,11 +35,7 @@ class TrickController extends AbstractController
             $trick = new Trick();
         }
 
-        $form = $this->createFormBuilder($trick)
-            ->add('name')
-            ->add('description')
-            ->add('trickGroup')
-            ->getForm();
+        $form = $this->createForm(TrickType::class, $trick);
 
         $form->handleRequest($request);
 
@@ -59,5 +56,17 @@ class TrickController extends AbstractController
             'trickForm' => $form->createView(),
             'editMode' => $trick->getId() !== null
         ]);
+    }
+
+    /**
+     * @Route("/delete-trick/{id}", name="delete_trick", requirements={"id": "\d+"})
+     */
+    public function delete(ObjectManager $manager, Trick $trick)
+    {
+        $trickName = $trick->getName();
+        $manager->remove($trick);
+        $manager->flush();
+
+        return $this->redirectToRoute("home", ["message" => "Le trick $trickName a été supprimé"]);
     }
 }

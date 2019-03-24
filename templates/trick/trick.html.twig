@@ -10,7 +10,7 @@
         <h1>{{ trick.name }}</h1>
 
         <div class="commands-wrapper">
-            <a class="command" href="/edit-trick/{{ trick.id }}">🖉</a><a class="command" href="#">🗑</a>
+            <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
         </div>
     </div>
 

@@ -10,14 +10,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     /**
-     * @Route("/", name="home")
+     * @Route("/{message}", name="home")
      */
-    public function show(ObjectManager $manager)
+    public function show(ObjectManager $manager, string $message = null)
     {
         $trickRepo = $manager->getRepository(Trick::class);
 
         $tricks = $trickRepo->findAll();
 
-        return $this->render('home/home.html.twig', ['tricks' => $tricks]);
+        return $this->render('home/home.html.twig', [
+            'tricks' => $tricks,
+            'message' => $message
+        ]);
     }
 }
