@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block header %}
+    <header>
+        {% if editMode %}
+            <h1>Modification d'un trick</h1>
+        {% else %}
+            <h1>Création d'un trick de foufou</h1>
+        {% endif %}
+    </header>
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(trickForm) }}
+
+    {{ form_row(trickForm.name, {"attr": {
+        "placeholder": "Nom du trick"
+    }}) }}
+
+    {{ form_row(trickForm.description, {"attr": {
+        "placeholder": "Description"
+    }}) }}
+
+    {{ form_row(trickForm.trickGroup, {"attr": {
+        "placeholder": "Groupe"
+    }}) }}
+
+    <button type="submit" class="btn btn-success">
+        {% if editMode %}
+            Enregistrer les modifications
+        {% else %}
+            Ajouter le trick
+        {% endif %}
+    </button>
+
+    {{ form_end(trickForm) }}
+
+{% endblock %}

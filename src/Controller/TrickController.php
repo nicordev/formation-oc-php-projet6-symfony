@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
+use DateTime;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -24,29 +26,38 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/create-trick", name="create-trick")
+     * @Route("/edit-trick/{id}", name="edit-trick", requirements={"id": "\d+"})
      */
-    public function create()
+    public function createOrEdit(Request $request, ObjectManager $manager, Trick $trick = null)
     {
-        $trick = new Trick();
+        if (!$trick) {
+            $trick = new Trick();
+        }
 
         $form = $this->createFormBuilder($trick)
-            ->add('name', TextType::class, [
-                'attr' => [
-                    'placeholder' => "Nom du trick",
-                    'class' => 'form-control'
-                ]
-            ])
-            ->add('description', TextareaType::class, [
-                'attr' => [
-                    'placeholder' => "Description du trick",
-                    'class' => 'form-control'
-                ]
-            ])
+            ->add('name')
+            ->add('description')
             ->add('trickGroup')
             ->getForm();
 
-        return $this->render('trick/create.html.twig', [
-            'createTrickForm' => $form->createView()
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$trick->getId()) {
+                $trick->setCreatedAt(new DateTime);
+            } else {
+                $trick->setModifiedAt(new DateTime);
+            }
+
+            $manager->persist($trick);
+            $manager->flush();
+
+            return $this->redirectToRoute("trick_show_id", ['id' => $trick->getId()]);
+        }
+
+        return $this->render('trick/trickEditor.html.twig', [
+            'trickForm' => $form->createView(),
+            'editMode' => $trick->getId() !== null
         ]);
     }
 }
