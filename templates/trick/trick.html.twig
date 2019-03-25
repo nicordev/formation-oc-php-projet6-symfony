@@ -2,16 +2,18 @@
 
 {% block title %}{{ trick.name }}{% endblock %}
 
-{% block body %}
-    <div>
+{% block header %}
+    <header>
         <figure>
             <img src="https://via.placeholder.com/1000x500?text=MainImage" alt="Image principale">
         </figure>
         <h1>{{ trick.name }}</h1>
+    </header>
+{% endblock %}
 
-        <div class="commands-wrapper">
-            <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
-        </div>
+{% block body %}
+    <div class="commands-wrapper">
+        <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
     </div>
 
     {# Medias #}
@@ -26,6 +28,13 @@
 
     {# Info #}
     <div class="trick-metadata">
+        {% if trick.getTrickGroups() %}
+            <div>
+            {% for trickGroup in trick.getTrickGroups() %}
+                <a href="#">{{ trickGroup.getName() }}</a>
+            {% endfor %}
+            </div>
+        {% endif %}
         <span class="metadata">Trick créé le {{ trick.createdAt|date('d/m/Y') }} à {{ trick.createdAt|date('H:i') }}</span>
         {% if trick.modifiedAt %}
             <span class="metadata">Modifié le {{ trick.modifiedAt|date('d/m/Y') }} à {{ trick.modifiedAt|date('H:i') }}</span>

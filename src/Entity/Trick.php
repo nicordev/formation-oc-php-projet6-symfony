@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -40,9 +42,14 @@ class Trick
     private $modifiedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\TrickGroup", inversedBy="tricks")
+     * @ORM\ManyToMany(targetEntity="App\Entity\TrickGroup", mappedBy="tricks")
      */
-    private $trickGroup;
+    private $trickGroups;
+
+    public function __construct()
+    {
+        $this->trickGroups = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -97,14 +104,30 @@ class Trick
         return $this;
     }
 
-    public function getTrickGroup(): ?TrickGroup
+    /**
+     * @return Collection|TrickGroup[]
+     */
+    public function getTrickGroups(): Collection
     {
-        return $this->trickGroup;
+        return $this->trickGroups;
     }
 
-    public function setTrickGroup(?TrickGroup $trickGroup): self
+    public function addTrickGroup(TrickGroup $trickGroup): self
     {
-        $this->trickGroup = $trickGroup;
+        if (!$this->trickGroups->contains($trickGroup)) {
+            $this->trickGroups[] = $trickGroup;
+            $trickGroup->addTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrickGroup(TrickGroup $trickGroup): self
+    {
+        if ($this->trickGroups->contains($trickGroup)) {
+            $this->trickGroups->removeElement($trickGroup);
+            $trickGroup->removeTrick($this);
+        }
 
         return $this;
     }

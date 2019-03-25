@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +25,12 @@ class TrickGroup
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="trickGroup")
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Trick", inversedBy="trickGroups")
      */
     private $tricks;
 
@@ -50,6 +56,18 @@ class TrickGroup
         return $this;
     }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Trick[]
      */
@@ -62,7 +80,6 @@ class TrickGroup
     {
         if (!$this->tricks->contains($trick)) {
             $this->tricks[] = $trick;
-            $trick->setTrickGroup($this);
         }
 
         return $this;
@@ -72,10 +89,6 @@ class TrickGroup
     {
         if ($this->tricks->contains($trick)) {
             $this->tricks->removeElement($trick);
-            // set the owning side to null (unless already changed)
-            if ($trick->getTrickGroup() === $this) {
-                $trick->setTrickGroup(null);
-            }
         }
 
         return $this;
