@@ -7,8 +7,6 @@ use App\Form\TrickType;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,7 +14,6 @@ class TrickController extends AbstractController
 {
     /**
      * @Route("/trick/{id}", name="trick_show_id", requirements={"id": "\d+"})
-     * @Route("/trick/{name}", name="trick_show_name")
      */
     public function show(Trick $trick)
     {

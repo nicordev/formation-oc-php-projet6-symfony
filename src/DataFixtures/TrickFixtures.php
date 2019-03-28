@@ -7,6 +7,7 @@ use App\Entity\TrickGroup;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory;
 
 class TrickFixtures extends Fixture
 {
@@ -15,23 +16,27 @@ class TrickFixtures extends Fixture
         $tricks = [];
         $trickGroups = [];
 
-        $numberOfTricks = 10;
-        $numberOfTrickGroups = 3;
+        $numberOfTricks = 100;
+        $numberOfTrickGroups = 10;
+
+        $faker = Factory::create('fr_FR');
 
         // Trick groups
         for ($i = 1; $i <= $numberOfTrickGroups; $i++) {
+            $description = "<p>" . implode("</p><p>", $faker->paragraphs(mt_rand(1, 2))) . "</p>";
             $trickGroup = new TrickGroup();
             $trickGroup->setName("Groupe n°$i")
-                ->setDescription("Description du groupe n°$i");
+                ->setDescription("<h2>Description du groupe n°$i</h2>$description");
             $trickGroups[] = $trickGroup;
         }
 
         // Tricks
         for ($i = 1; $i <= $numberOfTricks; $i++) {
+            $description = "<p>" . implode("</p><p>", $faker->paragraphs(mt_rand(3, 5))) . "</p>";
             $trick = new Trick();
             $trick->setName("trick $i")
-                ->setDescription("<p>description $i</p>")
-                ->setCreatedAt(new DateTime());
+                ->setDescription("<h2>description $i</h2>$description")
+                ->setCreatedAt($faker->dateTimeThisYear());
             $tricks[] = $trick;
         }
 
