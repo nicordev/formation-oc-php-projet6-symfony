@@ -18,7 +18,9 @@
         "placeholder": "Nom du trick"
     }}) }}
 
-    {{ form_row(trickForm.description) }}
+    {{ form_row(trickForm.description, {"attr": {
+        "placeholder": "Description"
+    }}) }}
 
     {{ form_row(trickForm.trickGroups, {"attr": {
         "placeholder": "Groupe"

@@ -18,7 +18,9 @@ class TrickType extends AbstractType
             ->add('description')
             ->add('trickGroups', EntityType::class, [
                 'class' => TrickGroup::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => true
             ])
         ;
     }
