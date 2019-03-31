@@ -37,7 +37,20 @@
 
     {# Medias #}
     <div class="trick-medias">
-        {# TODO: insert images and videos #}
+        <div class="trick-images">
+            {% for image in trick.images %}
+                <a href="{{ image.url }}">
+                    <img width="300" height="226" src="{{ image.url }}" alt="Image du trick">
+                </a>
+            {% endfor %}
+        </div>
+        {% if trick.videos %}
+            <div class="trick-videos">
+                {% for video in trick.videos %}
+                    <iframe width="300" height="226" src="{{ video.url|youTubeEmbed }}"></iframe>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
     {# Description #}
