@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use App\Entity\Trick;
 use App\Entity\TrickGroup;
-use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
@@ -36,7 +35,8 @@ class TrickFixtures extends Fixture
             $trick = new Trick();
             $trick->setName("trick $i")
                 ->setDescription("<h2>description $i</h2>$description")
-                ->setCreatedAt($faker->dateTimeThisYear());
+                ->setCreatedAt($faker->dateTimeThisYear())
+                ->setMainImage($faker->imageUrl());
             $tricks[] = $trick;
         }
 

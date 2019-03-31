@@ -14,17 +14,33 @@
 
     {{ form_start(trickForm) }}
 
-    {{ form_row(trickForm.name, {"attr": {
-        "placeholder": "Nom du trick"
-    }}) }}
+    {{ form_row(trickForm.name, {
+        "label": "Nom",
+        "attr": {
+            "placeholder": "Nom du trick"
+        }
+    }) }}
 
-    {{ form_row(trickForm.description, {"attr": {
-        "placeholder": "Description"
-    }}) }}
+    {{ form_row(trickForm.description, {
+        "label": "Description",
+        "attr": {
+            "placeholder": "Description"
+        }
+    }) }}
 
-    {{ form_row(trickForm.trickGroups, {"attr": {
-        "placeholder": "Groupe"
-    }}) }}
+    {{ form_row(trickForm.trickGroups, {
+        "label": "Groupe",
+        "attr": {
+            "placeholder": "Groupe"
+        }
+    }) }}
+
+    {{ form_row(trickForm.mainImage, {
+        "label": "Image principale",
+        "attr": {
+            "placeholder": "Image principale : https://url.de.ma.supebe.image"
+        }
+    }) }}
 
     <button type="submit" class="btn btn-success">
         {% if editMode %}

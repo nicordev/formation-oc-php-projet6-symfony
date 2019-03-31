@@ -46,6 +46,11 @@ class Trick
      */
     private $trickGroups;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $mainImage;
+
     public function __construct()
     {
         $this->trickGroups = new ArrayCollection();
@@ -128,6 +133,18 @@ class Trick
             $this->trickGroups->removeElement($trickGroup);
             $trickGroup->removeTrick($this);
         }
+
+        return $this;
+    }
+
+    public function getMainImage(): ?string
+    {
+        return $this->mainImage;
+    }
+
+    public function setMainImage(?string $mainImage): self
+    {
+        $this->mainImage = $mainImage;
 
         return $this;
     }

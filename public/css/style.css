@@ -73,6 +73,19 @@ footer {
 .command {
     display: block;
     margin: 3px 5px;
+    padding: 3px 5px;
+    border-radius: 3px;
+    background-color: #2C3E50;
+    color: whitesmoke;
+    font-weight: bold;
+}
+
+.command:hover {
+    text-decoration: none;
+}
+
+.card-image {
+    width: 288px;
 }
 
 @media all and (max-width: 576px) {

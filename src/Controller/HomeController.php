@@ -16,15 +16,11 @@ class HomeController extends AbstractController
      * @Route("/", name="home")
      * @Route("/{page}", name="home_paging", requirements={"page": "\d+"})
      */
-    public function show(ObjectManager $manager, ?int $page = null)
+    public function show(ObjectManager $manager, int $page = 1)
     {
         $trickRepo = $manager->getRepository(Trick::class);
 
-        if ($page) {
-            $tricks = $trickRepo->findBy([], ["createdAt" => "DESC"], $this->tricksPerPage, ControllerHelper::getPagingOffset($page, $this->tricksPerPage));
-        } else {
-            $tricks = $trickRepo->findAll();
-        }
+        $tricks = $trickRepo->findBy([], ["createdAt" => "DESC"], $this->tricksPerPage, ControllerHelper::getPagingOffset($page, $this->tricksPerPage));
 
         return $this->render('home/home.html.twig', [
             'tricks' => $tricks

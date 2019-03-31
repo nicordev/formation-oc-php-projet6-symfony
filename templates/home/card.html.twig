@@ -1,6 +1,10 @@
 <div class="card col-lg-3 m-3">
     <a href="{{ path('trick_show_id', {'id': trick.id}) }}">
-        <img src="https://via.placeholder.com/200x50?text=MainImage" class="card-img-top" alt="image">
+        {% if trick.mainImage %}
+            <img class="card-image" src="{{ trick.mainImage }}" class="card-img-top" alt="image">
+        {% else %}
+            <img class="card-image" src="/public/img/no_image.jpg" class="card-img-top" alt="image">
+        {% endif %}
     </a>
     <div class="card-body">
         <h5 class="card-title"><a href="{{ path('trick_show_id', {'id': trick.id}) }}">{{ trick.name }}</a></h5>

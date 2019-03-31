@@ -2,11 +2,30 @@
 
 {% block title %}{{ trick.name }}{% endblock %}
 
+{% block stylesheets %}
+    <style>
+        h1 {
+            background-color: rgba(47, 79, 79, 0.75);
+            padding: 20px 40px;
+            border-radius: 10px;
+        }
+
+        .trick-header {
+            height: 500px;
+            {% if trick.mainImage %}
+                background-image: url("{{ trick.mainImage }}");
+            {% else %}
+                background-image: url("/public/img/no_image.jpg");
+            {% endif %}
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+{% endblock %}
+
 {% block header %}
-    <header>
-        <figure>
-            <img src="https://via.placeholder.com/1000x500?text=MainImage" alt="Image principale">
-        </figure>
+    <header class="trick-header">
         <h1>{{ trick.name }}</h1>
     </header>
 {% endblock %}

@@ -22,6 +22,7 @@ class TrickType extends AbstractType
                 'multiple' => true,
                 'expanded' => true
             ])
+            ->add('mainImage')
         ;
     }
 
