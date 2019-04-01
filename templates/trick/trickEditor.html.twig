@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% block title %}Editeur{% endblock %}
+
 {% block header %}
     <header>
         {% if editMode %}
@@ -70,4 +72,29 @@
 
     {{ form_end(trickForm, {'render_rest': false}) }}
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Add buttons to delete inputs #}
+    <script>
+        var myTrickEditor = {
+            addDeleteButtons: function () {
+                var imageInputElts = document.querySelectorAll('input[id*="trick_images_"]'),
+                    videoInputElts = document.querySelectorAll('input[id*="trick_videos_"]'),
+                    classes = "btn btn-danger",
+                    text = "x";
+
+                for (var imageInputElt of imageInputElts) {
+                    myApp.elementTool.addButton(imageInputElt.parentNode.parentNode.parentNode, text, myApp.elementTool.removeElement, imageInputElt.parentNode.parentNode.parentNode, classes);
+                }
+
+                for (var videoInputElt of videoInputElts) {
+                    myApp.elementTool.addButton(videoInputElt.parentNode.parentNode.parentNode, text, myApp.elementTool.removeElement, videoInputElt.parentNode.parentNode.parentNode, classes);
+                }
+            }
+        };
+
+        myTrickEditor.addDeleteButtons();
+    </script>
 {% endblock %}
