@@ -42,6 +42,24 @@
         }
     }) }}
 
+    <label for="">Images</label>
+    {% for image in trickForm.images %}
+        {{ form_row(image, {
+            "attr": {
+                "placeholder": "https://url.de.ma.supebe.image"
+            }
+        }) }}
+    {% endfor %}
+
+    <label for="">Vidéos</label>
+    {% for video in trickForm.videos %}
+        {{ form_row(video, {
+            "attr": {
+                "placeholder": "https://url.de.ma.supebe.video"
+            }
+        }) }}
+    {% endfor %}
+
     <button type="submit" class="btn btn-success">
         {% if editMode %}
             Enregistrer les modifications
@@ -50,6 +68,6 @@
         {% endif %}
     </button>
 
-    {{ form_end(trickForm) }}
+    {{ form_end(trickForm, {'render_rest': false}) }}
 
 {% endblock %}
