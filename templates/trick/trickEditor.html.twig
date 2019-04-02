@@ -40,7 +40,7 @@
     {{ form_row(trickForm.mainImage, {
         "label": "Image principale",
         "attr": {
-            "placeholder": "Image principale : https://url.de.ma.supebe.image"
+            "placeholder": "Image principale : https://url.de.ma.superbe.image"
         }
     }) }}
 
@@ -48,16 +48,24 @@
     {% for image in trickForm.images %}
         {{ form_row(image, {
             "attr": {
-                "placeholder": "https://url.de.ma.supebe.image"
+                "placeholder": "https://url.de.ma.superbe.image"
             }
         }) }}
     {% endfor %}
+
+    <fieldset class="form-group">
+        <div id="trick_images_new">
+            <div class="form-group">
+                <input type="text" id="new_trick_image" name="trick[images][]" inputmode="url" class="form-control" placeholder="https://url.de.ma.superbe.image" />
+            </div>
+        </div>
+    </fieldset>
 
     <label for="">Vidéos</label>
     {% for video in trickForm.videos %}
         {{ form_row(video, {
             "attr": {
-                "placeholder": "https://url.de.ma.supebe.video"
+                "placeholder": "https://url.de.ma.superbe.video"
             }
         }) }}
     {% endfor %}
