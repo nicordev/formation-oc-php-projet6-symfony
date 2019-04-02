@@ -3,12 +3,22 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="Cet email est déjà pris"
+ * )
+ * @UniqueEntity(
+ *     fields={"name"},
+ *     message="Ce nom est déjà pris"
+ * )
  */
-class Member
+class Member implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -26,6 +36,7 @@ class Member
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Vous devez entrer un email")
+     * @Assert\Email(message="Vous devez entrer un email valide")
      */
     private $email;
 
@@ -91,5 +102,27 @@ class Member
         $this->picture = $picture;
 
         return $this;
+    }
+
+    // UserInterface
+
+    public function getUsername()
+    {
+        return $this->getName();
+    }
+
+    public function eraseCredentials()
+    {
+        
+    }
+
+    public function getSalt()
+    {
+        
+    }
+
+    public function getRoles()
+    {
+        return ['ROLE_USER'];
     }
 }
