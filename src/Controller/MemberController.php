@@ -22,6 +22,8 @@ class MemberController extends AbstractController
 
         $registrationForm->handleRequest($request);
 
+        $registrationForm->isValid();
+
         if ($registrationForm->isSubmitted() && $registrationForm->isValid()) {
             $manager->persist($newMember);
             $manager->flush();
