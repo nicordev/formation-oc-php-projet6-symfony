@@ -1,0 +1,42 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Inscription
+{% endblock %}
+
+{% block header %}
+    <header>
+        <h1>Inscription</h1>
+    </header>
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(registrationForm) }}
+
+    {{ form_row(registrationForm.name, {
+        "label": "Nom",
+        "attr": {
+            "placeholder": "Nom"
+        }
+    }) }}
+
+    {{ form_row(registrationForm.email, {
+        "label": "Email",
+        "attr": {
+            "placeholder": "Email"
+        }
+    }) }}
+
+    {{ form_row(registrationForm.password, {
+        "label": "Mot de passe",
+        "attr": {
+            "placeholder": "Mot de passe ultra secret"
+        }
+    }) }}
+
+    <button type="submit">Inscription</button>
+
+    {{ form_end(registrationForm, {'render_rest': false}) }}
+
+{% endblock %}
