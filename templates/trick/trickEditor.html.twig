@@ -45,30 +45,10 @@
     }) }}
 
     <label for="">Images</label>
-    {% for image in trickForm.images %}
-        {{ form_row(image, {
-            "attr": {
-                "placeholder": "https://url.de.ma.superbe.image"
-            }
-        }) }}
-    {% endfor %}
-
-    <fieldset class="form-group">
-        <div id="trick_images_new">
-            <div class="form-group">
-                <input type="text" id="new_trick_image" name="trick[images][]" inputmode="url" class="form-control" placeholder="https://url.de.ma.superbe.image" />
-            </div>
-        </div>
-    </fieldset>
+    {{ form_widget(trickForm.images) }}
 
     <label for="">Vidéos</label>
-    {% for video in trickForm.videos %}
-        {{ form_row(video, {
-            "attr": {
-                "placeholder": "https://url.de.ma.superbe.video"
-            }
-        }) }}
-    {% endfor %}
+    {{ form_widget(trickForm.videos) }}
 
     <button type="submit" class="btn btn-success">
         {% if editMode %}
@@ -78,7 +58,7 @@
         {% endif %}
     </button>
 
-    {{ form_end(trickForm, {'render_rest': false}) }}
+    {{ form_end(trickForm) }}
 
 {% endblock %}
 

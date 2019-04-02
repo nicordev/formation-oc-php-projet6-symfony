@@ -25,6 +25,10 @@ footer {
     text-align: center;
 }
 
+.content {
+    max-width: 1500px;
+}
+
 .full-height {
     height: 100%;
 }
@@ -86,6 +90,23 @@ footer {
 
 .card-image {
     width: 288px;
+}
+
+.embedded-video {
+    border: none;
+}
+
+.trick-media {
+    display: block;
+    width: 200px;
+    height: 150px;
+    margin: 10px;
+}
+
+.trick-media-type {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 @media all and (max-width: 576px) {
