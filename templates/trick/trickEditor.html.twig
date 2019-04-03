@@ -100,15 +100,18 @@
 
                 for (var imageInputElt of imageInputElts) {
                     btnElt = buildCloseButton(imageInputElt.parentNode.parentNode.parentNode);
-                    imageInputElt.parentNode.parentNode.parentNode.appendChild(btnElt);
+                    imageInputElt.parentNode.appendChild(btnElt);
+                    addBootstrapClasses(imageInputElt);
                 }
 
                 for (var videoInputElt of videoInputElts) {
                     btnElt = buildCloseButton(videoInputElt.parentNode.parentNode.parentNode);
-                    videoInputElt.parentNode.parentNode.parentNode.appendChild(btnElt);
+                    videoInputElt.parentNode.appendChild(btnElt);
+                    addBootstrapClasses(videoInputElt);
                 }
 
                 function buildCloseButton(targetElt) {
+
                     var btnElt = document.createElement("button"),
                         spanElt = document.createElement("span");
 
@@ -126,6 +129,15 @@
                     });
 
                     return btnElt;
+                }
+
+                function addBootstrapClasses(inputElt) {
+
+                    var parentElt = inputElt.parentElement;
+
+                    parentElt.classList.add('d-flex');
+                    parentElt.children[0].classList.add('mr-3');
+                    parentElt.children[1].classList.add('mr-3');
                 }
             },
 
