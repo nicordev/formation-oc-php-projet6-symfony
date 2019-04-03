@@ -36,15 +36,18 @@ class TrickFixtures extends Fixture
         // Tricks
         for ($i = 1; $i <= $numberOfTricks; $i++) {
             $description = "<p>" . implode("</p><p>", $faker->paragraphs(mt_rand(3, 5))) . "</p>";
+            $imageWidth = 1024;
+            $imageHeight = 768;
+
             $trick = new Trick();
             $trick->setName("trick $i")
                 ->setDescription("<h2>description $i</h2>$description")
                 ->setCreatedAt($faker->dateTimeThisYear())
-                ->setMainImage($faker->imageUrl());
+                ->setMainImage($faker->imageUrl($imageWidth, $imageHeight));
             // Images
             for ($j = 0, $size = rand(0, 10); $j < $size; $j++) {
                 $image = new Image();
-                $image->setUrl($faker->imageUrl());
+                $image->setUrl($faker->imageUrl($imageWidth, $imageHeight));
                 $trick->addImage($image);
                 $image->setTrick($trick);
                 $manager->persist($image);

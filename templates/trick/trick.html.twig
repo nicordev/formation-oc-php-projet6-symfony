@@ -5,30 +5,51 @@
 {% block stylesheets %}
     <style>
         h1 {
-            background-color: rgba(47, 79, 79, 0.75);
-            padding: 20px 40px;
-            border-radius: 10px;
+            font-family: 'Love Ya Like A Sister', cursive;
+            text-align: center;
+            color: rgb(44, 62, 80);
         }
 
         .trick-header {
-            height: 500px;
+            min-height: 500px;
+            {% if trick.mainImage %}
+                background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("{{ trick.mainImage }}");
+            {% else %}
+                background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("/public/img/mountain_1.jpg");
+            {% endif %}
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        #trick-main-image {
+            height: 400px;
+            width: 600px;
             {% if trick.mainImage %}
                 background-image: url("{{ trick.mainImage }}");
             {% else %}
                 background-image: url("/public/img/no_image.jpg");
             {% endif %}
-            background-size: contain;
+            background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
+            border-radius: 50px;
+        }
+
+        #trick-title {
+            padding: 50px 20px;
         }
     </style>
 {% endblock %}
 
 {% block header %}
     <header class="trick-header">
-        <h1>{{ trick.name }}</h1>
         <div class="commands-wrapper">
             <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
+        </div>
+        <div id="trick-title">
+            <div id="trick-main-image"></div>
+            <h1>{{ trick.name }}</h1>
         </div>
     </header>
 {% endblock %}
@@ -62,7 +83,7 @@
 
     {# Info #}
     <div class="trick-metadata">
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center flex-wrap">
             <span class="metadata m-3">Trick créé le {{ trick.createdAt|date('d/m/Y') }} à {{ trick.createdAt|date('H:i') }}</span>
             {% if trick.modifiedAt %}
                 <span class="metadata m-3">Modifié le {{ trick.modifiedAt|date('d/m/Y') }} à {{ trick.modifiedAt|date('H:i') }}</span>
