@@ -96,15 +96,36 @@
 
                 var imageInputElts = document.querySelectorAll('input[id*="trick_images_"]'),
                     videoInputElts = document.querySelectorAll('input[id*="trick_videos_"]'),
-                    classes = "btn btn-danger",
-                    text = "x";
+                    btnElt;
 
                 for (var imageInputElt of imageInputElts) {
-                    myApp.elementTool.addButton(imageInputElt.parentNode.parentNode.parentNode, text, myApp.elementTool.removeElement, imageInputElt.parentNode.parentNode.parentNode, classes);
+                    btnElt = buildCloseButton(imageInputElt.parentNode.parentNode.parentNode);
+                    imageInputElt.parentNode.parentNode.parentNode.appendChild(btnElt);
                 }
 
                 for (var videoInputElt of videoInputElts) {
-                    myApp.elementTool.addButton(videoInputElt.parentNode.parentNode.parentNode, text, myApp.elementTool.removeElement, videoInputElt.parentNode.parentNode.parentNode, classes);
+                    btnElt = buildCloseButton(videoInputElt.parentNode.parentNode.parentNode);
+                    videoInputElt.parentNode.parentNode.parentNode.appendChild(btnElt);
+                }
+
+                function buildCloseButton(targetElt) {
+                    var btnElt = document.createElement("button"),
+                        spanElt = document.createElement("span");
+
+                    spanElt.setAttribute("aria-hidden", "true");
+                    spanElt.textContent = "×";
+
+                    btnElt.type = "button";
+                    btnElt.classList.add("close");
+                    btnElt.setAttribute("arial-label", "Close");
+
+                    btnElt.appendChild(spanElt);
+
+                    btnElt.addEventListener("click", function () {
+                        myApp.elementTool.removeElement(targetElt);
+                    });
+
+                    return btnElt;
                 }
             },
 
@@ -124,7 +145,7 @@
             }
         };
 
-        //myTrickEditor.addDeleteButtons();
+        myTrickEditor.addDeleteButtons();
         myTrickEditor.addInput("trick_images");
         myTrickEditor.addInput("trick_videos");
     </script>
