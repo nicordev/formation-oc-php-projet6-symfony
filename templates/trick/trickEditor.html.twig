@@ -95,22 +95,23 @@
             addDeleteButtons: function () {
 
                 var imageInputElts = document.querySelectorAll('input[id*="trick_images_"]'),
-                    videoInputElts = document.querySelectorAll('input[id*="trick_videos_"]'),
-                    btnElt;
+                    videoInputElts = document.querySelectorAll('input[id*="trick_videos_"]');
 
                 for (var imageInputElt of imageInputElts) {
-                    btnElt = buildCloseButton(imageInputElt.parentNode.parentNode.parentNode);
-                    imageInputElt.parentNode.appendChild(btnElt);
-                    addBootstrapClasses(imageInputElt);
+                    myTrickEditor.addADeleteButton(imageInputElt.parentElement, imageInputElt.parentElement.parentElement.parentElement);
                 }
 
                 for (var videoInputElt of videoInputElts) {
-                    btnElt = buildCloseButton(videoInputElt.parentNode.parentNode.parentNode);
-                    videoInputElt.parentNode.appendChild(btnElt);
-                    addBootstrapClasses(videoInputElt);
+                    myTrickEditor.addADeleteButton(videoInputElt.parentElement, videoInputElt.parentElement.parentElement.parentElement);
                 }
+            },
 
-                function buildCloseButton(targetElt) {
+            addADeleteButton: function (parentElement, targetElement) {
+
+                parentElement.appendChild(buildDeleteButton(targetElement));
+                addBootstrapClasses(parentElement);
+
+                function buildDeleteButton(targetElt) {
 
                     var btnElt = document.createElement("button"),
                         spanElt = document.createElement("span");
@@ -131,9 +132,7 @@
                     return btnElt;
                 }
 
-                function addBootstrapClasses(inputElt) {
-
-                    var parentElt = inputElt.parentElement;
+                function addBootstrapClasses(parentElt) {
 
                     parentElt.classList.add('d-flex');
                     parentElt.children[0].classList.add('mr-3');
@@ -149,10 +148,19 @@
 
                 wrapperElt.appendChild(newInputWrapperElt);
 
+                var lastInput = getLastInput(wrapperElt, lastKey);
+                myTrickEditor.addADeleteButton(lastInput.parentElement, lastInput.parentElement.parentElement.parentElement);
+
                 function buildNewInputWrapperElt(prototype, lastKey) {
+
                     var elt = document.createElement('div');
                     elt.innerHTML = prototype.replace(/__name__/g, lastKey);
                     return elt.firstElementChild;
+                }
+
+                function getLastInput(wrapperElt, lastKey) {
+
+                    return wrapperElt.children[lastKey].firstElementChild.firstElementChild.firstElementChild;
                 }
             }
         };
