@@ -14,6 +14,12 @@ class AppExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * Change a classic youtube url to an embedded one
+     *
+     * @param string $url
+     * @return string
+     */
     public function buildYouTubeEmbedUrl(string $url): string
     {
         $toReplace = "watch?v=";

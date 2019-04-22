@@ -17,11 +17,13 @@ class Paginator
      * @param int|null $currentPage
      * @param int|null $itemsPerPage
      * @param int|null $itemsCount
+     * @param bool $fitCurrentPageInBoundaries
      */
     public function __construct(
         ?int $currentPage = null,
         ?int $itemsPerPage = null,
-        ?int $itemsCount = null
+        ?int $itemsCount = null,
+        bool $fitCurrentPageInBoundaries = true
     )
     {
         $this->currentPage = $currentPage;
@@ -29,6 +31,9 @@ class Paginator
         $this->itemsCount = $itemsCount;
         if ($itemsCount && $itemsPerPage) {
             $this->pagesCount = self::countPages($itemsCount, $itemsPerPage);
+            if ($fitCurrentPageInBoundaries) {
+                $this->fitCurrentPageInBoundaries();
+            }
         }
         if ($currentPage && $itemsPerPage) {
             $this->pagingOffset = self::calculatePagingOffset($currentPage, $itemsPerPage);
