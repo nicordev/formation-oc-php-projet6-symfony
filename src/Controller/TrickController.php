@@ -28,9 +28,7 @@ class TrickController extends AbstractController
      */
     public function createOrEdit(Request $request, ObjectManager $manager, Trick $trick = null)
     {
-        if (!$trick) {
-            $trick = new Trick();
-        }
+        $trick = $trick ?? new Trick();
 
         $form = $this->createForm(TrickType::class, $trick);
 
