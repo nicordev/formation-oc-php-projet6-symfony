@@ -18,13 +18,15 @@
         <div class="container-fluid content">
 
             {% block flashMessages %}
-                {% for label, messages in app.flashes %}
-                    {% for message in messages %}
-                        <div class="flash-{{ label }} alert alert-primary">
-                            {{ message }}
-                        </div>
+                <div class="flash-messages">
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="flash-message flash-{{ label }} alert alert-primary" onclick="myApp.eventTarget.hide(event)">
+                                {{ message }} <span class="float-right font-size-medium">&times;</span>
+                            </div>
+                        {% endfor %}
                     {% endfor %}
-                {% endfor %}
+                </div>
             {% endblock %}
 
             {% block body %}{% endblock %}
