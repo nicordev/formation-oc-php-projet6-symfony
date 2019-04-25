@@ -15,8 +15,7 @@ class HomeController extends AbstractController
     /**
      * Show the home page
      *
-     * @Route("/", name="home")
-     * @Route("/home/{page}", name="home_paging", requirements={"page": "\d+"})
+     * @Route("/{page}", name="home", requirements={"page": "\d+"})
      *
      * @param ObjectManager $manager
      * @param Paginator $paginator
