@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Trick;
 use App\Form\TrickType;
-use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,6 +91,8 @@ class TrickController extends AbstractController
             "Le trick $trickName a été supprimé"
         );
 
-        return $this->redirectToRoute("home");
+        $homeUrl = $this->generateUrl("home");
+
+        return $this->redirect("$homeUrl#main-content");
     }
 }
