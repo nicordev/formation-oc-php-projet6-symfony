@@ -12,15 +12,30 @@
     </head>
     <body>
         {% include 'navBar.html.twig' %}
+
         {% block header %}{% endblock %}
+
         <div class="container-fluid content">
+
+            {% block flashMessages %}
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="flash-{{ label }} alert alert-primary">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            {% endblock %}
+
             {% block body %}{% endblock %}
         </div>
+
         {% block footer %}
             <footer>
                 <p>Copyright @ 2019</p>
             </footer>
         {% endblock %}
+
         {% block javascripts %}
             <script src="/public/js/myApp.js"></script>
         {% endblock %}

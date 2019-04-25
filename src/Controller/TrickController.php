@@ -48,12 +48,6 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$trick->getId()) {
-                $trick->setCreatedAt(new DateTime);
-            } else {
-                $trick->setModifiedAt(new DateTime);
-            }
-
             $manager->persist($trick);
             $manager->flush();
 
@@ -81,6 +75,11 @@ class TrickController extends AbstractController
         $manager->remove($trick);
         $manager->flush();
 
-        return $this->redirectToRoute("home", ["message" => "Le trick $trickName a été supprimé"]);
+        $this->addFlash(
+            "notice",
+            "Le trick $trickName a été supprimé"
+        );
+
+        return $this->redirectToRoute("home");
     }
 }

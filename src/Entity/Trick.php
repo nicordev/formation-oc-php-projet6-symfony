@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrickRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Trick
 {
@@ -109,6 +110,21 @@ class Trick
         return $this;
     }
 
+    /**
+     * Set created time to now
+     *
+     * @ORM\PrePersist
+     *
+     * @return Trick
+     * @throws \Exception
+     */
+    public function setCreatedAtToNow(): self
+    {
+        $this->createdAt = new \DateTime();
+
+        return $this;
+    }
+
     public function getModifiedAt(): ?\DateTimeInterface
     {
         return $this->modifiedAt;
@@ -117,6 +133,21 @@ class Trick
     public function setModifiedAt(?\DateTimeInterface $modifiedAt): self
     {
         $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    /**
+     * Set modified time to now
+     *
+     * @ORM\PreUpdate
+     *
+     * @return Trick
+     * @throws \Exception
+     */
+    public function setModifiedAtToNow(): self
+    {
+        $this->modifiedAt = new \DateTime();
 
         return $this;
     }
