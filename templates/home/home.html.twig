@@ -36,7 +36,14 @@
             {% include 'home/card.html.twig' %}
         {% endfor %}
     </section>
-    <div class="text-center mb-3">
-        <a id="home-next-page-btn" class="btn btn-primary" href="{{ path("home") ~ (page + 1) }}#home-next-page-btn">Afficher d'autres tricks</a>
-    </div>
+    {% if paginator.currentPage > 1 %}
+        <div class="text-center mb-3">
+            <a id="home-previous-page-btn" class="btn btn-primary" href="{{ path("home") ~ (paginator.currentPage - 1) }}#trick-list">Afficher les tricks précédents</a>
+        </div>
+    {% endif %}
+    {% if paginator.currentPage < paginator.pagesCount %}
+        <div class="text-center mb-3">
+            <a id="home-next-page-btn" class="btn btn-primary" href="{{ path("home") ~ (paginator.currentPage + 1) }}#trick-list">Afficher d'autres tricks</a>
+        </div>
+    {% endif %}
 {% endblock %}

@@ -32,7 +32,7 @@ class HomeController extends AbstractController
 
         return $this->render('home/home.html.twig', [
             'tricks' => $tricks,
-            'page' => $paginator->currentPage
+            'paginator' => $paginator
         ]);
     }
 }
