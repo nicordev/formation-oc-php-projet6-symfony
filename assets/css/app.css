@@ -1,0 +1,53 @@
+html, body {
+    height: 100%;
+    scroll-behavior: smooth;
+    background-color: #2C3E50;
+    color: whitesmoke;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: darkslategray;
+    color: whitesmoke;
+}
+
+header h1, header h2 {
+    margin: 20px;
+}
+
+footer {
+    width: 100%;
+    position: absolute;
+    background-color: darkslategray;
+    color: whitesmoke;
+    padding: 20px 0;
+    text-align: center;
+}
+
+hr {
+    border-top: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.content {
+    max-width: 1500px;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.flex-jc-center {
+    justify-content: center;
+}
+
+.flash-messages {
+    margin: 20px 0;
+}
+
+.alert-primary {
+    background-color: cornflowerblue;
+    color: darkslateblue;
+}
