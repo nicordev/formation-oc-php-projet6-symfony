@@ -1,8 +1,12 @@
+$primaryBackgroundColor: #2C3E50;
+$secondaryBackgroundColor: darkslategray;
+$primaryFontColor: whitesmoke;
+
 html, body {
     height: 100%;
     scroll-behavior: smooth;
-    background-color: #2C3E50;
-    color: whitesmoke;
+    background-color: $primaryBackgroundColor;
+    color: $primaryFontColor;
 }
 
 header {
@@ -10,8 +14,8 @@ header {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: darkslategray;
-    color: whitesmoke;
+    background-color: $secondaryBackgroundColor;
+    color: $primaryFontColor;
 }
 
 header h1, header h2 {
@@ -21,8 +25,8 @@ header h1, header h2 {
 footer {
     width: 100%;
     position: absolute;
-    background-color: darkslategray;
-    color: whitesmoke;
+    background-color: $secondaryBackgroundColor;
+    color: $primaryFontColor;
     padding: 20px 0;
     text-align: center;
 }
