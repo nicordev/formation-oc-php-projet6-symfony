@@ -2,78 +2,48 @@
 
 {% block title %}Accueil{% endblock %}
 
+{% block stylesheets %}
+    <style>
+        header {
+            background-image: url("https://1920x1080hdwallpapers.com/image/201502/men/753/snowboard-trick-snow-extreme-mountain.jpg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+
+        h1 {
+            font-family: 'Fredericka the Great', cursive;
+            font-size: 5em;
+        }
+
+        h2 {
+            font-family: 'Love Ya Like A Sister', cursive;
+        }
+    </style>
+{% endblock %}
+
 {% block header %}
-    <header>
+    <header class="full-height">
         <h1>SnowTricks</h1>
         <h2>Les tricks les plus hype !</h2>
-        <div class="arrow-down"><i class="fas fa-arrow-circle-down fa-2x"></i></div>
+        <div class="arrow-down" onclick="window.scrollBy(0, window.innerHeight);"><i class="fas fa-arrow-circle-down fa-3x"></i></div>
     </header>
 {% endblock %}
 
 {% block body %}
     <section class="py-3 row flex-jc-center" id="trick-list">
-        {% set tricks = [
-            {
-                'id': 1,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch rodeo cinq tail grab'
-            },
-            {
-                'id': 2,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            },
-            {
-                'id': 3,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            },
-            {
-                'id': 4,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            },
-            {
-                'id': 5,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            },
-            {
-                'id': 6,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            },
-            {
-                'id': 7,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            },
-            {
-                'id': 8,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            },
-            {
-                'id': 9,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            },
-            {
-                'id': 10,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            },
-            {
-                'id': 11,
-                'mainImage': 'https://via.placeholder.com/320x150?text=MyAwesomeTrick',
-                'title': 'Switch 270 to rail'
-            }
-        ] %}
         {% for trick in tricks %}
             {% include 'home/card.html.twig' %}
         {% endfor %}
     </section>
-    <div class="text-center mb-3">
-        <a class="btn btn-primary" href="#">Afficher d'autres tricks</a>
-    </div>
+    {% if paginator.currentPage > 1 %}
+        <div class="text-center mb-3">
+            <a id="home-previous-page-btn" class="btn btn-primary" href="{{ path("home") ~ (paginator.currentPage - 1) }}#trick-list">Afficher les tricks précédents</a>
+        </div>
+    {% endif %}
+    {% if paginator.currentPage < paginator.pagesCount %}
+        <div class="text-center mb-3">
+            <a id="home-next-page-btn" class="btn btn-primary" href="{{ path("home") ~ (paginator.currentPage + 1) }}#trick-list">Afficher d'autres tricks</a>
+        </div>
+    {% endif %}
 {% endblock %}

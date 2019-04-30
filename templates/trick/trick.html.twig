@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ trick.name }}{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        h1 {
+            font-family: 'Love Ya Like A Sister', cursive;
+            text-align: center;
+            color: rgb(44, 62, 80);
+        }
+
+        .trick-header {
+            min-height: 500px;
+            {% if trick.mainImage %}
+                background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("{{ trick.mainImage }}");
+            {% else %}
+                background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("/public/img/mountain_1.jpg");
+            {% endif %}
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        #trick-main-image {
+            height: 400px;
+            width: 600px;
+            {% if trick.mainImage %}
+                background-image: url("{{ trick.mainImage }}");
+            {% else %}
+                background-image: url("/public/img/no_image.jpg");
+            {% endif %}
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 50px;
+        }
+
+        #trick-title {
+            padding: 50px 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block header %}
+    <header class="trick-header">
+        <div class="commands-wrapper">
+            <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
+        </div>
+        <div id="trick-title">
+            <div id="trick-main-image"></div>
+            <h1>{{ trick.name }}</h1>
+        </div>
+    </header>
+{% endblock %}
+
+{% block body %}
+
+    {# Medias #}
+    <div class="trick-medias row mt-3">
+        <div class="trick-media-type col-sm-6 col-12">
+            {% for image in trick.images %}
+                <a href="{{ image.url }}" class="trick-media">
+                    <img class="img-fluid" src="{{ image.url }}" alt="Image du trick">
+                </a>
+            {% endfor %}
+        </div>
+        {% if trick.videos %}
+            <div class="trick-media-type col-sm-6 col-12">
+                {% for video in trick.videos %}
+                    <iframe class="embedded-video trick-media" src="{{ video.url|youTubeEmbed }}"></iframe>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <hr>
+
+    {# Description #}
+    <div class="trick-description">
+        {{ trick.description|raw }}
+    </div>
+
+    {# Info #}
+    <div class="trick-metadata">
+        <div class="d-flex justify-content-center flex-wrap">
+            <span class="metadata m-3">Trick créé le {{ trick.createdAt|date('d/m/Y') }} à {{ trick.createdAt|date('H:i') }}</span>
+            {% if trick.modifiedAt %}
+                <span class="metadata m-3">Modifié le {{ trick.modifiedAt|date('d/m/Y') }} à {{ trick.modifiedAt|date('H:i') }}</span>
+            {% endif %}
+            {% if trick.trickGroups %}
+                {% for trickGroup in trick.trickGroups %}
+                    <a class="btn btn-primary m-3" href="#">{{ trickGroup.name }}</a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+    {# Comments #}
+    <div class="trick-comments">
+        {# TODO: insert comments and new comment form #}
+    </div>
+{% endblock %}

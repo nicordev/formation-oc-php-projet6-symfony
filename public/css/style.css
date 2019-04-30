@@ -1,8 +1,21 @@
+html, body {
+    height: 100%;
+    scroll-behavior: smooth;
+    background-color: #2C3E50;
+    color: whitesmoke;
+}
+
 header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     background-color: darkslategray;
     color: whitesmoke;
-    text-align: center;
-    padding: 50px 0;
+}
+
+header h1, header h2 {
+    margin: 20px;
 }
 
 footer {
@@ -14,8 +27,107 @@ footer {
     text-align: center;
 }
 
+hr {
+    border-top: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.content {
+    max-width: 1500px;
+}
+
+.full-height {
+    height: 100%;
+}
+
 .flex-jc-center {
     justify-content: center;
+}
+
+.flash-messages {
+    margin: 20px 0;
+}
+
+.alert-primary {
+    background-color: cornflowerblue;
+    color: darkslateblue;
+}
+
+.alert:hover {
+    cursor: pointer;
+}
+
+.arrow-down {
+    margin: 20px;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+    transition-duration: 300ms;
+    transition-property: top;
+}
+
+.arrow-down:hover {
+    cursor: pointer;
+    position: relative;
+    top: 7px;
+}
+
+.commands-wrapper {
+    position: absolute;
+    top: 100px;
+    right: 50px;
+    display: flex;
+}
+
+.command {
+    display: block;
+    margin: 3px 5px;
+    padding: 3px 5px;
+    border-radius: 3px;
+    background-color: #2C3E50;
+    color: whitesmoke;
+    font-weight: bold;
+}
+
+.command:hover {
+    text-decoration: none;
+}
+
+.embedded-video {
+    border: none;
+}
+
+.trick-media {
+    display: block;
+    width: 200px;
+    height: 150px;
+    margin: 10px;
+}
+
+.trick-media-type {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card-img-link {
+    margin: 0 -15px;
+}
+
+.card-body {
+    margin: 0 -15px;
+    background-color: #2C3E50;
+}
+
+.card-title a {
+    color: whitesmoke;
+    font-family: 'Love Ya Like A Sister', cursive;
+    font-size: 1.5em;
+}
+
+.font-size-medium {
+    font-size: 1.5em;
+    position: relative;
+    bottom: 5px;
 }
 
 @media all and (max-width: 576px) {

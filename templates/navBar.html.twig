@@ -1,6 +1,6 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">SnowTricks</a>
+    <a class="navbar-brand" href="/">SnowTricks</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -11,7 +11,7 @@
                 <a class="nav-link" href="/">Accueil <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Tricks</a> {# ASK: What is the purpose of this page? #}
+                <a class="nav-link" href="{{ path('create_trick') }}">New trick</a>
             </li>
             {% set connected = false %}
             {% include 'member/navConnection.twig' %}

@@ -1,6 +1,12 @@
 <div class="card col-lg-3 m-3">
-    <img src="{{ trick.mainImage }}" class="card-img-top" alt="image">
-    <div class="card-body">
-        <h5 class="card-title"><a href="{#{{ path('trickShow', [trick.id]) }}#}">{{ trick.title }}</a></h5>
+    <a class="card-img-link" href="{{ path('trick_show_id', {'id': trick.id}) }}">
+        {% if trick.mainImage %}
+            <img src="{{ trick.mainImage }}" class="card-img-top" alt="image">
+        {% else %}
+            <img src="/public/img/no_image.jpg" class="card-img-top" alt="image">
+        {% endif %}
+    </a>
+    <div class="card-body text-center">
+        <h5 class="card-title"><a href="{{ path('trick_show_id', {'id': trick.id}) }}">{{ trick.name }}</a></h5>
     </div>
 </div>

@@ -1,0 +1,172 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Editeur{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .media-inputs-wrapper {
+
+        }
+    </style>
+{% endblock %}
+
+{% block header %}
+    <header>
+        {% if editMode %}
+            <h1>Modification d'un trick</h1>
+        {% else %}
+            <h1>Création d'un trick de foufou</h1>
+        {% endif %}
+    </header>
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(trickForm) }}
+
+    {{ form_row(trickForm.name, {
+        "label": "Nom",
+        "attr": {
+            "placeholder": "Nom du trick"
+        }
+    }) }}
+
+    {{ form_row(trickForm.description, {
+        "label": "Description",
+        "attr": {
+            "placeholder": "Description"
+        }
+    }) }}
+
+    {{ form_row(trickForm.trickGroups, {
+        "label": "Groupe",
+        "attr": {
+            "placeholder": "Groupe"
+        }
+    }) }}
+
+    {{ form_row(trickForm.mainImage, {
+        "label": "Image principale",
+        "attr": {
+            "placeholder": "Image principale : https://url.de.ma.superbe.image"
+        }
+    }) }}
+
+    <hr>
+
+    <div class="media-inputs-wrapper">
+        <label for="">Images</label>
+        {{ form_widget(trickForm.images) }}
+        <div class="text-center">
+            <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_images')">Ajouter une image</button>
+        </div>
+    </div>
+
+    <div class="media-inputs-wrapper">
+        <label for="">Vidéos</label>
+        {{ form_widget(trickForm.videos) }}
+        <div class="text-center">
+            <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_videos')">Ajouter une vidéo</button>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="text-center my-5">
+        <button type="submit" class="btn btn-success">
+            {% if editMode %}
+                Enregistrer les modifications
+            {% else %}
+                Ajouter le trick
+            {% endif %}
+        </button>
+    </div>
+
+    {{ form_end(trickForm) }}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Add buttons to delete inputs #}
+    <script>
+        var myTrickEditor = {
+
+            addDeleteButtons: function () {
+
+                var imageInputElts = document.querySelectorAll('input[id*="trick_images_"]'),
+                    videoInputElts = document.querySelectorAll('input[id*="trick_videos_"]');
+
+                for (var imageInputElt of imageInputElts) {
+                    myTrickEditor.addADeleteButton(imageInputElt.parentElement, imageInputElt.parentElement.parentElement.parentElement);
+                }
+
+                for (var videoInputElt of videoInputElts) {
+                    myTrickEditor.addADeleteButton(videoInputElt.parentElement, videoInputElt.parentElement.parentElement.parentElement);
+                }
+            },
+
+            addADeleteButton: function (parentElement, targetElement) {
+
+                parentElement.appendChild(buildDeleteButton(targetElement));
+                addBootstrapClasses(parentElement);
+
+                function buildDeleteButton(targetElt) {
+
+                    var btnElt = document.createElement("button"),
+                        spanElt = document.createElement("span");
+
+                    spanElt.setAttribute("aria-hidden", "true");
+                    spanElt.textContent = "×";
+
+                    btnElt.type = "button";
+                    btnElt.classList.add("close");
+                    btnElt.setAttribute("arial-label", "Close");
+
+                    btnElt.appendChild(spanElt);
+
+                    btnElt.addEventListener("click", function () {
+                        myApp.elementTool.removeElement(targetElt);
+                    });
+
+                    return btnElt;
+                }
+
+                function addBootstrapClasses(parentElt) {
+
+                    parentElt.classList.add('d-flex');
+                    parentElt.children[0].classList.add('mr-3');
+                    parentElt.children[1].classList.add('mr-3');
+                }
+            },
+
+            addInput: function (wrapperId) {
+
+                var wrapperElt = document.getElementById(wrapperId),
+                    lastKey = wrapperElt.children.length,
+                    newInputWrapperElt = buildNewInputWrapperElt(wrapperElt.getAttribute("data-prototype"), lastKey);
+
+                wrapperElt.appendChild(newInputWrapperElt);
+
+                var lastInput = getLastInput(wrapperElt, lastKey);
+                myTrickEditor.addADeleteButton(lastInput.parentElement, lastInput.parentElement.parentElement.parentElement);
+
+                function buildNewInputWrapperElt(prototype, lastKey) {
+
+                    var elt = document.createElement('div');
+                    elt.innerHTML = prototype.replace(/__name__/g, lastKey);
+                    return elt.firstElementChild;
+                }
+
+                function getLastInput(wrapperElt, lastKey) {
+
+                    return wrapperElt.children[lastKey].firstElementChild.firstElementChild.firstElementChild;
+                }
+            }
+        };
+
+        myTrickEditor.addDeleteButtons();
+        myTrickEditor.addInput("trick_images");
+        myTrickEditor.addInput("trick_videos");
+    </script>
+{% endblock %}
