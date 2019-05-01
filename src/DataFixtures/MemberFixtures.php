@@ -2,7 +2,9 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Comment;
 use App\Entity\Image;
+use App\Entity\Member;
 use App\Entity\Trick;
 use App\Entity\TrickGroup;
 use App\Entity\Video;
@@ -10,48 +12,97 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
 
-class TrickFixtures extends Fixture
+class MemberFixtures extends Fixture
 {
+    private $faker;
+
+    /**
+     * Generate members along with their tricks and comments
+     *
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
+        $members = [];
         $tricks = [];
         $trickGroups = [];
         $videos = [];
 
+        $numberOfMembers = 20;
         $numberOfTricks = 100;
         $numberOfTrickGroups = 10;
 
-        $faker = Factory::create('fr_FR');
+        $this->faker = Factory::create('fr_FR');
+
+        // Members
+        for ($i = 0; $i < $numberOfMembers; $i++) {
+            $member = new Member();
+
+            $firstName = $this->faker->firstName();
+            $lastName = $this->faker->lastName;
+
+            $member->setName("$firstName $lastName")
+                ->setPassword('$2y$13$qACYre5/bO7y2jW4n8S.m.Es6vjYpz7x8XBhZxBvckcr.VoC5cvqq') // pwdSucks!0
+                ->setEmail($this->faker->email);
+
+            // Picture
+            if (mt_rand(0, 2)) {
+                $picture = $this->newImage(500, 300);
+                $member->setPicture($picture);
+                $manager->persist($picture);
+            }
+            $manager->persist($member);
+            $members[] = $member;
+        }
 
         // Trick groups
         for ($i = 1; $i <= $numberOfTrickGroups; $i++) {
-            $description = "<p>" . implode("</p><p>", $faker->paragraphs(mt_rand(1, 2))) . "</p>";
+            $description = "<p>" . implode("</p><p>", $this->faker->paragraphs(mt_rand(1, 2))) . "</p>";
             $trickGroup = new TrickGroup();
             $trickGroup->setName("Groupe n°$i")
                 ->setDescription("<h2>Description du groupe n°$i</h2>$description");
+            $manager->persist($trickGroup);
             $trickGroups[] = $trickGroup;
         }
 
-
         // Tricks
         for ($i = 1; $i <= $numberOfTricks; $i++) {
-            $description = "<p>" . implode("</p><p>", $faker->paragraphs(mt_rand(3, 5))) . "</p>";
+            $description = $this->generateParagraphs(3, 5);
             $imageWidth = 1024;
             $imageHeight = 768;
 
             $trick = new Trick();
             $trick->setName("trick $i")
                 ->setDescription("<h2>description $i</h2>$description")
-                ->setCreatedAt($faker->dateTimeThisYear())
-                ->setMainImage($faker->imageUrl($imageWidth, $imageHeight));
+                ->setCreatedAt($this->faker->dateTimeThisYear())
+                ->setMainImage($this->faker->imageUrl($imageWidth, $imageHeight));
+
             // Images
             for ($j = 0, $size = rand(0, 10); $j < $size; $j++) {
-                $image = new Image();
-                $image->setUrl($faker->imageUrl($imageWidth, $imageHeight));
+                $image = self::newImage($imageWidth, $imageHeight);
                 $trick->addImage($image);
                 $image->setTrick($trick);
                 $manager->persist($image);
             }
+
+            // Author
+            $trick->setAuthor($members[
+                mt_rand(0, $numberOfMembers - 1)
+            ]);
+
+            // Comments
+            for ($j = 0, $size = rand(0, 20); $j < $size; $j++) {
+                $comment = new Comment();
+                $comment->setAuthor($members[
+                    mt_rand(0, $numberOfMembers - 1)
+                ])
+                    ->setCreatedAt($this->faker->dateTimeThisYear())
+                    ->setTrick($trick)
+                    ->setContent($this->generateParagraphs(1, 3));
+                $trick->addComment($comment);
+                $manager->persist($comment);
+            }
+
             $tricks[] = $trick;
         }
 
@@ -96,5 +147,17 @@ class TrickFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+
+    private function newImage(int $imageWidth, int $imageHeight): Image
+    {
+        $image = new Image();
+        $image->setUrl($this->faker->imageUrl($imageWidth, $imageHeight));
+        return $image;
+    }
+
+    private function generateParagraphs($min = 1, $max = 1): string
+    {
+        return "<p>" . implode("</p><p>", $this->faker->paragraphs(mt_rand($min, $max))) . "</p>";
     }
 }

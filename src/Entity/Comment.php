@@ -39,7 +39,7 @@ class Comment
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isSeenByModerator;
+    private $isSeenByModerator = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="comments")
@@ -76,6 +76,21 @@ class Comment
         return $this;
     }
 
+    /**
+     * Set created time to now
+     *
+     * @ORM\PrePersist
+     *
+     * @return Comment
+     * @throws \Exception
+     */
+    public function setCreatedAtToNow(): self
+    {
+        $this->createdAt = new \DateTime();
+
+        return $this;
+    }
+
     public function getModifiedAt(): ?\DateTimeInterface
     {
         return $this->modifiedAt;
@@ -84,6 +99,21 @@ class Comment
     public function setModifiedAt(?\DateTimeInterface $modifiedAt): self
     {
         $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    /**
+     * Set modified time to now
+     *
+     * @ORM\PreUpdate
+     *
+     * @return Comment
+     * @throws \Exception
+     */
+    public function setModifiedAtToNow(): self
+    {
+        $this->modifiedAt = new \DateTime();
 
         return $this;
     }

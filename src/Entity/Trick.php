@@ -67,6 +67,11 @@ class Trick
      */
     private $comments;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Member", inversedBy="tricks")
+     */
+    private $author;
+
     public function __construct()
     {
         $this->trickGroups = new ArrayCollection();
@@ -287,6 +292,18 @@ class Trick
                 $comment->setTrick(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?Member
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?Member $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }
