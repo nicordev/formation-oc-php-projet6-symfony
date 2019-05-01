@@ -1,13 +1,16 @@
-<div id="comments">
+<div class="comments">
     {% for comment in comments %}
-        <div class="comment">
-            <div class="comment-author">
+        <div class="comment row">
+            <div class="comment-author col-2">
                 <div class="comment-author-picture">
                     <img src="{{ comment.getAuthor().picture.url ?? constant("App\\Entity\\Member::DEFAULT_PICTURE_URL") }}" alt="Photo de {{ comment.getAuthor().name }}">
                 </div>
                 <div class="comment-author-name">{{ comment.getAuthor().name }}</div>
             </div>
-            <div class="comment-content">{{ comment.content|striptags("<p><br><ul><li><strong><em>")|raw }}</div>
+            <div class="col-10">
+                <div class="comment-meta">{{ comment.createdAt|date('d/m/Y h:m') }}</div>
+                <div class="comment-content">{{ comment.content|striptags("<p><br><ul><li><strong><em>")|raw }}</div>
+            </div>
         </div>
     {% endfor %}
 </div>

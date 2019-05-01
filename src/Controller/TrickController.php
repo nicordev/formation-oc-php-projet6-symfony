@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Trick;
+use App\Form\CommentType;
 use App\Form\TrickType;
 use App\Repository\CommentRepository;
 use App\Repository\MemberRepository;
@@ -19,16 +21,37 @@ class TrickController extends AbstractController
      *
      * @Route("/trick/{id}/{commentsPage}", name="trick_show_id", requirements={"id": "\d+"})
      *
+     * @param Request $request
+     * @param ObjectManager $objectManager
      * @param Trick $trick
+     * @param CommentRepository $commentRepository
+     * @param MemberRepository $memberRepository
+     * @param Paginator $commentsPaginator
+     * @param int $commentsPage
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function show(
+        Request $request,
+        ObjectManager $objectManager,
         Trick $trick,
         CommentRepository $commentRepository,
         MemberRepository $memberRepository,
         Paginator $commentsPaginator,
         int $commentsPage = 1)
     {
+        // Add a new comment
+
+        $newComment = new Comment();
+        $commentForm = $this->createForm(CommentType::class, $newComment);
+        $commentForm->handleRequest($request);
+
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $objectManager->persist($newComment);
+            $objectManager->flush();
+        }
+
+        // Existing comments
+
         $commentsCount = $commentRepository->count(["trick" => $trick]);
         $commentsPaginator->update(
             $commentsPage,
@@ -50,7 +73,8 @@ class TrickController extends AbstractController
         return $this->render('trick/trick.html.twig', [
             'trick' => $trick,
             'comments' => $comments,
-            'commentsPaginator' => $commentsPaginator
+            'commentsPaginator' => $commentsPaginator,
+            'commentForm' => $commentForm->createView()
         ]);
     }
 

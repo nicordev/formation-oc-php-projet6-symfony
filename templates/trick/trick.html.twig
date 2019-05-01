@@ -98,8 +98,9 @@
 
     <hr>
     {# Comments #}
-    <div class="trick-comments">
-        {# TODO: insert comments and new comment form #}
+    <div id="trick-comments">
+        {% include "trick/comment/commentForm.html.twig" %}
+        <hr>
         {% include "trick/comment/comment.html.twig" %}
     </div>
 {% endblock %}
