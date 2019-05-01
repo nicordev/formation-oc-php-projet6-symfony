@@ -49,6 +49,7 @@ class MemberFixtures extends Fixture
             if (mt_rand(0, 2)) {
                 $picture = $this->newImage(500, 300);
                 $member->setPicture($picture);
+                $picture->setMember($member);
                 $manager->persist($picture);
             }
             $manager->persist($member);

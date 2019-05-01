@@ -1,0 +1,13 @@
+<div id="comments">
+    {% for comment in comments %}
+        <div class="comment">
+            <div class="comment-author">
+                <div class="comment-author-picture">
+                    <img src="{{ comment.getAuthor().picture.url ?? constant("App\\Entity\\Member::DEFAULT_PICTURE_URL") }}" alt="Photo de {{ comment.getAuthor().name }}">
+                </div>
+                <div class="comment-author-name">{{ comment.getAuthor().name }}</div>
+            </div>
+            <div class="comment-content">{{ comment.content|striptags("<p><br><ul><li><strong><em>")|raw }}</div>
+        </div>
+    {% endfor %}
+</div>

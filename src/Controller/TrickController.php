@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Trick;
 use App\Form\TrickType;
+use App\Repository\CommentRepository;
+use App\Repository\MemberRepository;
+use App\Service\Paginator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,15 +17,40 @@ class TrickController extends AbstractController
     /**
      * Show a trick
      *
-     * @Route("/trick/{id}", name="trick_show_id", requirements={"id": "\d+"})
+     * @Route("/trick/{id}/{commentsPage}", name="trick_show_id", requirements={"id": "\d+"})
      *
      * @param Trick $trick
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function show(Trick $trick)
+    public function show(
+        Trick $trick,
+        CommentRepository $commentRepository,
+        MemberRepository $memberRepository,
+        Paginator $commentsPaginator,
+        int $commentsPage = 1)
     {
+        $commentsCount = $commentRepository->count(["trick" => $trick]);
+        $commentsPaginator->update(
+            $commentsPage,
+            3,
+            $commentsCount
+        );
+
+        $comments = $commentRepository->findBy(
+            ["trick" => $trick],
+            ["createdAt" => "DESC"],
+            $commentsPaginator->itemsPerPage,
+            $commentsPaginator->pagingOffset
+        );
+
+        foreach ($comments as $comment) {
+            $comment->setAuthor($memberRepository->findOneBy(["id" => $comment->getAuthor()->getId()]));
+        }
+
         return $this->render('trick/trick.html.twig', [
-            'trick' => $trick
+            'trick' => $trick,
+            'comments' => $comments,
+            'commentsPaginator' => $commentsPaginator
         ]);
     }
 
