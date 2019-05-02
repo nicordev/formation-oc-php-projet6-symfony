@@ -1,9 +1,13 @@
 <div class="comments">
+
+    {# Comments count#}
     {% if commentsPaginator.itemsCount > 1 %}
         <p id="comments-count">{{ commentsPaginator.itemsCount }} commentaires</p>
     {% else %}
         <p id="comments-count">{{ commentsPaginator.itemsCount }} commentaire</p>
     {% endif %}
+
+    {# Comments #}
     {% for comment in comments %}
         <div class="comment">
             <div class="comment-author">
@@ -18,4 +22,23 @@
             </div>
         </div>
     {% endfor %}
+
+    {# Pagination links #}
+    {% if commentsPaginator.pagesCount > 1 %}
+        <div class="comments-pagination">
+            {% if commentsPaginator.currentPage > 1 %}
+                <div class="comments-pagination-part">
+                    <a class="btn btn-secondary" href="{{ path("trick_show_id", {"id": trick.id, "commentsPage": commentsPaginator.currentPage - 1}) }}#trick-comments">🡄</a>
+                </div>
+            {% endif %}
+            {% if commentsPaginator.currentPage < commentsPaginator.pagesCount %}
+                <div class="comments-pagination-part">
+                    <a class="btn btn-secondary" href="{{ path("trick_show_id", {"id": trick.id, "commentsPage": commentsPaginator.currentPage + 1}) }}#trick-comments">🡆</a>
+                </div>
+            {% endif %}
+            <div class="comments-pagination-part">
+                <span class="comments-pagination-pages">{{ commentsPaginator.currentPage }} / {{ commentsPaginator.pagesCount }}</span>
+            </div>
+        </div>
+    {% endif %}
 </div>

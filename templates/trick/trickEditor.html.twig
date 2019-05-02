@@ -12,7 +12,7 @@
 
 {% block header %}
     <header>
-        {% if editMode %}
+        {% if trickId %}
             <h1>Modification d'un trick</h1>
         {% else %}
             <h1>Création d'un trick de foufou</h1>
@@ -21,6 +21,10 @@
 {% endblock %}
 
 {% block body %}
+
+    {% if trickId %}
+        <div><a class="btn btn-primary" href="{{ path("trick_show_id", {"id": trickId}) }}">Annuler</a></div>
+    {% endif %}
 
     {{ form_start(trickForm) }}
 
@@ -74,7 +78,7 @@
 
     <div class="text-center my-5">
         <button type="submit" class="btn btn-success">
-            {% if editMode %}
+            {% if trickId %}
                 Enregistrer les modifications
             {% else %}
                 Ajouter le trick

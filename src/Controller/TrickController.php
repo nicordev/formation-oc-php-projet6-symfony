@@ -16,6 +16,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TrickController extends AbstractController
 {
+    public const COMMENTS_PER_PAGE = 10;
+
+    public const ROUTE_TRICK = "trick_show_id";
+
     /**
      * Show a trick
      *
@@ -37,7 +41,8 @@ class TrickController extends AbstractController
         CommentRepository $commentRepository,
         MemberRepository $memberRepository,
         Paginator $commentsPaginator,
-        int $commentsPage = 1)
+        int $commentsPage = 1
+    )
     {
         // Add a new comment
 
@@ -51,6 +56,13 @@ class TrickController extends AbstractController
                 $newComment->setAuthor($this->getUser());
                 $objectManager->persist($newComment);
                 $objectManager->flush();
+                $this->addFlash(
+                    "notice",
+                    "Votre commentaire a été publié"
+                );
+                $trickUrl = $this->generateUrl(self::ROUTE_TRICK, ["id" => $trick->getId()]);
+
+                return $this->redirect("$trickUrl#trick-comments");
             }
         }
 
@@ -59,7 +71,7 @@ class TrickController extends AbstractController
         $commentsCount = $commentRepository->count(["trick" => $trick]);
         $commentsPaginator->update(
             $commentsPage,
-            3,
+            self::COMMENTS_PER_PAGE,
             $commentsCount
         );
 
@@ -125,7 +137,7 @@ class TrickController extends AbstractController
 
         return $this->render('trick/trickEditor.html.twig', [
             'trickForm' => $form->createView(),
-            'editMode' => $trick->getId() !== null
+            'trickId' => $trick->getId()
         ]);
     }
 
