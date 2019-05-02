@@ -124,27 +124,7 @@ class Member implements UserInterface
         return $this;
     }
 
-    // UserInterface
-
-    public function getUsername()
-    {
-        return $this->getName();
-    }
-
-    public function eraseCredentials()
-    {
-        
-    }
-
-    public function getSalt()
-    {
-        
-    }
-
-    public function getRoles()
-    {
-        return ['ROLE_USER'];
-    }
+    // Comments
 
     /**
      * @return Collection|Comment[]
@@ -177,6 +157,8 @@ class Member implements UserInterface
         return $this;
     }
 
+    // Tricks
+
     /**
      * @return Collection|Trick[]
      */
@@ -206,5 +188,27 @@ class Member implements UserInterface
         }
 
         return $this;
+    }
+
+    // UserInterface
+
+    public function getUsername()
+    {
+        return $this->getName();
+    }
+
+    public function eraseCredentials()
+    {
+        
+    }
+
+    public function getSalt()
+    {
+        
+    }
+
+    public function getRoles()
+    {
+        return ['ROLE_USER'];
     }
 }

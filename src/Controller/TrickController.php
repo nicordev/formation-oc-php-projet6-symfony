@@ -41,14 +41,17 @@ class TrickController extends AbstractController
     {
         // Add a new comment
 
-        $newComment = new Comment();
-        $commentForm = $this->createForm(CommentType::class, $newComment);
-        $commentForm->handleRequest($request);
+        if ($this->getUser() && !empty($this->getUser()->getRoles())) {
+            $newComment = new Comment();
+            $commentForm = $this->createForm(CommentType::class, $newComment);
+            $commentForm->handleRequest($request);
 
-        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
-            $newComment->setTrick($trick);
-            $objectManager->persist($newComment);
-            $objectManager->flush();
+            if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+                $newComment->setTrick($trick);
+                $newComment->setAuthor($this->getUser());
+                $objectManager->persist($newComment);
+                $objectManager->flush();
+            }
         }
 
         // Existing comments
@@ -77,7 +80,7 @@ class TrickController extends AbstractController
             'trick' => $trick,
             'comments' => $comments,
             'commentsPaginator' => $commentsPaginator,
-            'commentForm' => $commentForm->createView()
+            'commentForm' => isset($commentForm) ? $commentForm->createView() : null
         ]);
     }
 

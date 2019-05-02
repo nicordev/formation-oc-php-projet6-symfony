@@ -23,8 +23,6 @@ class MemberController extends AbstractController
 
         $registrationForm->handleRequest($request);
 
-        $registrationForm->isValid();
-
         if ($registrationForm->isSubmitted() && $registrationForm->isValid()) {
             $hash = $encoder->encodePassword($newMember, $newMember->getPassword());
             $newMember->setPassword($hash);
