@@ -1,17 +1,17 @@
 
-<div id="comment-form">
+<div class="comment-form">
     {% if is_granted('ROLE_USER') %}
         <form action="{{ path("trick_show_id", {'id': trick.id}) }}" method="post">
             {{ form_start(commentForm) }}
 
             {{ form_row(commentForm.content, {
-                "label": "Commentaire",
+                "label": "Ajouter un commentaire",
                 "attr": {
                     "placeholder": "Un petit mot ?"
                 }
             }) }}
 
-            <button type="submit" class="btn btn-primary">Publier</button>
+            <button type="submit" class="btn btn-primary comment-btn">Publier</button>
 
             {{ form_end(commentForm) }}
         </form>

@@ -1,14 +1,19 @@
 <div class="comments">
+    {% if commentsPaginator.itemsCount > 1 %}
+        <p id="comments-count">{{ commentsPaginator.itemsCount }} commentaires</p>
+    {% else %}
+        <p id="comments-count">{{ commentsPaginator.itemsCount }} commentaire</p>
+    {% endif %}
     {% for comment in comments %}
-        <div class="comment row">
-            <div class="comment-author col-2">
-                <div class="comment-author-picture">
+        <div class="comment">
+            <div class="comment-author">
+                <figure class="comment-author-picture">
                     <img src="{{ comment.getAuthor().picture.url ?? constant("App\\Entity\\Member::DEFAULT_PICTURE_URL") }}" alt="Photo de {{ comment.getAuthor().name ?? "Ancien membre" }}">
-                </div>
-                <div class="comment-author-name">{{ comment.getAuthor().name ?? "Ancien membre" }}</div>
+                    <figcaption class="comment-author-name">{{ comment.getAuthor().name ?? "Ancien membre" }}</figcaption>
+                </figure>
             </div>
-            <div class="col-10">
-                <div class="comment-meta">{{ comment.createdAt|date('d/m/Y h:m') }}</div>
+            <div class="comment-content-wrapper">
+                <div class="comment-meta">{{ comment.createdAt|date('d/m/Y à h:m') }}</div>
                 <div class="comment-content">{{ comment.content|striptags("<p><br><ul><li><strong><em>")|raw }}</div>
             </div>
         </div>

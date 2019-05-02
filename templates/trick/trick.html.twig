@@ -10,6 +10,41 @@
             color: rgb(44, 62, 80);
         }
 
+        .comment {
+            border-bottom: 1px solid darkcyan;
+            margin: 25px 0;
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 1fr 9fr;
+            grid-column-gap: 20px;
+        }
+
+        .comment-author {
+            font-family: 'Love Ya Like A Sister', cursive;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .comment-author-name {
+            margin-top: 5px;
+        }
+
+        .comment-author-picture img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .comment-meta {
+            font-size: 0.8em;
+            color: rgb(42, 96, 150);
+        }
+
+        .comment-form form {
+            display: grid;
+            grid-template-columns: 9fr 1fr;
+            grid-column-gap: 20px;
+        }
+
         .trick-header {
             min-height: 500px;
             {% if trick.mainImage %}
@@ -38,6 +73,23 @@
 
         #trick-title {
             padding: 50px 20px;
+        }
+
+        @media all and (max-width: 576px) {
+            .comment {
+                grid-template-columns: 1fr;
+                grid-template-rows: 25% 75%;
+                grid-column-gap: 0;
+                grid-row-gap: 0;
+                padding: 10px;
+            }
+
+            .comment-form form {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 50px;
+                grid-column-gap: 0;
+                grid-row-gap: 0;
+            }
         }
     </style>
 {% endblock %}
