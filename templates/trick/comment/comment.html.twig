@@ -18,6 +18,10 @@
             </div>
             <div class="comment-content-wrapper">
                 <div class="comment-meta">{{ comment.createdAt|date('d/m/Y à h:m') }}</div>
+                <div class="comment-tools-wrapper">
+                    <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a>
+                    <a class="command" href="{{ path("delete_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}">🗑</a>
+                </div>
                 <div class="comment-content">{{ comment.content|striptags("<p><br><ul><li><strong><em>")|raw }}</div>
             </div>
         </div>

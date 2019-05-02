@@ -60,9 +60,8 @@ class TrickController extends AbstractController
                     "notice",
                     "Votre commentaire a été publié"
                 );
-                $trickUrl = $this->generateUrl(self::ROUTE_TRICK, ["id" => $trick->getId()]);
 
-                return $this->redirect("$trickUrl#trick-comments");
+                return $this->redirectToTrickRoute($trick->getId(), $commentsPage, "#trick-comments");
             }
         }
 
@@ -164,5 +163,42 @@ class TrickController extends AbstractController
         $homeUrl = $this->generateUrl("home");
 
         return $this->redirect("$homeUrl#main-content");
+    }
+
+    /**
+     * Delete a comment
+     *
+     * @Route("/delete-comment/{id}/{commentsPage}", name="delete_comment", requirements={"id": "\d+"})
+     *
+     * @param ObjectManager $manager
+     * @param Comment $comment
+     * @param int $commentsPage
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteComment(ObjectManager $manager, Comment $comment, int $commentsPage = 1)
+    {
+        $manager->remove($comment);
+        $manager->flush();
+
+        $this->addFlash("notice", "Le commentaire de {$comment->getAuthor()->getName()} a été supprimé");
+
+        return $this->redirectToTrickRoute($comment->getTrick()->getId(), $commentsPage, "#trick-comments");
+    }
+
+    // Private
+
+    /**
+     * Redirect to the trick page
+     *
+     * @param int $trickId
+     * @param int $commentPage
+     * @param string $urlComplements
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    private function redirectToTrickRoute(int $trickId, int $commentPage = 1, string $urlComplements = "")
+    {
+        $trickUrl = $this->generateUrl(self::ROUTE_TRICK, ["id" => $trickId, "commentsPage" => $commentPage]);
+
+        return $this->redirect("{$trickUrl}{$urlComplements}");
     }
 }
