@@ -3,9 +3,9 @@
         <div class="comment row">
             <div class="comment-author col-2">
                 <div class="comment-author-picture">
-                    <img src="{{ comment.getAuthor().picture.url ?? constant("App\\Entity\\Member::DEFAULT_PICTURE_URL") }}" alt="Photo de {{ comment.getAuthor().name }}">
+                    <img src="{{ comment.getAuthor().picture.url ?? constant("App\\Entity\\Member::DEFAULT_PICTURE_URL") }}" alt="Photo de {{ comment.getAuthor().name ?? "Ancien membre" }}">
                 </div>
-                <div class="comment-author-name">{{ comment.getAuthor().name }}</div>
+                <div class="comment-author-name">{{ comment.getAuthor().name ?? "Ancien membre" }}</div>
             </div>
             <div class="col-10">
                 <div class="comment-meta">{{ comment.createdAt|date('d/m/Y h:m') }}</div>

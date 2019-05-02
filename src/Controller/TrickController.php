@@ -46,6 +46,7 @@ class TrickController extends AbstractController
         $commentForm->handleRequest($request);
 
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $newComment->setTrick($trick);
             $objectManager->persist($newComment);
             $objectManager->flush();
         }
@@ -67,7 +68,9 @@ class TrickController extends AbstractController
         );
 
         foreach ($comments as $comment) {
-            $comment->setAuthor($memberRepository->findOneBy(["id" => $comment->getAuthor()->getId()]));
+            if ($comment->getAuthor()) {
+                $comment->setAuthor($memberRepository->findOneBy(["id" => $comment->getAuthor()->getId()]));
+            }
         }
 
         return $this->render('trick/trick.html.twig', [
