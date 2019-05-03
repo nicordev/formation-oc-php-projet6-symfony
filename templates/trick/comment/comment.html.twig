@@ -32,12 +32,12 @@
         <div class="comments-pagination">
             {% if commentsPaginator.currentPage > 1 %}
                 <div class="comments-pagination-part">
-                    <a class="btn btn-secondary" href="{{ path("trick_show_id", {"id": trick.id, "commentsPage": commentsPaginator.currentPage - 1}) }}#trick-comments">🡄</a>
+                    <a class="btn btn-secondary" href="{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage - 1}) }}#trick-comments">🡄</a>
                 </div>
             {% endif %}
             {% if commentsPaginator.currentPage < commentsPaginator.pagesCount %}
                 <div class="comments-pagination-part">
-                    <a class="btn btn-secondary" href="{{ path("trick_show_id", {"id": trick.id, "commentsPage": commentsPaginator.currentPage + 1}) }}#trick-comments">🡆</a>
+                    <a class="btn btn-secondary" href="{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage + 1}) }}#trick-comments">🡆</a>
                 </div>
             {% endif %}
             <div class="comments-pagination-part">

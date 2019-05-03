@@ -16,17 +16,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TrickController extends AbstractController
 {
-    public const COMMENTS_PER_PAGE = 10;
+    public const COMMENTS_PER_PAGE = 5;
 
-    public const ROUTE_TRICK = "trick_show_id";
+    public const ROUTE_TRICK = "trick_show";
 
     /**
      * Show a trick
      *
-     * @Route("/trick/{id}/{commentsPage}", name="trick_show_id", requirements={"id": "\d+"})
+     * @Route("/trick/{id}/comments-page/{commentsPage}", name="trick_show", requirements={"id": "\d+"})
      *
-     * @param Request $request
-     * @param ObjectManager $objectManager
      * @param Trick $trick
      * @param CommentRepository $commentRepository
      * @param MemberRepository $memberRepository
@@ -35,57 +33,29 @@ class TrickController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function show(
-        Request $request,
-        ObjectManager $objectManager,
         Trick $trick,
         CommentRepository $commentRepository,
         MemberRepository $memberRepository,
         Paginator $commentsPaginator,
-        int $commentsPage = 1
+        ?int $commentsPage = null
     )
     {
-        // Add a new comment
+        // Add a new comment form
 
         if ($this->getUser() && !empty($this->getUser()->getRoles())) {
             $newComment = new Comment();
             $commentForm = $this->createForm(CommentType::class, $newComment);
-            $commentForm->handleRequest($request);
-
-            if ($commentForm->isSubmitted() && $commentForm->isValid()) {
-                $newComment->setTrick($trick);
-                $newComment->setAuthor($this->getUser());
-                $objectManager->persist($newComment);
-                $objectManager->flush();
-                $this->addFlash(
-                    "notice",
-                    "Votre commentaire a été publié"
-                );
-
-                return $this->redirectToTrickRoute($trick->getId(), $commentsPage, "#trick-comments");
-            }
         }
 
         // Existing comments
 
-        $commentsCount = $commentRepository->count(["trick" => $trick]);
-        $commentsPaginator->update(
-            $commentsPage,
-            self::COMMENTS_PER_PAGE,
-            $commentsCount
+        $comments = $this->getComments(
+            $commentRepository,
+            $memberRepository,
+            $commentsPaginator,
+            $trick,
+            $commentsPage ?? 1
         );
-
-        $comments = $commentRepository->findBy(
-            ["trick" => $trick],
-            ["createdAt" => "DESC"],
-            $commentsPaginator->itemsPerPage,
-            $commentsPaginator->pagingOffset
-        );
-
-        foreach ($comments as $comment) {
-            if ($comment->getAuthor()) {
-                $comment->setAuthor($memberRepository->findOneBy(["id" => $comment->getAuthor()->getId()]));
-            }
-        }
 
         return $this->render('trick/trick.html.twig', [
             'trick' => $trick,
@@ -131,7 +101,7 @@ class TrickController extends AbstractController
                 );
             }
 
-            return $this->redirectToRoute("trick_show_id", ['id' => $trick->getId()]);
+            return $this->redirectToRoute("trick_show", ['id' => $trick->getId()]);
         }
 
         return $this->render('trick/trickEditor.html.twig', [
@@ -165,6 +135,68 @@ class TrickController extends AbstractController
         return $this->redirect("$homeUrl#main-content");
     }
 
+    // Comments
+
+    /**
+     * Add a comment
+     *
+     * @Route("/trick/{id}/add-comment", name="trick_add_comment", requirements={"id": "\d+"})
+     *
+     * @param Request $request
+     * @param ObjectManager $objectManager
+     * @param Trick $trick
+     * @param CommentRepository $commentRepository
+     * @param MemberRepository $memberRepository
+     * @param Paginator $commentsPaginator
+     * @return bool|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function addComment(
+        Request $request,
+        ObjectManager $objectManager,
+        Trick $trick,
+        CommentRepository $commentRepository,
+        MemberRepository $memberRepository,
+        Paginator $commentsPaginator
+    )
+    {
+        $this->denyAccessUnlessGranted("ROLE_USER");
+
+        $newComment = new Comment();
+        $commentForm = $this->createForm(CommentType::class, $newComment);
+        $commentForm->handleRequest($request);
+
+        // Save comment in database
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $newComment->setTrick($trick);
+            $newComment->setAuthor($this->getUser());
+            $objectManager->persist($newComment);
+            $objectManager->flush();
+            $this->addFlash(
+                "notice",
+                "Votre commentaire a été publié"
+            );
+
+            return $this->redirectToTrickRoute($trick->getId(), 1, "#trick-comments");
+        }
+
+        // Existing comments
+
+        $comments = $this->getComments(
+            $commentRepository,
+            $memberRepository,
+            $commentsPaginator,
+            $trick,
+            1
+        );
+
+        return $this->render('trick/trick.html.twig', [
+            'trick' => $trick,
+            'comments' => $comments,
+            'commentsPaginator' => $commentsPaginator,
+            'commentForm' => $commentForm->createView()
+        ]);
+    }
+
     /**
      * Delete a comment
      *
@@ -183,6 +215,49 @@ class TrickController extends AbstractController
         $this->addFlash("notice", "Le commentaire de {$comment->getAuthor()->getName()} a été supprimé");
 
         return $this->redirectToTrickRoute($comment->getTrick()->getId(), $commentsPage, "#trick-comments");
+    }
+
+    // Helpers
+
+    /**
+     * Get trick comments by pages
+     *
+     * @param CommentRepository $commentRepository
+     * @param MemberRepository $memberRepository
+     * @param Paginator $commentsPaginator
+     * @param Trick $trick
+     * @param int|null $commentsPage
+     * @return array
+     */
+    public function getComments(
+        CommentRepository $commentRepository,
+        MemberRepository $memberRepository,
+        Paginator $commentsPaginator,
+        Trick $trick,
+        ?int $commentsPage = null
+    ): array
+    {
+        $commentsCount = $commentRepository->count(["trick" => $trick]);
+        $commentsPaginator->update(
+            $commentsPage ?? 1,
+            TrickController::COMMENTS_PER_PAGE,
+            $commentsCount
+        );
+
+        $comments = $commentRepository->findBy(
+            ["trick" => $trick],
+            ["createdAt" => "DESC"],
+            $commentsPaginator->itemsPerPage,
+            $commentsPaginator->pagingOffset
+        );
+
+        foreach ($comments as $comment) {
+            if ($comment->getAuthor()) {
+                $comment->setAuthor($memberRepository->findOneBy(["id" => $comment->getAuthor()->getId()]));
+            }
+        }
+
+        return $comments;
     }
 
     // Private

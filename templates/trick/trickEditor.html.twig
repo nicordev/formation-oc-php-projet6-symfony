@@ -23,7 +23,7 @@
 {% block body %}
 
     {% if trickId %}
-        <div><a class="btn btn-primary" href="{{ path("trick_show_id", {"id": trickId}) }}">Annuler</a></div>
+        <div><a class="btn btn-primary" href="{{ path("trick_show", {"id": trickId}) }}">Annuler</a></div>
     {% endif %}
 
     {{ form_start(trickForm) }}

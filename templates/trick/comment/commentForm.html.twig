@@ -1,7 +1,7 @@
 
 <div class="comment-form">
     {% if is_granted('ROLE_USER') %}
-        <form action="{{ path("trick_show_id", {'id': trick.id}) }}" method="post">
+        <form action="{{ path("trick_add_comment", {'id': trick.id}) }}" method="post">
             {{ form_start(commentForm) }}
 
             {{ form_row(commentForm.content, {
