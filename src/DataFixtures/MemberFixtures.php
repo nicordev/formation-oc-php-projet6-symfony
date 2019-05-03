@@ -43,7 +43,28 @@ class MemberFixtures extends Fixture
 
             $member->setName("$firstName $lastName")
                 ->setPassword('$2y$13$qACYre5/bO7y2jW4n8S.m.Es6vjYpz7x8XBhZxBvckcr.VoC5cvqq') // pwdSucks!0
-                ->setEmail($this->faker->email);
+                ->setEmail($this->faker->email)
+                ->setRoles([Member::ROLE_USER]);
+
+            if ($i <= 3) {
+                if ($i === 0 || $i === 1) {
+                    $member->setEmail("moderator@snow.com");
+                    $member->addRole(Member::ROLE_MODERATOR);
+                }
+
+                if ($i === 0 || $i === 2) {
+                    $member->setEmail("editor@snow.com");
+                    $member->addRole(Member::ROLE_EDITOR);
+                }
+                if ($i === 0 || $i === 3) {
+                    $member->setEmail("admin@snow.com");
+                    $member->addRole(Member::ROLE_ADMIN);
+                }
+
+                if ($i === 0) {
+                    $member->setEmail("god@snow.com");
+                }
+            }
 
             // Picture
             if (mt_rand(0, 2)) {

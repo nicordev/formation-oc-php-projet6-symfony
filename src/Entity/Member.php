@@ -63,6 +63,16 @@ class Member implements UserInterface
      */
     private $tricks;
 
+    /**
+     * @ORM\Column(type="simple_array")
+     */
+    private $roles;
+
+    public const ROLE_USER = "ROLE_USER";
+    public const ROLE_MODERATOR = "ROLE_MODERATOR";
+    public const ROLE_EDITOR = "ROLE_EDITOR";
+    public const ROLE_ADMIN = "ROLE_ADMIN";
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -207,8 +217,22 @@ class Member implements UserInterface
         
     }
 
-    public function getRoles()
+    public function getRoles(): ?array
     {
-        return ['ROLE_USER'];
+        return $this->roles;
+    }
+
+    // Roles
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function addRole(string $role)
+    {
+        $this->roles[] = $role;
     }
 }

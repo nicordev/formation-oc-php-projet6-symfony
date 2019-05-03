@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Member;
 use App\Entity\Trick;
 use App\Form\CommentType;
 use App\Form\TrickType;
@@ -20,6 +21,8 @@ class TrickController extends AbstractController
     public const COMMENTS_PER_PAGE = 5;
 
     public const ROUTE_TRICK = "trick_show";
+    public const ROUTE_ADD_COMMENT = "trick_add_comment";
+    public const ROUTE_EDIT_COMMENT = "trick_edit_comment";
 
     /**
      * Show a trick
@@ -44,9 +47,13 @@ class TrickController extends AbstractController
     {
         // Add a new comment form
 
-        if ($this->getUser() && !empty($this->getUser()->getRoles())) {
+        if ($this->isGranted(Member::ROLE_USER)) {
             $newComment = new Comment();
-            $commentForm = $this->createForm(CommentType::class, $newComment);
+            $commentForm = $this->createForm(CommentType::class, $newComment, [
+                'action' => $this->generateUrl(self::ROUTE_ADD_COMMENT, [
+                    'id' => $trick->getId()
+                ])
+            ]);
         }
 
         // Existing comments
@@ -81,6 +88,8 @@ class TrickController extends AbstractController
      */
     public function addOrEdit(Request $request, ObjectManager $manager, Trick $trick = null)
     {
+        $this->denyAccessUnlessGranted(Member::ROLE_USER);
+
         $trick = $trick ?? new Trick();
 
         $form = $this->createForm(TrickType::class, $trick);
@@ -161,7 +170,7 @@ class TrickController extends AbstractController
         Paginator $commentsPaginator
     )
     {
-        $this->denyAccessUnlessGranted("ROLE_USER");
+        $this->denyAccessUnlessGranted(Member::ROLE_USER);
 
         $newComment = new Comment();
         $commentForm = $this->createForm(CommentType::class, $newComment);
@@ -223,7 +232,7 @@ class TrickController extends AbstractController
         ?int $commentsPage = null
     )
     {
-        $this->denyAccessUnlessGranted("ROLE_USER");
+        $this->denyAccessUnlessGranted(Member::ROLE_USER);
 
         $editCommentForm = $this->createForm(CommentType::class, $comment);
         $editCommentForm->handleRequest($request);
