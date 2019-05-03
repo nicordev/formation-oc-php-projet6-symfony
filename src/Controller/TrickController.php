@@ -8,6 +8,7 @@ use App\Form\CommentType;
 use App\Form\TrickType;
 use App\Repository\CommentRepository;
 use App\Repository\MemberRepository;
+use App\Service\HtmlKeys;
 use App\Service\Paginator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +25,7 @@ class TrickController extends AbstractController
      * Show a trick
      *
      * @Route("/trick/{id}/comments-page/{commentsPage}", name="trick_show", requirements={"id": "\d+"})
+     * @Route("/trick/{id}", name="trick_show_simple", requirements={"id": "\d+"})
      *
      * @param Trick $trick
      * @param CommentRepository $commentRepository
@@ -66,10 +68,10 @@ class TrickController extends AbstractController
     }
 
     /**
-     * Create or edit a trick
+     * Add or edit a trick
      *
-     * @Route("/create-trick", name="create_trick")
-     * @Route("/edit-trick/{id}", name="edit_trick", requirements={"id": "\d+"})
+     * @Route("/add-trick", name="trick_add")
+     * @Route("/edit-trick/{id}", name="trick_edit", requirements={"id": "\d+"})
      *
      * @param Request $request
      * @param ObjectManager $manager
@@ -77,7 +79,7 @@ class TrickController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function createOrEdit(Request $request, ObjectManager $manager, Trick $trick = null)
+    public function addOrEdit(Request $request, ObjectManager $manager, Trick $trick = null)
     {
         $trick = $trick ?? new Trick();
 
@@ -176,7 +178,7 @@ class TrickController extends AbstractController
                 "Votre commentaire a été publié"
             );
 
-            return $this->redirectToTrickRoute($trick->getId(), 1, "#trick-comments");
+            return $this->redirectToTrickRoute($trick->getId(), 1, HtmlKeys::ID_TRICK_COMMENTS);
         }
 
         // Existing comments
@@ -198,23 +200,83 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Edit a comment
+     *
+     * @Route("/edit-comment/{id}/comments-page/{commentsPage}", name="trick_edit_comment", requirements={"id": "\d+", "commentsPage": "\d+"})
+     *
+     * @param Request $request
+     * @param ObjectManager $manager
+     * @param Comment $comment
+     * @param CommentRepository $commentRepository
+     * @param MemberRepository $memberRepository
+     * @param Paginator $commentsPaginator
+     * @param int|null $commentsPage
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editComment(
+        Request $request,
+        ObjectManager $manager,
+        Comment $comment,
+        CommentRepository $commentRepository,
+        MemberRepository $memberRepository,
+        Paginator $commentsPaginator,
+        ?int $commentsPage = null
+    )
+    {
+        $this->denyAccessUnlessGranted("ROLE_USER");
+
+        $editCommentForm = $this->createForm(CommentType::class, $comment);
+        $editCommentForm->handleRequest($request);
+        $trick = $comment->getTrick();
+
+        if ($editCommentForm->isSubmitted() && $editCommentForm->isValid()) {
+            $manager->persist($comment);
+            $manager->flush();
+            $this->addFlash("notice", "Le commentaire du {$comment->getCreatedAt()->format('d/m/Y H:i')} a été modifié");
+
+            return $this->redirectToTrickRoute($trick->getId(), $commentsPage, HtmlKeys::ID_TRICK_COMMENTS);
+        }
+
+        // Existing comments
+
+        $comments = $this->getComments(
+            $commentRepository,
+            $memberRepository,
+            $commentsPaginator,
+            $comment->getTrick(),
+            $commentsPage
+        );
+
+        $commentForm = $this->createForm(CommentType::class, new Comment());
+
+        return $this->render('trick/trick.html.twig', [
+            'trick' => $trick,
+            'comments' => $comments,
+            'commentsPaginator' => $commentsPaginator,
+            'commentForm' => $commentForm->createView(),
+            'editCommentForm' => $editCommentForm->createView(),
+            'commentToEditId' => $comment->getId()
+        ]);
+    }
+
+    /**
      * Delete a comment
      *
-     * @Route("/delete-comment/{id}/{commentsPage}", name="delete_comment", requirements={"id": "\d+"})
+     * @Route("/delete-comment/{id}/comments-page/{commentsPage}", name="trick_delete_comment", requirements={"id": "\d+", "commentsPage": "\d+"})
      *
      * @param ObjectManager $manager
      * @param Comment $comment
      * @param int $commentsPage
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteComment(ObjectManager $manager, Comment $comment, int $commentsPage = 1)
+    public function deleteComment(ObjectManager $manager, Comment $comment, ?int $commentsPage = null)
     {
         $manager->remove($comment);
         $manager->flush();
 
         $this->addFlash("notice", "Le commentaire de {$comment->getAuthor()->getName()} a été supprimé");
 
-        return $this->redirectToTrickRoute($comment->getTrick()->getId(), $commentsPage, "#trick-comments");
+        return $this->redirectToTrickRoute($comment->getTrick()->getId(), $commentsPage, HtmlKeys::ID_TRICK_COMMENTS);
     }
 
     // Helpers

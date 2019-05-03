@@ -1,20 +1,18 @@
 
 <div class="comment-form">
     {% if is_granted('ROLE_USER') %}
-        <form action="{{ path("trick_add_comment", {'id': trick.id}) }}" method="post">
-            {{ form_start(commentForm) }}
+        {{ form_start(commentForm) }}
 
-            {{ form_row(commentForm.content, {
-                "label": "Ajouter un commentaire",
-                "attr": {
-                    "placeholder": "Un petit mot ?"
-                }
-            }) }}
+        {{ form_row(commentForm.content, {
+            "label": "Ajouter un commentaire",
+            "attr": {
+                "placeholder": "Un petit mot ?"
+            }
+        }) }}
 
-            <button type="submit" class="btn btn-primary comment-btn">Publier</button>
+        <button type="submit" class="btn btn-primary comment-btn">Publier</button>
 
-            {{ form_end(commentForm) }}
-        </form>
+        {{ form_end(commentForm) }}
     {% else %}
         <p><a href="{{ path("login_route") }}">Connectez-vous</a> pour écrire un commentaire.</p>
         <p>Pas encore inscrit ? <a href="{{ path("registration_route") }}">C'est par ici !</a></p>
