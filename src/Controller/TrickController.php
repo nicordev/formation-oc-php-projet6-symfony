@@ -58,8 +58,7 @@ class TrickController extends AbstractController
 
         // Existing comments
 
-        $comments = $this->getComments(
-            $commentRepository,
+        $comments = $commentRepository->getTrickComments(
             $memberRepository,
             $commentsPaginator,
             $trick,
@@ -192,8 +191,7 @@ class TrickController extends AbstractController
 
         // Existing comments
 
-        $comments = $this->getComments(
-            $commentRepository,
+        $comments = $commentRepository->getTrickComments(
             $memberRepository,
             $commentsPaginator,
             $trick,
@@ -248,8 +246,7 @@ class TrickController extends AbstractController
 
         // Existing comments
 
-        $comments = $this->getComments(
-            $commentRepository,
+        $comments = $commentRepository->getTrickComments(
             $memberRepository,
             $commentsPaginator,
             $comment->getTrick(),
@@ -278,7 +275,11 @@ class TrickController extends AbstractController
      * @param int $commentsPage
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteComment(ObjectManager $manager, Comment $comment, ?int $commentsPage = null)
+    public function deleteComment(
+        ObjectManager $manager,
+        Comment $comment,
+        ?int $commentsPage = null
+    )
     {
         $manager->remove($comment);
         $manager->flush();
@@ -286,49 +287,6 @@ class TrickController extends AbstractController
         $this->addFlash("notice", "Le commentaire de {$comment->getAuthor()->getName()} a été supprimé");
 
         return $this->redirectToTrickRoute($comment->getTrick()->getId(), $commentsPage, HtmlKeys::ID_TRICK_COMMENTS);
-    }
-
-    // Helpers
-
-    /**
-     * Get trick comments by pages
-     *
-     * @param CommentRepository $commentRepository
-     * @param MemberRepository $memberRepository
-     * @param Paginator $commentsPaginator
-     * @param Trick $trick
-     * @param int|null $commentsPage
-     * @return array
-     */
-    public function getComments(
-        CommentRepository $commentRepository,
-        MemberRepository $memberRepository,
-        Paginator $commentsPaginator,
-        Trick $trick,
-        ?int $commentsPage = null
-    ): array
-    {
-        $commentsCount = $commentRepository->count(["trick" => $trick]);
-        $commentsPaginator->update(
-            $commentsPage ?? 1,
-            TrickController::COMMENTS_PER_PAGE,
-            $commentsCount
-        );
-
-        $comments = $commentRepository->findBy(
-            ["trick" => $trick],
-            ["createdAt" => "DESC"],
-            $commentsPaginator->itemsPerPage,
-            $commentsPaginator->pagingOffset
-        );
-
-        foreach ($comments as $comment) {
-            if ($comment->getAuthor()) {
-                $comment->setAuthor($memberRepository->findOneBy(["id" => $comment->getAuthor()->getId()]));
-            }
-        }
-
-        return $comments;
     }
 
     // Private

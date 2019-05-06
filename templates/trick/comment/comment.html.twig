@@ -10,6 +10,7 @@
     {# Comments #}
     {% for comment in comments %}
         <div class="comment">
+            {# Author #}
             <div class="comment-author">
                 <figure class="comment-author-picture">
                     <img src="{{ comment.getAuthor().picture.url ?? constant("App\\Entity\\Member::DEFAULT_PICTURE_URL") }}" alt="Photo de {{ comment.getAuthor().name ?? "Ancien membre" }}">
@@ -17,6 +18,7 @@
                 </figure>
             </div>
             <div class="comment-content-wrapper">
+                {# Meta #}
                 <div class="comment-meta">{{ comment.createdAt|date('d/m/Y à h:m') }}</div>
 
                 {# Commands #}

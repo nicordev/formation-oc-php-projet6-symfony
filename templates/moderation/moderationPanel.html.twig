@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modération{% endblock %}
+
+{% block stylesheets %}
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block header %}
+    <header>
+        <h1>Modération</h1>
+    </header>
+{% endblock %}
+
+{% block body %}
+    {% if comments %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Sélection</th>
+                    <th>Status</th>
+                    <th>Auteur</th>
+                    <th>Commentaire</th>
+                    <th>Trick</th>
+                    <th>Date</th>
+                    <th>Commandes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comment in comments %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selected[]">
+                        </td>
+                        <td>
+                            {% if comment.approved %}
+                                <a href="{{ path("moderation_approve_comment", {"id": comment.id, "approved": 0, "page": paginator.currentPage}) }}">Approuvé</a>
+                            {% else %}
+                                <a href="{{ path("moderation_approve_comment", {"id": comment.id, "approved": 1, "page": paginator.currentPage}) }}">En attente</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span>{{ comment.author.name }}</span>
+                        </td>
+                        <td>
+                            <span>{{ comment.content }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ path("trick_show", {"id": comment.trick.id}) }}">{{ comment.trick.name }}</a>
+                        </td>
+                        <td>
+                            <span>{{ comment.createdAt|date('d/m/Y à h:m') }}</span>
+                        </td>
+                        <td class="d-flex">
+                            <a class="command edit-btn" href="{{ path("moderation_edit_comment", {"id": comment.id, "page": paginator.currentPage}) }}">🖉</a>
+                            <a class="command" href="{{ path("moderation_delete_comment", {"id": comment.id, "page": paginator.currentPage}) }}">🗑</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="1">
+                        <input type="checkbox" name="select-all" id="select-all"><label for="select-all">*</label>
+                    </td>
+                    <td colspan="3">
+                        <span>Avec la sélection :</span>
+                    </td>
+                    <td colspan="3">
+                        <div class="d-flex justify-content-between">
+                            <div>{{ paginator.currentPage }}/{{ paginator.pagesCount }}</div>
+                            {% if paginator.currentPage > 1 %}
+                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel", {"page": paginator.currentPage - 1}) }}">🡄</a>
+                            {% endif %}
+                            {% if paginator.currentPage < paginator.pagesCount %}
+                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel", {"page": paginator.currentPage + 1}) }}">🡆</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    {% else %}
+        <p>Il n'y a aucun commentaire.</p>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var moderation = {
+            showEditionForm: function (buttonElt) {
+                console.log(buttonElt);
+                // TODO
+                // WIP
+            }
+        };
+
+        // Event listeners
+        let editBtnElts = document.getElementsByClassName("edit-btn");
+        for (let i = 0, size = editBtnElts.length; i < size; i++) {
+            editBtnElts[i].addEventListener("click", function (event) {
+                event.preventDefault();
+                moderation.showEditionForm(event.target);
+            });
+        }
+    </script>
+{% endblock %}

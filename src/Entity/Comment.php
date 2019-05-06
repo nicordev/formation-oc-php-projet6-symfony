@@ -42,7 +42,7 @@ class Comment
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isSeenByModerator = false;
+    private $approved = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="comments")
@@ -133,14 +133,14 @@ class Comment
         return $this;
     }
 
-    public function getIsSeenByModerator(): ?bool
+    public function getApproved(): ?bool
     {
-        return $this->isSeenByModerator;
+        return $this->approved;
     }
 
-    public function setIsSeenByModerator(bool $isSeenByModerator): self
+    public function setApproved(bool $approved): self
     {
-        $this->isSeenByModerator = $isSeenByModerator;
+        $this->approved = $approved;
 
         return $this;
     }
