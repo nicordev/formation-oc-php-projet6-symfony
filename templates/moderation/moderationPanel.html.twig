@@ -29,6 +29,7 @@
                 </tr>
             </thead>
             <tbody>
+                {% set i = 0 %}
                 {% for comment in comments %}
                     <tr>
                         <td>
@@ -45,7 +46,14 @@
                             <span>{{ comment.author.name }}</span>
                         </td>
                         <td>
-                            <span>{{ comment.content }}</span>
+                            <span id="comment-content-{{ comment.id }}">{{ comment.content }}</span>
+                            <div class="edit-form">
+                                {{ form_start(commentEditForms[i]) }}
+                                {{ form_row(commentEditForms[i].content, {
+                                    "label": "Modifier" }) }}
+                                <button type="submit" class="btn btn-secondary">Modifier</button>
+                                {{ form_end(commentEditForms[i]) }}
+                            </div>
                         </td>
                         <td>
                             <a href="{{ path("trick_show", {"id": comment.trick.id}) }}">{{ comment.trick.name }}</a>
@@ -54,10 +62,11 @@
                             <span>{{ comment.createdAt|date('d/m/Y à h:m') }}</span>
                         </td>
                         <td class="d-flex">
-                            <a class="command edit-btn" href="{{ path("moderation_edit_comment", {"id": comment.id, "page": paginator.currentPage}) }}">🖉</a>
-                            <a class="command" href="{{ path("moderation_delete_comment", {"id": comment.id, "page": paginator.currentPage}) }}">🗑</a>
+                            <button class="btn btn-secondary edit-btn">🖉</button>
+                            <a class="btn btn-secondary" href="{{ path("moderation_delete_comment", {"id": comment.id, "page": paginator.currentPage}) }}">🗑</a>
                         </td>
                     </tr>
+                    {% set i = i + 1 %}
                 {% endfor %}
             </tbody>
             <tfoot>
@@ -91,10 +100,10 @@
     {{ parent() }}
     <script>
         var moderation = {
-            showEditionForm: function (buttonElt) {
-                console.log(buttonElt);
-                // TODO
-                // WIP
+            switchEditionForm: function (buttonElt) {
+                if (buttonElt.classList.contains("d-none")) {
+
+                }
             }
         };
 
@@ -103,7 +112,7 @@
         for (let i = 0, size = editBtnElts.length; i < size; i++) {
             editBtnElts[i].addEventListener("click", function (event) {
                 event.preventDefault();
-                moderation.showEditionForm(event.target);
+                moderation.switchEditionForm(event.target);
             });
         }
     </script>

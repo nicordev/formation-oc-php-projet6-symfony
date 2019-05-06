@@ -17,6 +17,10 @@ class ModerationController extends AbstractController
 {
     public const COMMENTS_PER_PAGE = 25;
 
+    public const ROUTE_MODERATION_PANEL = "moderation_panel";
+    public const ROUTE_EDIT_COMMENT = "moderation_edit_comment";
+    public const ROUTE_DELETE_COMMENT = "moderation_delete_comment";
+
     /**
      * Show moderation panel
      *
@@ -45,9 +49,12 @@ class ModerationController extends AbstractController
             self::COMMENTS_PER_PAGE
         );
 
+        $commentFormsViews = $this->createCommentFormsViews($comments);
+
         return $this->render('moderation/moderationPanel.html.twig', [
             'comments' => $comments,
-            'paginator' => $paginator
+            'paginator' => $paginator,
+            'commentEditForms' => $commentFormsViews
         ]);
     }
 
@@ -139,5 +146,22 @@ class ModerationController extends AbstractController
         }
 
         return $this->redirectToRoute("moderation_panel", ['page' => $page]);
+    }
+
+    private function createCommentFormsViews(array $comments, ?int $page = null)
+    {
+        $commentFormsViews = [];
+
+        foreach ($comments as $comment) {
+            $commentForm = $this->createForm(CommentType::class, $comment, [
+                'action' => $this->generateUrl(self::ROUTE_EDIT_COMMENT, [
+                    'id' => $comment->getId(),
+                    'page' => $page ?? 1
+                ])
+            ]);
+            $commentFormsViews[] = $commentForm->createView();
+        }
+
+        return $commentFormsViews;
     }
 }
