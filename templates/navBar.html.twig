@@ -13,6 +13,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('trick_add') }}">New trick</a>
             </li>
+            {% if is_granted('ROLE_MODERATOR') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('moderation_panel') }}">Modération</a>
+                </li>
+            {% endif %}
             {% set connected = false %}
             {% include 'member/navConnection.twig' %}
         </ul>
