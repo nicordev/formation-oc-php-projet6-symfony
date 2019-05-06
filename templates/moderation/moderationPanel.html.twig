@@ -47,7 +47,7 @@
                         </td>
                         <td>
                             <span id="comment-content-{{ comment.id }}">{{ comment.content }}</span>
-                            <div class="edit-form">
+                            <div class="edit-form d-none" id="edit-form-{{ comment.id }}">
                                 {{ form_start(commentEditForms[i]) }}
                                 {{ form_row(commentEditForms[i].content, {
                                     "label": "Modifier" }) }}
@@ -62,7 +62,7 @@
                             <span>{{ comment.createdAt|date('d/m/Y à h:m') }}</span>
                         </td>
                         <td class="d-flex">
-                            <button class="btn btn-secondary edit-btn">🖉</button>
+                            <button class="btn btn-secondary edit-btn" commentid="{{ comment.id }}">🖉</button>
                             <a class="btn btn-secondary" href="{{ path("moderation_delete_comment", {"id": comment.id, "page": paginator.currentPage}) }}">🗑</a>
                         </td>
                     </tr>
@@ -101,8 +101,16 @@
     <script>
         var moderation = {
             switchEditionForm: function (buttonElt) {
-                if (buttonElt.classList.contains("d-none")) {
+                var commentId = buttonElt.getAttribute("commentid"),
+                    formElt = document.getElementById("edit-form-" + commentId),
+                    contentElt = document.getElementById("comment-content-" + commentId);
 
+                if (formElt.classList.contains("d-none")) {
+                    formElt.classList.remove("d-none");
+                    contentElt.classList.add("d-none");
+                } else {
+                    formElt.classList.add("d-none");
+                    contentElt.classList.remove("d-none");
                 }
             }
         };
