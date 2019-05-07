@@ -87,20 +87,13 @@
 
             addPage: function (htmlPage, before = false) {
 
-                var wrapperElt = document.createElement("div"),
-                    trickListElt = document.getElementById("trick-list");
-
-                wrapperElt.innerHTML = htmlPage;
+                var trickListElt = document.getElementById("trick-list");
 
                 if (before) {
-                    for (let trickElt of wrapperElt.children) {
-                        trickListElt.insertBefore(trickElt, trickListElt.firstElementChild);
-                    }
+                    trickListElt.innerHTML = htmlPage + trickListElt.innerHTML;
 
                 } else {
-                    for (let trickElt of wrapperElt.children) {
-                        trickListElt.appendChild(trickElt);
-                    }
+                    trickListElt.innerHTML += htmlPage;
                 }
             }
         };
