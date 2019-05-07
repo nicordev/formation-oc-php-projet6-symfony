@@ -48,19 +48,19 @@
 
     {# Pagination links #}
     {% if commentsPaginator.pagesCount > 1 %}
-        <div class="comments-pagination">
+        <div class="paging">
             {% if commentsPaginator.currentPage > 1 %}
-                <div class="comments-pagination-part">
+                <div class="paging-part">
                     <a class="btn btn-secondary" href="{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage - 1}) }}#trick-comments">🡄</a>
                 </div>
             {% endif %}
             {% if commentsPaginator.currentPage < commentsPaginator.pagesCount %}
-                <div class="comments-pagination-part">
+                <div class="paging-part">
                     <a class="btn btn-secondary" href="{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage + 1}) }}#trick-comments">🡆</a>
                 </div>
             {% endif %}
-            <div class="comments-pagination-part">
-                <span class="comments-pagination-pages">{{ commentsPaginator.currentPage }} / {{ commentsPaginator.pagesCount }}</span>
+            <div class="paging-part">
+                <span class="paging-pages">{{ commentsPaginator.currentPage }} / {{ commentsPaginator.pagesCount }}</span>
             </div>
         </div>
     {% endif %}

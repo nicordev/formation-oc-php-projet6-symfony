@@ -3,66 +3,13 @@
 {% block title %}{{ trick.name }}{% endblock %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="/css/paging.css">
+    <link rel="stylesheet" href="/css/comment.css">
     <style>
         h1 {
             font-family: 'Love Ya Like A Sister', cursive;
             text-align: center;
             color: rgb(44, 62, 80);
-        }
-
-        .comment {
-            border-bottom: 1px solid darkcyan;
-            margin: 25px 0;
-            padding: 25px;
-            display: grid;
-            grid-template-columns: 1fr 9fr;
-            grid-column-gap: 20px;
-        }
-
-        .comment-author {
-            font-family: 'Love Ya Like A Sister', cursive;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .comment-author-name {
-            margin-top: 5px;
-        }
-
-        .comment-author-picture img {
-            max-width: 100px;
-            max-height: 100px;
-        }
-
-        .comment-meta {
-            font-size: 0.8em;
-            color: rgb(42, 96, 150);
-        }
-
-        .comment-form form {
-            display: grid;
-            grid-template-columns: 9fr 1fr;
-            grid-column-gap: 20px;
-        }
-
-        .comments-pagination {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-column-gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .comments-pagination-part {
-            text-align: center;
-        }
-
-        .comments-pagination-pages {
-            position: relative;
-            top: 4px;
-        }
-
-        .comment-tools-wrapper {
-            display: flex;
         }
 
         .trick-header {
@@ -93,23 +40,6 @@
 
         #trick-title {
             padding: 50px 20px;
-        }
-
-        @media all and (max-width: 576px) {
-            .comment {
-                grid-template-columns: 1fr;
-                grid-template-rows: 25% 75%;
-                grid-column-gap: 0;
-                grid-row-gap: 0;
-                padding: 10px;
-            }
-
-            .comment-form form {
-                grid-template-columns: 1fr;
-                grid-template-rows: 1fr 50px;
-                grid-column-gap: 0;
-                grid-row-gap: 0;
-            }
         }
     </style>
 {% endblock %}
@@ -175,4 +105,25 @@
         <hr>
         {% include "trick/comment/comment.html.twig" %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Markdown #}
+    <script src="/js/marked.js"></script>
+    <script>
+        var markdownConverter = {
+            convertContent: function (element) {
+                element.innerHTML = marked(element.textContent);
+            }
+        };
+
+        (function () {
+            var commentElts = document.getElementsByClassName("comment-content");
+
+            for (let i = 0, size = commentElts.length; i < size; i++) {
+                markdownConverter.convertContent(commentElts[i]);
+            }
+        })();
+    </script>
 {% endblock %}
