@@ -105,8 +105,9 @@
             }
         };
 
-        var initialPage = {{ paginator.currentPage }},
-            previousPage = initialPage - 1 < 1 ? 1 : initialPage - 1,
+        var pagesCount = {{ paginator.pagesCount }},
+            initialPage = {{ paginator.currentPage }},
+            previousPage = initialPage - 1,
             nextPage = initialPage + 1,
             previousPageBtnElt = document.getElementById("home-previous-page-btn"),
             nextPageBtnElt = document.getElementById("home-next-page-btn");
@@ -115,7 +116,11 @@
             previousPageBtnElt.addEventListener("click", (event) => {
                 event.preventDefault();
                 homePaging.getPage(previousPage, true);
-                previousPage - 1 < 1 ? previousPage = 1 : previousPage--; // TODO: avoid getting the first page more than once
+                previousPage--;
+                if (previousPage < 1) {
+                    // Remove previous page button
+                    document.getElementById("home-previous-page-btn").parentElement.remove();
+                }
             });
         }
 
@@ -124,6 +129,10 @@
                 event.preventDefault();
                 homePaging.getPage(nextPage, false);
                 nextPage++;
+                if (nextPage > pagesCount) {
+                    // Remove next page button
+                    document.getElementById("home-next-page-btn").parentElement.remove();
+                }
             });
         }
     </script>
