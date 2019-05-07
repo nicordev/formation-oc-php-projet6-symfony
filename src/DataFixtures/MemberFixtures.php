@@ -120,7 +120,7 @@ class MemberFixtures extends Fixture
                 ])
                     ->setCreatedAt($this->faker->dateTimeThisYear())
                     ->setTrick($trick)
-                    ->setContent($this->generateParagraphs(1, 3));
+                    ->setContent(strip_tags($this->generateParagraphs(1, 3)));
                 $trick->addComment($comment);
                 $manager->persist($comment);
             }

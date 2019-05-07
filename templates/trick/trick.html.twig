@@ -176,3 +176,24 @@
         {% include "trick/comment/comment.html.twig" %}
     </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Markdown #}
+    <script src="/js/marked.js"></script>
+    <script>
+        var markdownConverter = {
+            convertContent: function (element) {
+                element.innerHTML = marked(element.textContent);
+            }
+        };
+
+        (function () {
+            var commentElts = document.getElementsByClassName("comment-content");
+
+            for (let i = 0, size = commentElts.length; i < size; i++) {
+                markdownConverter.convertContent(commentElts[i]);
+            }
+        })();
+    </script>
+{% endblock %}
