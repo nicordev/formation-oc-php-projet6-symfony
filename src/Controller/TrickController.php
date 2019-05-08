@@ -45,6 +45,9 @@ class TrickController extends AbstractController
         ?int $commentsPage = null
     )
     {
+        $session = $this->get("session");
+        $session->set("current_page", "trick_page");
+
         // Add a new comment form
 
         if ($this->isGranted(Member::ROLE_USER)) {
@@ -88,6 +91,9 @@ class TrickController extends AbstractController
     public function addOrEdit(Request $request, ObjectManager $manager, Trick $trick = null)
     {
         $this->denyAccessUnlessGranted(Member::ROLE_USER);
+
+        $session = $this->get("session");
+        $session->set("current_page", "trick_editor");
 
         $trick = $trick ?? new Trick();
 

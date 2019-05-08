@@ -17,6 +17,9 @@ class MemberController extends AbstractController
      */
     public function showRegistration(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder)
     {
+        $session = $this->get("session");
+        $session->set("current_page", "registration");
+
         $newMember = new Member();
 
         $registrationForm = $this->createForm(RegistrationType::class, $newMember);
@@ -44,6 +47,9 @@ class MemberController extends AbstractController
      */
     public function login()
     {
+        $session = $this->get("session");
+        $session->set("current_page", "login");
+
         return $this->render('member/login.html.twig');
     }
 

@@ -51,6 +51,7 @@ class ModerationController extends AbstractController
         $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
 
         $session = $this->get("session");
+        $session->set("current_page", "moderation");
 
         // Filter
         if ($filter !== null) {
