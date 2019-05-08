@@ -4,8 +4,17 @@
 
 {% block stylesheets %}
     <style>
+        html, body {
+            background-color: whitesmoke;
+            color: black;
+        }
+
         tfoot {
-            border-top: whitesmoke 2px solid;
+            border-top: #809395 2px solid;
+        }
+
+        td {
+            padding: 15px;
         }
 
         .selection-commands {
@@ -25,13 +34,13 @@
 
 {% block body %}
 
-    <div id="filter-commands">
-        <a class="btn btn-primary" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage, "filter": 0}) }}">Afficher les commentaires approuvés</a>
+    <div id="filter-commands" class="mb-4">
+        <a class="btn btn-primary mr-3" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage, "filter": 0}) }}">Afficher les commentaires approuvés</a>
         <a class="btn btn-primary" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage, "filter": 2}) }}">Masquer les commentaires approuvés</a>
     </div>
     
     {% if comments %}
-        <table>
+        <table class="table">
             <thead>
                 <tr>
                     <th>Sélection</th>
@@ -75,9 +84,11 @@
                         <td>
                             <span>{{ comment.createdAt|date('d/m/Y à h:m') }}</span>
                         </td>
-                        <td class="d-flex">
-                            <button class="btn btn-secondary edit-btn" commentid="{{ comment.id }}">🖉</button>
-                            <a class="btn btn-secondary" href="{{ path("moderation_delete_comment", {"id": comment.id, "page": paginator.currentPage}) }}">🗑</a>
+                        <td>
+                            <div class="d-flex justify-content-around">
+                                <button class="btn btn-secondary edit-btn mx-1" commentid="{{ comment.id }}">🖉</button>
+                                <a class="btn btn-danger d-block mx-1" href="{{ path("moderation_delete_comment", {"id": comment.id, "page": paginator.currentPage}) }}">🗑</a>
+                            </div>
                         </td>
                     </tr>
                     {% set i = i + 1 %}
