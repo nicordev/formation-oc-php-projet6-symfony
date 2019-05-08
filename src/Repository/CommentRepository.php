@@ -100,12 +100,33 @@ class CommentRepository extends ServiceEntityRepository
                 $paginator->pagingOffset
             );
         } else {
-            $comments = $this->findAll();
+            $comments = $this->findBy(
+                [],
+                ["createdAt" => "DESC"],
+                $paginator->itemsPerPage,
+                $paginator->pagingOffset
+            );
         }
 
         self::setCommentsAuthors($memberRepository, $comments);
 
         return $comments;
+    }
+
+    /**
+     * Get comments from ids
+     *
+     * @param array $commentIds
+     * @return mixed
+     */
+    public function getCommentsFromIds(array $commentIds)
+    {
+        $queryBuilder = $this->createQueryBuilder("com")
+            ->andWhere("com.id IN (:ids)")
+            ->setParameter("ids", array_shift($commentIds)) // array_shift() to get to the ids
+            ->getQuery();
+
+        return $queryBuilder->execute();
     }
 
     // Private

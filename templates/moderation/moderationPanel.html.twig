@@ -4,7 +4,16 @@
 
 {% block stylesheets %}
     <style>
+        tfoot {
+            border-top: whitesmoke 2px solid;
+        }
 
+        .selection-commands {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+        }
     </style>
 {% endblock %}
 
@@ -15,6 +24,12 @@
 {% endblock %}
 
 {% block body %}
+
+    <div id="filter-commands">
+        <a class="btn btn-primary" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage, "filter": 0}) }}">Afficher les commentaires approuvés</a>
+        <a class="btn btn-primary" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage, "filter": 2}) }}">Masquer les commentaires approuvés</a>
+    </div>
+    
     {% if comments %}
         <table>
             <thead>
@@ -33,7 +48,7 @@
                 {% for comment in comments %}
                     <tr>
                         <td>
-                            <input type="checkbox" name="selected[]">
+                            <input type="checkbox" class="select-comment-checkbox" commentid="{{ comment.id }}">
                         </td>
                         <td>
                             {% if comment.approved %}
@@ -70,14 +85,19 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="1">
-                        <input type="checkbox" name="select-all" id="select-all"><label for="select-all">*</label>
+                    <td class="py-4" colspan="1">
+                        <input type="checkbox" name="select-all" id="select-all"><label class="ml-3" for="select-all">*</label>
                     </td>
                     <td colspan="3">
-                        <span>Avec la sélection :</span>
+                        <div class="selection-commands">
+                            <span>Avec la sélection :</span>
+                            <a id="approve-selection-button" class="btn btn-success my-2" href="{{ path("moderation_handle_comments", {"task": "approve", "page": paginator.currentPage}) }}">Approuver</a>
+                            <a id="disapprove-selection-button" class="btn btn-warning my-2" href="{{ path("moderation_handle_comments", {"task": "disapprove", "page": paginator.currentPage}) }}">Désapprouver</a>
+                            <a id="delete-selection-button" class="btn btn-danger my-2" href="{{ path("moderation_handle_comments", {"task": "delete", "page": paginator.currentPage}) }}">Supprimer</a>
+                        </div>
                     </td>
                     <td colspan="3">
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-around align-items-center">
                             <div>{{ paginator.currentPage }}/{{ paginator.pagesCount }}</div>
                             {% if paginator.currentPage > 1 %}
                                 <a class="btn btn-secondary d-block" href="{{ path("moderation_panel", {"page": paginator.currentPage - 1}) }}">🡄</a>
@@ -90,6 +110,10 @@
                 </tr>
             </tfoot>
         </table>
+
+        {# Hidden form to edit selection #}
+        <form style="display: none" id="selected-comments-form" action="" method="post"></form>
+
     {% else %}
         <p>Il n'y a aucun commentaire.</p>
     {% endif %}
@@ -99,6 +123,12 @@
     {{ parent() }}
     <script>
         var moderation = {
+
+            /**
+             * Show either the content of a comment in a form or in a div
+             *
+             * @param buttonElt
+             */
             switchEditionForm: function (buttonElt) {
                 var commentId = buttonElt.getAttribute("commentid"),
                     formElt = document.getElementById("edit-form-" + commentId),
@@ -111,10 +141,67 @@
                     formElt.classList.add("d-none");
                     contentElt.classList.remove("d-none");
                 }
+            },
+
+            /**
+             * Build the form containing the selected comments ids and submit it
+             */
+            handleSelection: function (formAction) {
+
+                var selectedCommentsFormElt = document.getElementById("selected-comments-form"),
+                    checkBoxElts = document.getElementsByClassName("select-comment-checkbox"),
+                    selectedCommentId,
+                    selectedCommentsIds = [];
+
+                // Get selected comments ids
+                for (let checkboxElt of checkBoxElts) {
+                    if (selectedCommentId = getSelectedCommentId(checkboxElt)) {
+                        selectedCommentsIds.push(selectedCommentId);
+                    }
+                }
+
+                // Set the form and submit
+                selectedCommentsFormElt.action = formAction;
+                addCommentsIdsInputs(selectedCommentsFormElt, selectedCommentsIds);
+                selectedCommentsFormElt.submit();
+
+                /**
+                 * Get the commentid attribute of a checkbox element
+                 *
+                 * @param checkboxElt
+                 * @returns {*}
+                 */
+                function getSelectedCommentId(checkboxElt){
+
+                    if (checkboxElt.checked && checkboxElt.hasAttribute("commentid")) {
+                        return checkboxElt.getAttribute("commentid");
+                    }
+                    return null;
+                }
+
+                /**
+                 * Fill the form with inputs containing the ids
+                 *
+                 * @param formElt
+                 * @param ids
+                 */
+                function addCommentsIdsInputs(formElt, ids) {
+
+                    let inputElt;
+
+                    for (id of ids) {
+                        inputElt = document.createElement('input');
+                        inputElt.name = "comments-ids[]";
+                        inputElt.value = id;
+                        formElt.appendChild(inputElt);
+                    }
+                }
             }
         };
 
         // Event listeners
+
+        // Switch edition form
         let editBtnElts = document.getElementsByClassName("edit-btn");
         for (let i = 0, size = editBtnElts.length; i < size; i++) {
             editBtnElts[i].addEventListener("click", function (event) {
@@ -122,5 +209,11 @@
                 moderation.switchEditionForm(event.target);
             });
         }
+
+        // Handle multiple selection
+        document.getElementById("approve-selection-button").addEventListener("click", (event) => {
+            event.preventDefault();
+            moderation.handleSelection(event.target.href);
+        });
     </script>
 {% endblock %}

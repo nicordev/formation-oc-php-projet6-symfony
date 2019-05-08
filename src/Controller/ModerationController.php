@@ -21,10 +21,16 @@ class ModerationController extends AbstractController
     public const ROUTE_EDIT_COMMENT = "moderation_edit_comment";
     public const ROUTE_DELETE_COMMENT = "moderation_delete_comment";
 
+    public const TASK_APPROVE = "approve";
+    public const TASK_DISAPPROVE = "disapprove";
+    public const TASK_DELETE = "delete";
+
     /**
      * Show moderation panel
      *
-     * @Route("/moderation-panel/{page}", name="moderation_panel", requirements={"page": "\d+"})
+     * @Route("/moderation-panel", name="moderation_panel_simple", requirements={"page": "\d+"})
+     * @Route("/moderation-panel/page{page}", name="moderation_panel", requirements={"page": "\d+"})
+     * @Route("/moderation-panel/page{page}/filter{filter}", name="moderation_panel_filter", requirements={"page": "\d+"})
      *
      * @param CommentRepository $commentRepository
      * @param MemberRepository $memberRepository
@@ -36,7 +42,9 @@ class ModerationController extends AbstractController
         CommentRepository $commentRepository,
         MemberRepository $memberRepository,
         Paginator $paginator,
-        ?int $page = null)
+        ?int $page = null,
+        ?int $filter = null
+    )
     {
         // Access control
         $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
@@ -44,7 +52,7 @@ class ModerationController extends AbstractController
         $comments = $commentRepository->getComments(
             $memberRepository,
             $paginator,
-            CommentRepository::FILTER_NOT_APPROVED,
+            $filter ?? CommentRepository::FILTER_NOT_APPROVED,
             $page ?? 1,
             self::COMMENTS_PER_PAGE
         );
@@ -148,6 +156,70 @@ class ModerationController extends AbstractController
         return $this->redirectToRoute("moderation_panel", ['page' => $page]);
     }
 
+    /**
+     * Handle selected comments in the moderation panel
+     *
+     * @Route("/moderation-panel/handle-selection/{task}/page{page}", name="moderation_handle_comments")
+     *
+     * @param Request $request
+     * @param ObjectManager $manager
+     * @param string|null $task
+     * @param int|null $page
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Exception
+     */
+    public function handleSelectedComments(
+        Request $request,
+        ObjectManager $manager,
+        ?string $task = null,
+        ?int $page = null
+    )
+    {
+        $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
+
+        $commentIds = $request->request->all();
+        $commentRepository = $manager->getRepository(Comment::class);
+        $comments = $commentRepository->getCommentsFromIds($commentIds);
+
+        switch ($task) {
+
+            case self::TASK_APPROVE:
+                foreach ($comments as $comment) {
+                    $comment->setApproved(true);
+                }
+                break;
+
+            case self::TASK_DISAPPROVE:
+                foreach ($comments as $comment) {
+                    $comment->setApproved(false);
+                }
+                break;
+
+            case self::TASK_DELETE:
+                foreach ($comments as $comment) {
+                    $manager->remove($comment);
+                }
+                break;
+
+            default:
+                throw new \Exception("The task $task does not exist", 500);
+                break;
+        }
+
+        $manager->flush();
+
+        return $this->redirectToRoute(self::ROUTE_MODERATION_PANEL, ["page" => $page]);
+    }
+
+    // Private
+
+    /**
+     * Build CommentType forms and return their views
+     *
+     * @param array $comments
+     * @param int|null $page
+     * @return array
+     */
     private function createCommentFormsViews(array $comments, ?int $page = null)
     {
         $commentFormsViews = [];
