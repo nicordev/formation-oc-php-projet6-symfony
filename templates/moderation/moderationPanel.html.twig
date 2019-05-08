@@ -91,19 +91,19 @@
                     <td colspan="3">
                         <div class="selection-commands">
                             <span>Avec la sélection :</span>
-                            <a id="approve-selection-button" class="btn btn-success my-2" href="{{ path("moderation_handle_comments", {"task": "approve", "page": paginator.currentPage}) }}">Approuver</a>
-                            <a id="disapprove-selection-button" class="btn btn-warning my-2" href="{{ path("moderation_handle_comments", {"task": "disapprove", "page": paginator.currentPage}) }}">Désapprouver</a>
-                            <a id="delete-selection-button" class="btn btn-danger my-2" href="{{ path("moderation_handle_comments", {"task": "delete", "page": paginator.currentPage}) }}">Supprimer</a>
+                            <a id="approve-selection-button" class="selection-command btn btn-success my-2" href="{{ path("moderation_handle_comments", {"task": "approve", "page": paginator.currentPage}) }}">Approuver</a>
+                            <a id="disapprove-selection-button" class="selection-command btn btn-warning my-2" href="{{ path("moderation_handle_comments", {"task": "disapprove", "page": paginator.currentPage}) }}">Désapprouver</a>
+                            <a id="delete-selection-button" class="selection-command btn btn-danger my-2" href="{{ path("moderation_handle_comments", {"task": "delete", "page": paginator.currentPage}) }}">Supprimer</a>
                         </div>
                     </td>
                     <td colspan="3">
                         <div class="d-flex justify-content-around align-items-center">
                             <div>{{ paginator.currentPage }}/{{ paginator.pagesCount }}</div>
                             {% if paginator.currentPage > 1 %}
-                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage - 1, "filter": filter}) }}">🡄</a>
+                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel", {"page": paginator.currentPage - 1}) }}">🡄</a>
                             {% endif %}
                             {% if paginator.currentPage < paginator.pagesCount %}
-                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage + 1, "filter": filter}) }}">🡆</a>
+                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel", {"page": paginator.currentPage + 1}) }}">🡆</a>
                             {% endif %}
                         </div>
                     </td>
@@ -225,10 +225,13 @@
         }
 
         // Handle multiple selection
-        document.getElementById("approve-selection-button").addEventListener("click", (event) => {
-            event.preventDefault();
-            moderation.handleSelection(event.target.href);
-        });
+        let selectionCommandElts = document.getElementsByClassName("selection-command");
+        for (let commandElt of selectionCommandElts) {
+            commandElt.addEventListener("click", (event) => {
+                event.preventDefault();
+                moderation.handleSelection(event.target.href);
+            });
+        }
 
         // Select all
         document.getElementById("select-all").addEventListener("click", (event) => {

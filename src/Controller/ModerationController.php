@@ -50,10 +50,17 @@ class ModerationController extends AbstractController
         // Access control
         $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
 
+        $session = $this->get("session");
+
+        // Filter
+        if ($filter !== null) {
+            $session->set("moderation_panel_filter", $filter);
+        }
+
         $comments = $commentRepository->getComments(
             $memberRepository,
             $paginator,
-            $filter ?? CommentRepository::FILTER_NOT_APPROVED,
+            $session->get('moderation_panel_filter') ?? CommentRepository::FILTER_NOT_APPROVED,
             $page ?? 1,
             self::COMMENTS_PER_PAGE
         );
@@ -63,8 +70,7 @@ class ModerationController extends AbstractController
         return $this->render('moderation/moderationPanel.html.twig', [
             'comments' => $comments,
             'paginator' => $paginator,
-            'commentEditForms' => $commentFormsViews,
-            'filter' => $filter
+            'commentEditForms' => $commentFormsViews
         ]);
     }
 
@@ -182,6 +188,7 @@ class ModerationController extends AbstractController
         $commentIds = $request->request->all();
         $commentRepository = $manager->getRepository(Comment::class);
         $comments = $commentRepository->getCommentsFromIds($commentIds);
+        $flashMessage = null;
 
         switch ($task) {
 
@@ -189,18 +196,21 @@ class ModerationController extends AbstractController
                 foreach ($comments as $comment) {
                     $comment->setApproved(true);
                 }
+                $flashMessage = "Les commentaires sélectionnés ont été approuvés";
                 break;
 
             case self::TASK_DISAPPROVE:
                 foreach ($comments as $comment) {
                     $comment->setApproved(false);
                 }
+                $flashMessage = "Les commentaires sélectionnés ont été mis en attente";
                 break;
 
             case self::TASK_DELETE:
                 foreach ($comments as $comment) {
                     $manager->remove($comment);
                 }
+                $flashMessage = "Les commentaires sélectionnés ont été supprimés";
                 break;
 
             default:
@@ -209,6 +219,9 @@ class ModerationController extends AbstractController
         }
 
         $manager->flush();
+        if ($flashMessage) {
+            $this->addFlash("notice", $flashMessage);
+        }
 
         return $this->redirectToRoute(self::ROUTE_MODERATION_PANEL, ["page" => $page]);
     }
