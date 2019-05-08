@@ -86,7 +86,7 @@
             <tfoot>
                 <tr>
                     <td class="py-4" colspan="1">
-                        <input type="checkbox" name="select-all" id="select-all"><label class="ml-3" for="select-all">*</label>
+                        <input type="checkbox" id="select-all"><label class="ml-3" for="select-all">*</label>
                     </td>
                     <td colspan="3">
                         <div class="selection-commands">
@@ -100,10 +100,10 @@
                         <div class="d-flex justify-content-around align-items-center">
                             <div>{{ paginator.currentPage }}/{{ paginator.pagesCount }}</div>
                             {% if paginator.currentPage > 1 %}
-                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel", {"page": paginator.currentPage - 1}) }}">🡄</a>
+                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage - 1, "filter": filter}) }}">🡄</a>
                             {% endif %}
                             {% if paginator.currentPage < paginator.pagesCount %}
-                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel", {"page": paginator.currentPage + 1}) }}">🡆</a>
+                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage + 1, "filter": filter}) }}">🡆</a>
                             {% endif %}
                         </div>
                     </td>
@@ -196,6 +196,20 @@
                         formElt.appendChild(inputElt);
                     }
                 }
+            },
+
+            /**
+             * Select or deselect all commits at once
+             *
+             * @param mainCheckboxElt
+             */
+            switchSelectAll: function (mainCheckboxElt) {
+
+                var checkboxElts = document.getElementsByClassName("select-comment-checkbox");
+
+                for (checkboxElt of checkboxElts) {
+                    checkboxElt.checked = mainCheckboxElt.checked;
+                }
             }
         };
 
@@ -214,6 +228,11 @@
         document.getElementById("approve-selection-button").addEventListener("click", (event) => {
             event.preventDefault();
             moderation.handleSelection(event.target.href);
+        });
+
+        // Select all
+        document.getElementById("select-all").addEventListener("click", (event) => {
+            moderation.switchSelectAll(event.target);
         });
     </script>
 {% endblock %}

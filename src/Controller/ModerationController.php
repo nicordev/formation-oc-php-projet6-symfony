@@ -36,6 +36,7 @@ class ModerationController extends AbstractController
      * @param MemberRepository $memberRepository
      * @param Paginator $paginator
      * @param int|null $page
+     * @param int|null $filter
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function moderationPanel(
@@ -62,7 +63,8 @@ class ModerationController extends AbstractController
         return $this->render('moderation/moderationPanel.html.twig', [
             'comments' => $comments,
             'paginator' => $paginator,
-            'commentEditForms' => $commentFormsViews
+            'commentEditForms' => $commentFormsViews,
+            'filter' => $filter
         ]);
     }
 
