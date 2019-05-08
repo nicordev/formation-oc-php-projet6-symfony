@@ -130,6 +130,20 @@ hr {
     bottom: 5px;
 }
 
+.main-navigation-menu {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+}
+
+.background-color-1 {
+    background-color: #2C3E50;
+}
+
+.color-1 {
+    color: whitesmoke;
+}
+
 @media all and (max-width: 576px) {
 
     footer {

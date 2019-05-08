@@ -38,8 +38,10 @@
             </footer>
         {% endblock %}
 
-        {% block javascripts %}
-            <script src="/js/myApp.js"></script>
-        {% endblock %}
+        {% block javascripts %}{% endblock %}
+        <script src="/js/myApp.js"></script>
+        <script>
+            document.getElementById("main-navigation-bar-menu-button").addEventListener("click", myApp.switchNavigationMenu);
+        </script>
     </body>
 </html>
