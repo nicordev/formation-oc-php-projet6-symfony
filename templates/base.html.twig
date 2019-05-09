@@ -41,7 +41,14 @@
         {% block javascripts %}{% endblock %}
         <script src="/js/myApp.js"></script>
         <script>
+            // Navigation menu on small resolutions
             document.getElementById("main-navigation-bar-menu-button").addEventListener("click", myApp.switchNavigationMenu);
+        </script>
+        {# Navigation bar #}
+        <script src="/js/navigation_bar.js"></script>
+        <script>
+            navigationBar.element = document.getElementById("main-navigation-bar");
+            window.addEventListener("scroll", navigationBar.animatedHideOnScroll);
         </script>
     </body>
 </html>
