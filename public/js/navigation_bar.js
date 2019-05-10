@@ -80,7 +80,7 @@ var navigationBar = {
                     targetElement.style.top = (y.value + 1) + y.unit;
 
                     requestAnimationFrame(showBar);
-                }
+                };
                 requestAnimationFrame(showBar);
             }
 

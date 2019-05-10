@@ -21,6 +21,16 @@
             text-align: center;
         }
 
+        .card {
+            transition-property: transform;
+            transition-duration: 250ms;
+        }
+
+        .card:hover {
+            transform: rotate(-5deg) scale(1.2);
+            z-index: 100000;
+        }
+
         @media all and (max-width: 450px) {
             header h1 {
                 font-size: 4em;
