@@ -14,7 +14,8 @@
 
         {{ form_end(commentForm) }}
     {% else %}
-        <p><a href="{{ path("login_route") }}">Connectez-vous</a> pour écrire un commentaire.</p>
+        <p>Connectez-vous pour écrire un commentaire</p>
+        {% include "member/loginForm.html.twig" %}
         <p>Pas encore inscrit ? <a href="{{ path("registration_route") }}">C'est par ici !</a></p>
     {% endif %}
 </div>

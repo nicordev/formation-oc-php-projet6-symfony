@@ -12,6 +12,7 @@ header {
     justify-content: center;
     background-color: darkslategray;
     color: whitesmoke;
+    padding-top: 70px;
 }
 
 header h1, header h2 {
