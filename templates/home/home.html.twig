@@ -3,44 +3,7 @@
 {% block title %}Accueil{% endblock %}
 
 {% block stylesheets %}
-    <style>
-        header {
-            background-image: url("/img/main_header.jpg");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-        }
-
-        header h1 {
-            font-family: 'Fredericka the Great', cursive;
-            font-size: 5em;
-        }
-
-        header h2 {
-            font-family: 'Love Ya Like A Sister', cursive;
-            text-align: center;
-        }
-
-        .card {
-            transition-property: transform;
-            transition-duration: 250ms;
-        }
-
-        .card:hover {
-            transform: rotate(-5deg) scale(1.2);
-            z-index: 100000;
-        }
-
-        @media all and (max-width: 450px) {
-            header h1 {
-                font-size: 4em;
-            }
-
-            header h2 {
-                font-size: 2.5em;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/css/home.css">
 {% endblock %}
 
 {% block header %}

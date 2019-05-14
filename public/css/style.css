@@ -5,6 +5,10 @@ html, body {
     color: whitesmoke;
 }
 
+body {
+    padding-top: 70px; /* Avoid the navigation bar to hide content */
+}
+
 header {
     display: flex;
     flex-direction: column;
@@ -12,7 +16,6 @@ header {
     justify-content: center;
     background-color: darkslategray;
     color: whitesmoke;
-    padding-top: 70px;
 }
 
 header h1, header h2 {
@@ -57,21 +60,6 @@ hr {
     cursor: pointer;
 }
 
-.arrow-down {
-    margin: 20px;
-    cursor: pointer;
-    position: relative;
-    top: 0;
-    transition-duration: 300ms;
-    transition-property: top;
-}
-
-.arrow-down:hover {
-    cursor: pointer;
-    position: relative;
-    top: 7px;
-}
-
 .commands-wrapper {
     position: absolute;
     top: 100px;
@@ -91,38 +79,6 @@ hr {
 
 .command:hover {
     text-decoration: none;
-}
-
-.embedded-video {
-    border: none;
-}
-
-.trick-media {
-    display: block;
-    width: 200px;
-    height: 150px;
-    margin: 10px;
-}
-
-.trick-media-type {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.card-img-link {
-    margin: 0 -15px;
-}
-
-.card-body {
-    margin: 0 -15px;
-    background-color: #2C3E50;
-}
-
-.card-title a {
-    color: whitesmoke;
-    font-family: 'Love Ya Like A Sister', cursive;
-    font-size: 1.5em;
 }
 
 .font-size-medium {
@@ -145,36 +101,9 @@ hr {
     color: whitesmoke;
 }
 
-#main-navigation-bar {
-    position: fixed;
-    width: 100%;
-    z-index: 100000;
-}
-
 @media all and (max-width: 576px) {
 
     footer {
         padding: 20px 0 71px 0;
-    }
-}
-
-@media all and (max-width: 624px) {
-
-    .card {
-        width: 85%;
-    }
-}
-
-@media all and (min-width: 624px) {
-
-    .card {
-        max-width: 280px;
-    }
-}
-
-@media all and (min-width: 768px) {
-
-    .card {
-        max-width: 320px;
     }
 }

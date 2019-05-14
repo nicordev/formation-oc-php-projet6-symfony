@@ -5,41 +5,22 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="/css/paging.css">
     <link rel="stylesheet" href="/css/comment.css">
+    <link rel="stylesheet" href="/css/trick.css">
     <style>
-        header h1 {
-            font-family: 'Love Ya Like A Sister', cursive;
-            text-align: center;
-            color: rgb(44, 62, 80);
-        }
-
         .trick-header {
-            min-height: 500px;
             {% if trick.mainImage %}
                 background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("{{ trick.mainImage }}");
             {% else %}
                 background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("/public/img/mountain_1.jpg");
             {% endif %}
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
         }
 
         #trick-main-image {
-            height: 400px;
-            width: 600px;
             {% if trick.mainImage %}
                 background-image: url("{{ trick.mainImage }}");
             {% else %}
                 background-image: url("/public/img/no_image.jpg");
             {% endif %}
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            border-radius: 50px;
-        }
-
-        #trick-title {
-            padding: 50px 20px;
         }
     </style>
 {% endblock %}

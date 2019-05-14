@@ -1,0 +1,88 @@
+
+header {
+    background-image: url("/img/main_header.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+header h1 {
+    font-family: 'Fredericka the Great', cursive;
+    font-size: 5em;
+}
+
+header h2 {
+    font-family: 'Love Ya Like A Sister', cursive;
+    text-align: center;
+}
+
+.arrow-down {
+    margin: 20px;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+    transition-duration: 300ms;
+    transition-property: top;
+}
+
+.arrow-down:hover {
+    cursor: pointer;
+    position: relative;
+    top: 7px;
+}
+
+.card {
+    transition-property: transform;
+    transition-duration: 250ms;
+}
+
+.card:hover {
+    transform: rotate(-5deg) scale(1.2);
+    z-index: 10;
+}
+
+.card-img-link {
+    margin: 0 -15px;
+}
+
+.card-body {
+    margin: 0 -15px;
+    background-color: #2C3E50;
+}
+
+.card-title a {
+    color: whitesmoke;
+    font-family: 'Love Ya Like A Sister', cursive;
+    font-size: 1.5em;
+}
+
+@media all and (max-width: 450px) {
+    header h1 {
+        font-size: 4em;
+    }
+
+    header h2 {
+        font-size: 2.5em;
+    }
+}
+
+@media all and (max-width: 624px) {
+
+    .card {
+        width: 85%;
+    }
+}
+
+@media all and (min-width: 624px) {
+
+    .card {
+        max-width: 280px;
+    }
+}
+
+@media all and (min-width: 768px) {
+
+    .card {
+        max-width: 320px;
+    }
+}
