@@ -5,6 +5,7 @@
         <title>{% block title %}{% endblock %} - SnowTricks</title>
         <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css">
         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/navigation_bar.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css?family=Fredericka+the+Great" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister" rel="stylesheet">
@@ -45,5 +46,31 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         {# General #}
         <script src="/js/myApp.js"></script>
+        {# Navigation bar #}
+        <script>
+            var navbar = {
+                lastScrollY: 0,
+                element: document.getElementById("main-navigation-bar"),
+
+                switchOnScroll: function () {
+                    var actualScrollY = window.scrollY;
+
+                    if (actualScrollY > 0) {
+                        navbar.element.classList.add("is-fixed");
+                        if (actualScrollY > navbar.lastScrollY) {
+                            navbar.element.classList.remove("is-visible");
+                        } else {
+                            navbar.element.classList.add("is-visible");
+                        }
+                        navbar.lastScrollY = actualScrollY;
+                    } else {
+                        navbar.element.classList.remove("is-fixed");
+                        navbar.element.classList.remove("is-visible");
+                    }
+                }
+            };
+
+            window.addEventListener("scroll", navbar.switchOnScroll);
+        </script>
     </body>
 </html>
