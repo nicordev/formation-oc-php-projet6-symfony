@@ -57,8 +57,6 @@ class CommentRepository extends ServiceEntityRepository
             $commentsPaginator->pagingOffset
         );
 
-        self::setCommentsAuthors($memberRepository, $comments);
-
         return $comments;
     }
 
@@ -108,8 +106,6 @@ class CommentRepository extends ServiceEntityRepository
             );
         }
 
-        self::setCommentsAuthors($memberRepository, $comments);
-
         return $comments;
     }
 
@@ -127,16 +123,5 @@ class CommentRepository extends ServiceEntityRepository
             ->getQuery();
 
         return $queryBuilder->execute();
-    }
-
-    // Private
-
-    private static function setCommentsAuthors(MemberRepository $memberRepository, array &$comments)
-    {
-        foreach ($comments as $comment) {
-            if ($comment->getAuthor()) {
-                $comment->setAuthor($memberRepository->findOneBy(["id" => $comment->getAuthor()->getId()]));
-            }
-        }
     }
 }
