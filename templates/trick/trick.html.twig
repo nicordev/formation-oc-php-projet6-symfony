@@ -28,7 +28,7 @@
 {% block header %}
     <header class="trick-header">
         <div class="commands-wrapper">
-            <a class="command" href="{{ path("trick_edit", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
+            <a class="command btn-warning" href="{{ path("trick_edit", {"id": trick.id}) }}">🖉</a><a class="command btn-danger" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
         </div>
         <div id="trick-title">
             <div id="trick-main-image"></div>

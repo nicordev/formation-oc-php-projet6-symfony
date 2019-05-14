@@ -1,9 +1,10 @@
 
 header {
-    background-image: url("/img/main_header.jpg");
+    background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)), url("/img/main_header.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+    color: darkslategray;
 }
 
 header h1 {

@@ -108,14 +108,18 @@
                         </div>
                     </td>
                     <td colspan="3">
-                        <div class="d-flex justify-content-around align-items-center">
-                            <div>{{ paginator.currentPage }}/{{ paginator.pagesCount }}</div>
-                            {% if paginator.currentPage > 1 %}
-                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel", {"page": paginator.currentPage - 1}) }}">🡄</a>
-                            {% endif %}
-                            {% if paginator.currentPage < paginator.pagesCount %}
-                                <a class="btn btn-secondary d-block" href="{{ path("moderation_panel", {"page": paginator.currentPage + 1}) }}">🡆</a>
-                            {% endif %}
+                        <div class="d-flex justify-content-center align-items-center">
+                            <ul class="pagination">
+                                <li class="page-item{% if paginator.currentPage <= 1 %} disabled{% endif %}">
+                                    <a class="page-link" href="{% if paginator.currentPage <= 1 %}#{% else %}{{ path("moderation_panel", {"page": paginator.currentPage - 1}) }}{% endif %}">&laquo;</a>
+                                </li>
+                                <li class="page-item">
+                                    <span class="page-link">{{ paginator.currentPage }} / {{ paginator.pagesCount }}</span>
+                                </li>
+                                <li class="page-item{% if paginator.currentPage >= paginator.pagesCount %} disabled{% endif %}">
+                                    <a class="page-link" href="{% if paginator.currentPage >= paginator.pagesCount %}#{% else %}{{ path("moderation_panel", {"page": paginator.currentPage + 1}) }}{% endif %}">&raquo;</a>
+                                </li>
+                            </ul>
                         </div>
                     </td>
                 </tr>

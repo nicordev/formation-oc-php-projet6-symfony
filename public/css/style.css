@@ -1,12 +1,11 @@
 html, body {
     height: 100%;
     scroll-behavior: smooth;
-    background-color: #2C3E50;
-    color: whitesmoke;
 }
 
 body {
-    padding-top: 70px; /* Avoid the navigation bar to hide content */
+    /*padding-top: 70px; !* Avoid the navigation bar to hide content *!*/
+    border-top: 70px solid #2C3E50;
 }
 
 header {
@@ -25,7 +24,7 @@ header h1, header h2 {
 footer {
     width: 100%;
     position: absolute;
-    background-color: darkslategray;
+    background-color: #2C3E50;
     color: whitesmoke;
     padding: 20px 0;
     text-align: center;

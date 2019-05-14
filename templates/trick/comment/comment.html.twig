@@ -48,20 +48,18 @@
 
     {# Pagination links #}
     {% if commentsPaginator.pagesCount > 1 %}
-        <div class="paging">
-            {% if commentsPaginator.currentPage > 1 %}
-                <div class="paging-part">
-                    <a class="btn btn-secondary" href="{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage - 1}) }}#trick-comments">🡄</a>
-                </div>
-            {% endif %}
-            {% if commentsPaginator.currentPage < commentsPaginator.pagesCount %}
-                <div class="paging-part">
-                    <a class="btn btn-secondary" href="{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage + 1}) }}#trick-comments">🡆</a>
-                </div>
-            {% endif %}
-            <div class="paging-part">
-                <span class="paging-pages">{{ commentsPaginator.currentPage }} / {{ commentsPaginator.pagesCount }}</span>
-            </div>
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item{% if commentsPaginator.currentPage <= 1 %} disabled{% endif %}">
+                    <a class="page-link" href="{% if commentsPaginator.currentPage <= 1 %}#{% else %}{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage - 1}) }}#trick-comments{% endif %}">&laquo;</a>
+                </li>
+                <li class="page-item">
+                    <span class="page-link">{{ commentsPaginator.currentPage }} / {{ commentsPaginator.pagesCount }}</span>
+                </li>
+                <li class="page-item{% if commentsPaginator.currentPage >= commentsPaginator.pagesCount %} disabled{% endif %}">
+                    <a class="page-link" href="{% if commentsPaginator.currentPage >= commentsPaginator.pagesCount %}#{% else %}{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage + 1}) }}#trick-comments{% endif %}">&raquo;</a>
+                </li>
+            </ul>
         </div>
     {% endif %}
 </div>
