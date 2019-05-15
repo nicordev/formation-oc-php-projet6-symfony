@@ -25,6 +25,9 @@ security:
             logout:
                 path: logout_route
                 target: home
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
             # activate different ways to authenticate
 
             # http_basic: true
