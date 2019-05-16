@@ -47,7 +47,7 @@ class Member implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", mappedBy="member")
      */
     private $picture;
 
@@ -92,12 +92,12 @@ class Member implements UserInterface
         return $this;
     }
 
-    public function getPicture(): ?string
+    public function getPicture(): ?Image
     {
         return $this->picture;
     }
 
-    public function setPicture(?string $picture): self
+    public function setPicture(?Image $picture): self
     {
         $this->picture = $picture;
 

@@ -3,13 +3,13 @@
         <a class="nav-link" href="{{ path("registration_route") }}">Inscription</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ path("login_route") }}">Connexion</a>
+        <a class="nav-link" href="{{ path("app_login") }}">Connexion</a>
     </li>
 {% else %}
     <li class="nav-item">
         <a class="nav-link" href="#">Mon profil</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ path("logout_route") }}">Déconnexion</a>
+        <a class="nav-link" href="{{ path("app_logout") }}">Déconnexion</a>
     </li>
 {% endif %}

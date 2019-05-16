@@ -40,17 +40,17 @@ class MemberController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/login", name="login_route")
-     */
-    public function login()
-    {
-        return $this->render('member/login.html.twig');
-    }
-
-    /**
-     * @Route("/logout", name="logout_route")
-     */
-    public function logout()
-    {}
+//    /**
+//     * @Route("/login", name="login_route")
+//     */
+//    public function login()
+//    {
+//        return $this->render('member/login.html.twig');
+//    }
+//
+//    /**
+////     * @Route("/logout", name="logout_route")
+////     */
+////    public function logout()
+////    {}
 }
