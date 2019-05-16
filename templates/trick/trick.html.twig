@@ -44,7 +44,7 @@
 
 {% block header %}
     <header class="trick-header">
-        {% if is_granted('ROLE_USER') %}
+        {% if is_granted('ROLE_EDITOR') or trick.author is same as(app.user) %}
             <div class="commands-wrapper">
                 <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
             </div>
