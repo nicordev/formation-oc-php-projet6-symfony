@@ -44,9 +44,11 @@
 
 {% block header %}
     <header class="trick-header">
-        <div class="commands-wrapper">
-            <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
-        </div>
+        {% if is_granted('ROLE_USER') %}
+            <div class="commands-wrapper">
+                <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
+            </div>
+        {% endif %}
         <div id="trick-title">
             <div id="trick-main-image"></div>
             <h1>{{ trick.name }}</h1>
