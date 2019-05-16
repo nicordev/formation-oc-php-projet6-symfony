@@ -39,18 +39,4 @@ class MemberController extends AbstractController
             'registrationForm' => $registrationForm->createView(),
         ]);
     }
-
-//    /**
-//     * @Route("/login", name="login_route")
-//     */
-//    public function login()
-//    {
-//        return $this->render('member/login.html.twig');
-//    }
-//
-//    /**
-////     * @Route("/logout", name="logout_route")
-////     */
-////    public function logout()
-////    {}
 }
