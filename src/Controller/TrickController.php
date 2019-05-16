@@ -77,7 +77,11 @@ class TrickController extends AbstractController
      */
     public function editTrick(Request $request, ObjectManager $manager, Trick $trick = null)
     {
-        $this->denyAccessUnlessGranted(Member::ROLE_USER);
+        $user = $this->getUser();
+
+        if (!$user || !$this->isGranted(Member::ROLE_EDITOR) && !$user->isAuthor($trick)) {
+            $this->denyAccessUnlessGranted([]);
+        }
 
         $form = $this->createForm(TrickType::class, $trick);
 
@@ -112,7 +116,11 @@ class TrickController extends AbstractController
      */
     public function delete(ObjectManager $manager, Trick $trick)
     {
-        $this->denyAccessUnlessGranted(Member::ROLE_USER);
+        $user = $this->getUser();
+
+        if (!$user || !$this->isGranted(Member::ROLE_EDITOR) && !$user->isAuthor($trick)) {
+            $this->denyAccessUnlessGranted([]);
+        }
         
         $trickName = $trick->getName();
         $manager->remove($trick);

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -51,10 +53,27 @@ class Member implements UserInterface
      */
     private $picture;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="author")
+     */
+    private $tricks;
+
+    /**
+     * @ORM\Column(type="simple_array")
+     */
+    private $roles;
+
     public const ROLE_USER = "ROLE_USER";
     public const ROLE_MODERATOR = "ROLE_MODERATOR";
     public const ROLE_EDITOR = "ROLE_EDITOR";
     public const ROLE_ADMIN = "ROLE_ADMIN";
+
+    public function __construct()
+    {
+        $this->tricks = new ArrayCollection();
+    }
+
+    public const DEFAULT_PICTURE_URL = "/img/default_member.png";
 
     public function getId(): ?int
     {
@@ -109,6 +128,50 @@ class Member implements UserInterface
         return $this;
     }
 
+    // Tricks
+
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getTricks(): Collection
+    {
+        return $this->tricks;
+    }
+
+    public function addTrick(Trick $trick): self
+    {
+        if (!$this->tricks->contains($trick)) {
+            $this->tricks[] = $trick;
+            $trick->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrick(Trick $trick): self
+    {
+        if ($this->tricks->contains($trick)) {
+            $this->tricks->removeElement($trick);
+            // set the owning side to null (unless already changed)
+            if ($trick->getAuthor() === $this) {
+                $trick->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Check if the member is the author of a trick
+     *
+     * @param Trick $trick
+     * @return bool
+     */
+    public function isAuthor(Trick $trick): bool
+    {
+        return $trick->getAuthor()->getId() === $this->getId();
+    }
+
     // UserInterface
 
     public function getUsername()
@@ -126,8 +189,22 @@ class Member implements UserInterface
         
     }
 
-    public function getRoles()
+    public function getRoles(): ?array
     {
-        return ['ROLE_USER'];
+        return $this->roles;
+    }
+
+    // Roles
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function addRole(string $role)
+    {
+        $this->roles[] = $role;
     }
 }
