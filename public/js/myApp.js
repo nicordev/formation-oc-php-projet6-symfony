@@ -2,6 +2,11 @@ var myApp = {
 
     eventTarget: {
 
+        /**
+         * Hide the target of the event
+         *
+         * @param event
+         */
         hide: function (event) {
             event.target.style.display = "none";
         }
@@ -9,6 +14,15 @@ var myApp = {
 
     elementTool: {
 
+        /**
+         * Add a button
+         *
+         * @param parentElement
+         * @param text
+         * @param callback
+         * @param parameters
+         * @param classes
+         */
         addButton: function (parentElement, text, callback, parameters = null, classes = "btn btn-primary") {
             var btnElt = document.createElement("button");
 
@@ -23,6 +37,11 @@ var myApp = {
             parentElement.appendChild(btnElt);
         },
 
+        /**
+         * Remove an element
+         *
+         * @param elementToRemove
+         */
         removeElement: function (elementToRemove) {
             elementToRemove.remove();
         }

@@ -76,7 +76,7 @@ class Paginator
     {
         if ($this->currentPage < 1) {
             $this->currentPage = 1;
-        } elseif ($this->currentPage > $this->pagesCount) {
+        } elseif (!empty($this->pagesCount) && $this->currentPage > $this->pagesCount) {
             $this->currentPage = $this->pagesCount;
         }
     }

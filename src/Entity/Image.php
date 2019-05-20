@@ -26,6 +26,11 @@ class Image
      */
     private $trick;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Member", inversedBy="picture")
+     */
+    private $member;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -51,6 +56,25 @@ class Image
     public function setTrick(?Trick $trick): self
     {
         $this->trick = $trick;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMember(): ?Member
+    {
+        return $this->member;
+    }
+
+    /**
+     * @param Member $member
+     * @return Image
+     */
+    public function setMember(?Member $member): self
+    {
+        $this->member = $member;
 
         return $this;
     }

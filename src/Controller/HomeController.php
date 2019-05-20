@@ -28,6 +28,9 @@ class HomeController extends AbstractController
     {
         $trickRepo = $manager->getRepository(Trick::class);
 
+        $session = $this->get("session");
+        $session->set("current_page", "home");
+
         $paginator->update($page, self::TRICKS_PER_PAGE, $trickRepo->count([]));
 
         $tricks = $trickRepo->findBy([], ["createdAt" => "DESC"], $paginator->itemsPerPage, $paginator->pagingOffset);

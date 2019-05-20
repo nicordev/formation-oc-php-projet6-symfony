@@ -1,0 +1,21 @@
+
+<div class="comment-form">
+    {% if is_granted('ROLE_USER') %}
+        {{ form_start(commentForm) }}
+
+        {{ form_row(commentForm.content, {
+            "label": "Ajouter un commentaire",
+            "attr": {
+                "placeholder": "Un petit mot ?"
+            }
+        }) }}
+
+        <button type="submit" class="btn btn-primary comment-btn">Publier</button>
+
+        {{ form_end(commentForm) }}
+    {% else %}
+        <p>Connectez-vous pour écrire un commentaire</p>
+        {% include "member/loginForm.html.twig" %}
+        <p>Pas encore inscrit ? <a href="{{ path("registration_route") }}">C'est par ici !</a></p>
+    {% endif %}
+</div>
