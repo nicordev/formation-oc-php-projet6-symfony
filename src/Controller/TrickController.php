@@ -45,9 +45,6 @@ class TrickController extends AbstractController
         ?int $commentsPage = null
     )
     {
-        $session = $this->get("session");
-        $session->set("current_page", "trick_page");
-
         // Add a new comment form
 
         if ($this->isGranted(Member::ROLE_USER)) {
@@ -79,13 +76,13 @@ class TrickController extends AbstractController
     /**
      * Create a trick
      *
-     * @Route("/create-trick", name="create_trick")
+     * @Route("/add-trick", name="add_trick")
      *
      * @param Request $request
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function addTrick(Request $request, ObjectManager $manager)
+    public function addTrick(Request $request, EntityManagerInterface $manager)
     {
         $this->denyAccessUnlessGranted(Member::ROLE_USER);
 
@@ -96,6 +93,7 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $trick->setAuthor($this->getUser());
             $manager->persist($trick);
             $manager->flush();
 
@@ -104,7 +102,7 @@ class TrickController extends AbstractController
                 "Le trick {$trick->getName()} a été créé"
             );
 
-            return $this->redirectToRoute("trick_show_id", ['id' => $trick->getId()]);
+            return $this->redirectToRoute("trick_show", ['id' => $trick->getId()]);
         }
 
         return $this->render('trick/trickEditor.html.twig', [
@@ -145,7 +143,7 @@ class TrickController extends AbstractController
                 "Le trick {$trick->getName()} a été modifié"
             );
 
-            return $this->redirectToRoute("trick_show_id", ['id' => $trick->getId()]);
+            return $this->redirectToRoute("trick_show", ['id' => $trick->getId()]);
         }
 
         return $this->render('trick/trickEditor.html.twig', [

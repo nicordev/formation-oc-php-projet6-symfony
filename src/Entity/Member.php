@@ -170,6 +170,20 @@ class Member implements UserInterface
     // Tricks
 
     /**
+     * Check if the Member is the author of a trick
+     *
+     * @param Trick $trick
+     * @return bool
+     */
+    public function isAuthor(Trick $trick)
+    {
+        if ($trick->getAuthor()->getId() === $this->getId()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @return Collection|Trick[]
      */
     public function getTricks(): Collection
