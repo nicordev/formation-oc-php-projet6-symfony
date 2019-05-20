@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Member;
 use App\Form\RegistrationType;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +15,7 @@ class MemberController extends AbstractController
     /**
      * @Route("/registration", name="registration_route")
      */
-    public function showRegistration(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder)
+    public function showRegistration(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder)
     {
         $session = $this->get("session");
         $session->set("current_page", "registration");
