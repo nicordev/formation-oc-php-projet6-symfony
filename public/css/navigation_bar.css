@@ -1,0 +1,9 @@
+.is-fixed {
+    position: fixed;
+    top: -71px;
+    transition: transform 200ms;
+}
+
+.is-visible {
+    transform: translate3d(0, 100%, 0);
+}

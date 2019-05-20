@@ -54,6 +54,11 @@ class Member implements UserInterface
     private $picture;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author")
+     */
+    private $comments;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="author")
      */
     private $tricks;
@@ -68,12 +73,13 @@ class Member implements UserInterface
     public const ROLE_EDITOR = "ROLE_EDITOR";
     public const ROLE_ADMIN = "ROLE_ADMIN";
 
+    public const DEFAULT_PICTURE_URL = "/img/default_member.png";
+
     public function __construct()
     {
+        $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
     }
-
-    public const DEFAULT_PICTURE_URL = "/img/default_member.png";
 
     public function getId(): ?int
     {
@@ -128,6 +134,39 @@ class Member implements UserInterface
         return $this;
     }
 
+    // Comments
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getAuthor() === $this) {
+                $comment->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
     // Tricks
 
     /**
@@ -159,17 +198,6 @@ class Member implements UserInterface
         }
 
         return $this;
-    }
-
-    /**
-     * Check if the member is the author of a trick
-     *
-     * @param Trick $trick
-     * @return bool
-     */
-    public function isAuthor(Trick $trick): bool
-    {
-        return $trick->getAuthor()->getId() === $this->getId();
     }
 
     // UserInterface

@@ -1,0 +1,65 @@
+<div class="comments">
+
+    {# Comments count#}
+    {% if commentsPaginator.itemsCount > 1 %}
+        <p id="comments-count">{{ commentsPaginator.itemsCount }} commentaires</p>
+    {% else %}
+        <p id="comments-count">{{ commentsPaginator.itemsCount }} commentaire</p>
+    {% endif %}
+
+    {# Comments #}
+    {% for comment in comments %}
+        <div class="comment">
+            {# Author #}
+            <div class="comment-author">
+                <figure class="comment-author-picture">
+                    <img src="{{ comment.getAuthor().picture.url ?? constant("App\\Entity\\Member::DEFAULT_PICTURE_URL") }}" alt="Photo de {{ comment.getAuthor().name ?? "Ancien membre" }}">
+                    <figcaption class="comment-author-name">{{ comment.getAuthor().name ?? "Ancien membre" }}</figcaption>
+                </figure>
+            </div>
+            <div class="comment-content-wrapper">
+                {# Meta #}
+                <div class="comment-meta">{{ comment.createdAt|date('d/m/Y à h:m') }}</div>
+
+                {# Commands #}
+                {% if is_granted(constant("App\\Entity\\Member::ROLE_MODERATOR")) or
+                    is_granted(constant("App\\Entity\\Member::ROLE_USER")) and comment.getAuthor().id is same as(app.user.id) %}
+
+                    {% if commentToEditId is not defined or comment.id is not same as(commentToEditId) %}
+                        <div class="comment-tools-wrapper">
+                            <a class="command" href="{{ path("trick_edit_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments">🖉</a>
+                            <a class="command" href="{{ path("trick_delete_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments">🗑</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                {# Content #}
+                {% if commentToEditId is defined and comment.id is same as(commentToEditId) %}
+                    {{ form_start(editCommentForm) }}
+                    {{ form_row(editCommentForm.content) }}
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                    {{ form_end(editCommentForm) }}
+                {% else %}
+                    <div class="comment-content">{{ comment.content|striptags("<p><br><ul><li><strong><em>")|raw }}</div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+    {# Pagination links #}
+    {% if commentsPaginator.pagesCount > 1 %}
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item{% if commentsPaginator.currentPage <= 1 %} disabled{% endif %}">
+                    <a class="page-link" href="{% if commentsPaginator.currentPage <= 1 %}#{% else %}{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage - 1}) }}#trick-comments{% endif %}">&laquo;</a>
+                </li>
+                <li class="page-item">
+                    <span class="page-link">{{ commentsPaginator.currentPage }} / {{ commentsPaginator.pagesCount }}</span>
+                </li>
+                <li class="page-item{% if commentsPaginator.currentPage >= commentsPaginator.pagesCount %} disabled{% endif %}">
+                    <a class="page-link" href="{% if commentsPaginator.currentPage >= commentsPaginator.pagesCount %}#{% else %}{{ path("trick_show", {"id": trick.id, "commentsPage": commentsPaginator.currentPage + 1}) }}#trick-comments{% endif %}">&raquo;</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+</div>

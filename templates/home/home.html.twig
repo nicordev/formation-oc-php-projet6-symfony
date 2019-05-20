@@ -3,23 +3,7 @@
 {% block title %}Accueil{% endblock %}
 
 {% block stylesheets %}
-    <style>
-        header {
-            background-image: url("https://1920x1080hdwallpapers.com/image/201502/men/753/snowboard-trick-snow-extreme-mountain.jpg");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-        }
-
-        h1 {
-            font-family: 'Fredericka the Great', cursive;
-            font-size: 5em;
-        }
-
-        h2 {
-            font-family: 'Love Ya Like A Sister', cursive;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/home.css">
 {% endblock %}
 
 {% block header %}
@@ -31,19 +15,102 @@
 {% endblock %}
 
 {% block body %}
-    <section class="py-3 row flex-jc-center" id="trick-list">
-        {% for trick in tricks %}
-            {% include 'home/card.html.twig' %}
-        {% endfor %}
-    </section>
+
+    {# Paging #}
     {% if paginator.currentPage > 1 %}
         <div class="text-center mb-3">
             <a id="home-previous-page-btn" class="btn btn-primary" href="{{ path("home") ~ (paginator.currentPage - 1) }}#trick-list">Afficher les tricks précédents</a>
         </div>
     {% endif %}
+
+    {# Tricks #}
+    <section class="py-3 row flex-jc-center" id="trick-list">
+        {% include 'home/trickDeck.html.twig' %}
+    </section>
+
+    {# Paging #}
     {% if paginator.currentPage < paginator.pagesCount %}
         <div class="text-center mb-3">
             <a id="home-next-page-btn" class="btn btn-primary" href="{{ path("home") ~ (paginator.currentPage + 1) }}#trick-list">Afficher d'autres tricks</a>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var homePaging = {
+
+            /**
+             * Send an AJAX request to the server to get a page
+             *
+             * @param pageNumber
+             * @param before
+             */
+            getPage: function (pageNumber, before = false) {
+
+                var xhr = new XMLHttpRequest(),
+                    requestedUrl = "{{ path("home_ajax_get_page") }}/" + pageNumber;
+
+                xhr.open("GET", requestedUrl);
+
+                xhr.addEventListener("readystatechange", () => {
+
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            homePaging.addPage(xhr.responseText, before);
+                        } else {
+                            console.log("Error with AJAX request to get a page: " + xhr.status);
+                        }
+                    }
+
+                });
+
+                xhr.send();
+            },
+
+            addPage: function (htmlPage, before = false) {
+
+                var trickListElt = document.getElementById("trick-list");
+
+                if (before) {
+                    trickListElt.innerHTML = htmlPage + trickListElt.innerHTML;
+
+                } else {
+                    trickListElt.innerHTML += htmlPage;
+                }
+            }
+        };
+
+        var pagesCount = {{ paginator.pagesCount }},
+            initialPage = {{ paginator.currentPage }},
+            previousPage = initialPage - 1,
+            nextPage = initialPage + 1,
+            previousPageBtnElt = document.getElementById("home-previous-page-btn"),
+            nextPageBtnElt = document.getElementById("home-next-page-btn");
+
+        if (previousPageBtnElt) {
+            previousPageBtnElt.addEventListener("click", (event) => {
+                event.preventDefault();
+                homePaging.getPage(previousPage, true);
+                previousPage--;
+                if (previousPage < 1) {
+                    // Remove previous page button
+                    document.getElementById("home-previous-page-btn").parentElement.remove();
+                }
+            });
+        }
+
+        if (nextPageBtnElt) {
+            nextPageBtnElt.addEventListener("click", (event) => {
+                event.preventDefault();
+                homePaging.getPage(nextPage, false);
+                nextPage++;
+                if (nextPage > pagesCount) {
+                    // Remove next page button
+                    document.getElementById("home-next-page-btn").parentElement.remove();
+                }
+            });
+        }
+    </script>
 {% endblock %}
