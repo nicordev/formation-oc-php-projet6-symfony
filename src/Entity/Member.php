@@ -73,6 +73,13 @@ class Member implements UserInterface
     public const ROLE_EDITOR = "ROLE_EDITOR";
     public const ROLE_ADMIN = "ROLE_ADMIN";
 
+    public const ROLES = [
+        self::ROLE_USER,
+        self::ROLE_MODERATOR,
+        self::ROLE_EDITOR,
+        self::ROLE_ADMIN
+    ];
+
     public const DEFAULT_PICTURE_URL = "/img/default_member.png";
 
     public function __construct()
@@ -137,6 +144,17 @@ class Member implements UserInterface
     // Comments
 
     /**
+     * Check if the Member is the author of a comment
+     *
+     * @param Comment $comment
+     * @return bool
+     */
+    public function isCommentAuthor(Comment $comment)
+    {
+        return $comment->getAuthor()->getId() === $this->getId();
+    }
+
+    /**
      * @return Collection|Comment[]
      */
     public function getComments(): Collection
@@ -177,10 +195,7 @@ class Member implements UserInterface
      */
     public function isAuthor(Trick $trick)
     {
-        if ($trick->getAuthor()->getId() === $this->getId()) {
-            return true;
-        }
-        return false;
+        return $trick->getAuthor()->getId() === $this->getId();
     }
 
     /**

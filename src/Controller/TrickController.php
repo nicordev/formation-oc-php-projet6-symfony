@@ -7,6 +7,8 @@ use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Form\CommentType;
 use App\Form\TrickType;
+use App\Security\CommentVoter;
+use App\Security\TrickVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CommentRepository;
 use App\Repository\MemberRepository;
@@ -84,7 +86,7 @@ class TrickController extends AbstractController
      */
     public function addTrick(Request $request, EntityManagerInterface $manager)
     {
-        $this->denyAccessUnlessGranted(Member::ROLE_USER);
+        $this->denyAccessUnlessGranted(TrickVoter::ADD);
 
         $trick = new Trick();
 
@@ -107,7 +109,7 @@ class TrickController extends AbstractController
 
         return $this->render('trick/trickEditor.html.twig', [
             'trickForm' => $form->createView(),
-            'editMode' => $trick->getId() !== null
+            'editMode' => false
         ]);
     }
 
@@ -122,13 +124,9 @@ class TrickController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function editTrick(Request $request, EntityManagerInterface $manager, Trick $trick = null)
+    public function editTrick(Request $request, EntityManagerInterface $manager, Trick $trick)
     {
-        $user = $this->getUser();
-
-        if (!$user || !$this->isGranted(Member::ROLE_EDITOR) && !$user->isAuthor($trick)) {
-            $this->denyAccessUnlessGranted([]);
-        }
+        $this->denyAccessUnlessGranted(TrickVoter::EDIT, $trick);
 
         $form = $this->createForm(TrickType::class, $trick);
 
@@ -148,7 +146,8 @@ class TrickController extends AbstractController
 
         return $this->render('trick/trickEditor.html.twig', [
             'trickForm' => $form->createView(),
-            'editMode' => $trick->getId() !== null
+            'editMode' => true,
+            'trickId' => $trick->getId()
         ]);
     }
 
@@ -163,11 +162,7 @@ class TrickController extends AbstractController
      */
     public function delete(EntityManagerInterface $manager, Trick $trick)
     {
-        $user = $this->getUser();
-
-        if (!$user || !$this->isGranted(Member::ROLE_EDITOR) && !$user->isAuthor($trick)) {
-            $this->denyAccessUnlessGranted([]);
-        }
+        $this->denyAccessUnlessGranted(TrickVoter::DELETE, $trick);
 
         $trickName = $trick->getName();
         $manager->remove($trick);
@@ -207,7 +202,7 @@ class TrickController extends AbstractController
         Paginator $commentsPaginator
     )
     {
-        $this->denyAccessUnlessGranted(Member::ROLE_USER);
+        $this->denyAccessUnlessGranted(CommentVoter::ADD);
 
         $newComment = new Comment();
         $commentForm = $this->createForm(CommentType::class, $newComment);
@@ -268,7 +263,7 @@ class TrickController extends AbstractController
         ?int $commentsPage = null
     )
     {
-        $this->denyAccessUnlessGranted(Member::ROLE_USER);
+        $this->denyAccessUnlessGranted(CommentVoter::EDIT, $comment);
 
         $editCommentForm = $this->createForm(CommentType::class, $comment);
         $editCommentForm->handleRequest($request);
@@ -319,6 +314,8 @@ class TrickController extends AbstractController
         ?int $commentsPage = null
     )
     {
+        $this->denyAccessUnlessGranted(CommentVoter::DELETE, $comment);
+
         $manager->remove($comment);
         $manager->flush();
 
