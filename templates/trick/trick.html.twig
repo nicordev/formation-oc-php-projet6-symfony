@@ -3,41 +3,24 @@
 {% block title %}{{ trick.name }}{% endblock %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="/css/paging.css">
+    <link rel="stylesheet" href="/css/comment.css">
+    <link rel="stylesheet" href="/css/trick.css">
     <style>
-        h1 {
-            font-family: 'Love Ya Like A Sister', cursive;
-            text-align: center;
-            color: rgb(44, 62, 80);
-        }
-
         .trick-header {
-            min-height: 500px;
             {% if trick.mainImage %}
                 background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("{{ trick.mainImage }}");
             {% else %}
                 background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("/public/img/mountain_1.jpg");
             {% endif %}
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
         }
 
         #trick-main-image {
-            height: 400px;
-            width: 600px;
             {% if trick.mainImage %}
                 background-image: url("{{ trick.mainImage }}");
             {% else %}
                 background-image: url("/public/img/no_image.jpg");
             {% endif %}
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            border-radius: 50px;
-        }
-
-        #trick-title {
-            padding: 50px 20px;
         }
     </style>
 {% endblock %}
@@ -45,7 +28,7 @@
 {% block header %}
     <header class="trick-header">
         <div class="commands-wrapper">
-            <a class="command" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
+            <a class="command btn-warning" href="{{ path("trick_edit", {"id": trick.id}) }}">🖉</a><a class="command btn-danger" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
         </div>
         <div id="trick-title">
             <div id="trick-main-image"></div>
@@ -98,7 +81,30 @@
 
     <hr>
     {# Comments #}
-    <div class="trick-comments">
-        {# TODO: insert comments and new comment form #}
+    <div id="trick-comments">
+        {% include "trick/comment/commentForm.html.twig" %}
+        <hr>
+        {% include "trick/comment/comment.html.twig" %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Markdown #}
+    <script src="/js/marked.js"></script>
+    <script>
+        var markdownConverter = {
+            convertContent: function (element) {
+                element.innerHTML = marked(element.textContent);
+            }
+        };
+
+        (function () {
+            var commentElts = document.getElementsByClassName("comment-content");
+
+            for (let i = 0, size = commentElts.length; i < size; i++) {
+                markdownConverter.convertContent(commentElts[i]);
+            }
+        })();
+    </script>
 {% endblock %}
