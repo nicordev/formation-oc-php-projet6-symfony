@@ -4,10 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Trick;
 use App\Service\Paginator;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
@@ -19,12 +17,12 @@ class HomeController extends AbstractController
      *
      * @Route("/{page}", name="home", requirements={"page": "\d+"})
      *
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param Paginator $paginator
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function show(ObjectManager $manager, Paginator $paginator, int $page = 1)
+    public function show(EntityManagerInterface $manager, Paginator $paginator, int $page = 1)
     {
         $trickRepo = $manager->getRepository(Trick::class);
 
@@ -46,16 +44,16 @@ class HomeController extends AbstractController
      *
      * @Route("/get-page/{page}", name="home_ajax_get_page", requirements={"page": "\d+"})
      *
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param Paginator $paginator
      * @param int $page
      * @return false|string
      */
-    public function getPage(ObjectManager $manager, Paginator $paginator, ?int $page = null)
+    public function getPage(EntityManagerInterface $manager, Paginator $paginator, ?int $page = 1)
     {
         $trickRepo = $manager->getRepository(Trick::class);
 
-        $paginator->update($page ?? 1, self::TRICKS_PER_PAGE, $trickRepo->count([]));
+        $paginator->update($page, self::TRICKS_PER_PAGE, $trickRepo->count([]));
 
         $tricks = $trickRepo->findBy([], ["createdAt" => "DESC"], $paginator->itemsPerPage, $paginator->pagingOffset);
 

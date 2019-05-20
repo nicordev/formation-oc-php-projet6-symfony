@@ -7,11 +7,11 @@ use App\Entity\Member;
 use App\Entity\Trick;
 use App\Form\CommentType;
 use App\Form\TrickType;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CommentRepository;
 use App\Repository\MemberRepository;
 use App\Service\HtmlKeys;
 use App\Service\Paginator;
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -83,12 +83,12 @@ class TrickController extends AbstractController
      * @Route("/edit-trick/{id}", name="trick_edit", requirements={"id": "\d+"})
      *
      * @param Request $request
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param Trick|null $trick
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function addOrEdit(Request $request, ObjectManager $manager, Trick $trick = null)
+    public function addOrEdit(Request $request, EntityManagerInterface $manager, Trick $trick = null)
     {
         $this->denyAccessUnlessGranted(Member::ROLE_USER);
 
@@ -131,11 +131,11 @@ class TrickController extends AbstractController
      *
      * @Route("/delete-trick/{id}", name="delete_trick", requirements={"id": "\d+"})
      *
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param Trick $trick
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete(ObjectManager $manager, Trick $trick)
+    public function delete(EntityManagerInterface $manager, Trick $trick)
     {
         $trickName = $trick->getName();
         $manager->remove($trick);
@@ -159,7 +159,7 @@ class TrickController extends AbstractController
      * @Route("/trick/{id}/add-comment", name="trick_add_comment", requirements={"id": "\d+"})
      *
      * @param Request $request
-     * @param ObjectManager $objectManager
+     * @param EntityManagerInterface $objectManager
      * @param Trick $trick
      * @param CommentRepository $commentRepository
      * @param MemberRepository $memberRepository
@@ -168,7 +168,7 @@ class TrickController extends AbstractController
      */
     public function addComment(
         Request $request,
-        ObjectManager $objectManager,
+        EntityManagerInterface $objectManager,
         Trick $trick,
         CommentRepository $commentRepository,
         MemberRepository $memberRepository,
@@ -218,7 +218,7 @@ class TrickController extends AbstractController
      * @Route("/edit-comment/{id}/comments-page/{commentsPage}", name="trick_edit_comment", requirements={"id": "\d+", "commentsPage": "\d+"})
      *
      * @param Request $request
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param Comment $comment
      * @param CommentRepository $commentRepository
      * @param MemberRepository $memberRepository
@@ -228,7 +228,7 @@ class TrickController extends AbstractController
      */
     public function editComment(
         Request $request,
-        ObjectManager $manager,
+        EntityManagerInterface $manager,
         Comment $comment,
         CommentRepository $commentRepository,
         MemberRepository $memberRepository,
@@ -276,13 +276,13 @@ class TrickController extends AbstractController
      *
      * @Route("/delete-comment/{id}/comments-page/{commentsPage}", name="trick_delete_comment", requirements={"id": "\d+", "commentsPage": "\d+"})
      *
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param Comment $comment
      * @param int $commentsPage
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteComment(
-        ObjectManager $manager,
+        EntityManagerInterface $manager,
         Comment $comment,
         ?int $commentsPage = null
     )
