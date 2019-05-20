@@ -31,7 +31,7 @@ class MemberController extends AbstractController
             $manager->persist($newMember);
             $manager->flush();
 
-            return $this->redirectToRoute("login_route");
+            return $this->redirectToRoute("app_login");
         }
 
         return $this->render('member/registration.html.twig', [
