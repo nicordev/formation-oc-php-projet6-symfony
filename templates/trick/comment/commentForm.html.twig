@@ -15,11 +15,12 @@
         {{ form_end(commentForm) }}
     </div>
 {% else %}
-    <div class="mx-auto" style="max-width: 500px;">
-        <p class="alert-info mb-3 p-3">
-            Connectez-vous pour écrire un commentaire.<br>
+    <div class="alert-info p-3">
+        <p>
+            <a href="{{ path("app_login") }}" style="color: whitesmoke;">Connectez-vous</a> pour écrire un commentaire.
+        </p>
+        <p>
             Vous êtes nouveau ? <a href="{{ path("registration_route") }}" style="color: whitesmoke;">Inscrivez-vous</a>
         </p>
-        {% include "security/loginForm.html.twig" %}
     </div>
 {% endif %}
