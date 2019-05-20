@@ -1,6 +1,6 @@
 
-<div class="comment-form">
-    {% if is_granted('ROLE_USER') %}
+{% if is_granted('ROLE_USER') %}
+    <div class="comment-form">
         {{ form_start(commentForm) }}
 
         {{ form_row(commentForm.content, {
@@ -13,9 +13,13 @@
         <button type="submit" class="btn btn-primary comment-btn">Publier</button>
 
         {{ form_end(commentForm) }}
-    {% else %}
-        <p>Connectez-vous pour écrire un commentaire</p>
+    </div>
+{% else %}
+    <div class="mx-auto" style="max-width: 500px;">
+        <p class="alert-info mb-3 p-3">
+            Connectez-vous pour écrire un commentaire.<br>
+            Vous êtes nouveau ? <a href="{{ path("registration_route") }}" style="color: whitesmoke;">Inscrivez-vous</a>
+        </p>
         {% include "security/loginForm.html.twig" %}
-        <p>Pas encore inscrit ? <a href="{{ path("registration_route") }}">C'est par ici !</a></p>
-    {% endif %}
-</div>
+    </div>
+{% endif %}

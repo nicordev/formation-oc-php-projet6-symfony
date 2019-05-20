@@ -3,26 +3,30 @@
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <label for="inputEmail" class="">Email</label>
-    <input type="email"
-           {% if last_username is defined %}
-               value="{{ last_username }}"
-           {% endif %}
-           name="email"
-           id="inputEmail"
-           class="form-control"
-           placeholder="Email"
-           required
-           autofocus
-    >
-    <label for="inputPassword" class="">Mot de passe</label>
-    <input type="password"
-           name="password"
-           id="inputPassword"
-           class="form-control"
-           placeholder="Mot de passe compliqué requis"
-           required
-    >
+    <div class="form-group">
+        <label for="inputEmail" class="">Email</label>
+        <input type="email"
+                {% if last_username is defined %}
+                    value="{{ last_username }}"
+                {% endif %}
+               name="email"
+               id="inputEmail"
+               class="form-control"
+               placeholder="Email"
+               required
+               autofocus
+        >
+    </div>
+    <div class="form-group">
+        <label for="inputPassword" class="">Mot de passe</label>
+        <input type="password"
+               name="password"
+               id="inputPassword"
+               class="form-control"
+               placeholder="Mot de passe compliqué requis"
+               required
+        >
+    </div>
 
     <input type="hidden" name="_csrf_token"
            value="{{ csrf_token('authenticate') }}"
