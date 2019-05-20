@@ -5,6 +5,7 @@ namespace App\Security;
 use App\Entity\Member;
 use App\Entity\Trick;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class TrickVoter extends Voter
@@ -18,6 +19,15 @@ class TrickVoter extends Voter
         self::EDIT,
         self::DELETE
     ];
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorizationChecker;
+
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
 
     /**
      * Determines if the attribute and subject are supported by this voter.
@@ -85,7 +95,7 @@ class TrickVoter extends Voter
         if ($member->isAuthor($trick)) {
             return true;
 
-        } elseif (in_array(Member::ROLE_EDITOR, $member->getRoles())) { // TODO: use of roles hierarchy
+        } elseif ($this->authorizationChecker->isGranted(Member::ROLE_EDITOR, $member)) {
             return true;
         }
 

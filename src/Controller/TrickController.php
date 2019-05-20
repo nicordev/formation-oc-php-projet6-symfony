@@ -133,7 +133,6 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $manager->persist($trick);
             $manager->flush();
 
             $this->addFlash(
