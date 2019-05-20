@@ -17,17 +17,19 @@ class MemberController extends AbstractController
      */
     public function showRegistration(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder)
     {
+        $session = $this->get("session");
+        $session->set("current_page", "registration");
+
         $newMember = new Member();
 
         $registrationForm = $this->createForm(RegistrationType::class, $newMember);
 
         $registrationForm->handleRequest($request);
 
-        $registrationForm->isValid();
-
         if ($registrationForm->isSubmitted() && $registrationForm->isValid()) {
             $hash = $encoder->encodePassword($newMember, $newMember->getPassword());
             $newMember->setPassword($hash);
+            $newMember->setRoles([Member::ROLE_USER]);
 
             $manager->persist($newMember);
             $manager->flush();
@@ -45,6 +47,9 @@ class MemberController extends AbstractController
      */
     public function login()
     {
+        $session = $this->get("session");
+        $session->set("current_page", "login");
+
         return $this->render('member/login.html.twig');
     }
 

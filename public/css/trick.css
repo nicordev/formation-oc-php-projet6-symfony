@@ -1,0 +1,50 @@
+
+header h1 {
+    font-family: 'Love Ya Like A Sister', cursive;
+    text-align: center;
+    color: rgb(44, 62, 80);
+}
+
+.embedded-video {
+    border: none;
+}
+
+.trick-header {
+    min-height: 500px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.trick-media {
+    display: block;
+    width: 200px;
+    height: 150px;
+    margin: 10px;
+    transition-property: transform;
+    transition-duration: 175ms;
+}
+
+.trick-media:hover {
+    transform: scale(2);
+    z-index: 10;
+}
+
+.trick-media-type {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#trick-title {
+    padding: 50px 20px;
+}
+
+#trick-main-image {
+    height: 400px;
+    width: 600px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50px;
+}
