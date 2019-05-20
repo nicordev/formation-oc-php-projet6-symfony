@@ -17,9 +17,6 @@ class MemberController extends AbstractController
      */
     public function showRegistration(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder)
     {
-        $session = $this->get("session");
-        $session->set("current_page", "registration");
-
         $newMember = new Member();
 
         $registrationForm = $this->createForm(RegistrationType::class, $newMember);
@@ -34,28 +31,11 @@ class MemberController extends AbstractController
             $manager->persist($newMember);
             $manager->flush();
 
-            return $this->redirectToRoute("login_route");
+            return $this->redirectToRoute("app_login");
         }
 
         return $this->render('member/registration.html.twig', [
             'registrationForm' => $registrationForm->createView(),
         ]);
     }
-
-    /**
-     * @Route("/login", name="login_route")
-     */
-    public function login()
-    {
-        $session = $this->get("session");
-        $session->set("current_page", "login");
-
-        return $this->render('member/login.html.twig');
-    }
-
-    /**
-     * @Route("/logout", name="logout_route")
-     */
-    public function logout()
-    {}
 }
