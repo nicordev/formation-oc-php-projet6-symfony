@@ -8,7 +8,7 @@ use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use App\Repository\MemberRepository;
 use App\Service\Paginator;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,10 +50,8 @@ class ModerationController extends AbstractController
         // Access control
         $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
 
-        $session = $this->get("session");
-        $session->set("current_page", "moderation");
-
         // Filter
+        $session = $this->get("session");
         if ($filter !== null) {
             $session->set("moderation_panel_filter", $filter);
         }
@@ -81,14 +79,14 @@ class ModerationController extends AbstractController
      * @Route("/moderation-panel/edit-comment/{id}/page{page}", name="moderation_edit_comment", requirements={"id": "\d+", "page": "\d+"})
      *
      * @param Request $request
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param Comment $comment
      * @param int|null $page
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function editComment(
         Request $request,
-        ObjectManager $manager,
+        EntityManagerInterface $manager,
         Comment $comment,
         ?int $page = null
     )
@@ -112,13 +110,13 @@ class ModerationController extends AbstractController
      *
      * @Route("/moderation-panel/delete-comment/{id}/page{page}", name="moderation_delete_comment", requirements={"id": "\d+", "page": "\d+"})
      *
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param Comment $comment
      * @param int|null $page
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteComment(
-        ObjectManager $manager,
+        EntityManagerInterface $manager,
         Comment $comment,
         ?int $page = null
     )
@@ -138,14 +136,14 @@ class ModerationController extends AbstractController
      *
      * @Route("/moderation-panel/approve-comment/{id}/approved{approved}/page{page}", name="moderation_approve_comment", requirements={"id": "\d+", "page": "\d+", "approved": "[0-1]{1}"})
      *
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param Comment $comment
      * @param bool $approved
      * @param int|null $page
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function approveComment(
-        ObjectManager $manager,
+        EntityManagerInterface $manager,
         Comment $comment,
         bool $approved,
         ?int $page = null
@@ -171,7 +169,7 @@ class ModerationController extends AbstractController
      * @Route("/moderation-panel/handle-selection/{task}/page{page}", name="moderation_handle_comments")
      *
      * @param Request $request
-     * @param ObjectManager $manager
+     * @param EntityManagerInterface $manager
      * @param string|null $task
      * @param int|null $page
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -179,7 +177,7 @@ class ModerationController extends AbstractController
      */
     public function handleSelectedComments(
         Request $request,
-        ObjectManager $manager,
+        EntityManagerInterface $manager,
         ?string $task = null,
         ?int $page = null
     )

@@ -7,15 +7,17 @@
 
     <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item{% if app.session.get("current_page") is same as("home") %} active{% endif %}">
-                <a class="nav-link" href="/">Accueil {% if app.session.get("current_page") is same as("home") %}<span class="sr-only">(current)</span>{% endif %}</a>
+            <li class="nav-item">
+                <a class="nav-link" href="/">Accueil</a>
             </li>
-            <li class="nav-item{% if app.session.get("current_page") is same as("trick_editor") %} active{% endif %}">
-                <a class="nav-link" href="{{ path('trick_add') }}">New trick {% if app.session.get("current_page") is same as("trick_editor") %}<span class="sr-only">(current)</span>{% endif %}</a>
-            </li>
+            {% if is_granted('ROLE_USER') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('add_trick') }}">New trick</a>
+                </li>
+            {% endif %}
             {% if is_granted('ROLE_MODERATOR') %}
-                <li class="nav-item{% if app.session.get("current_page") is same as("moderation") %} active{% endif %}">
-                    <a class="nav-link" href="{{ path('moderation_panel') }}">Modération {% if app.session.get("current_page") is same as("moderation") %}<span class="sr-only">(current)</span>{% endif %}</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('moderation_panel') }}">Modération</a>
                 </li>
             {% endif %}
             {% set connected = false %}

@@ -27,9 +27,11 @@
 
 {% block header %}
     <header class="trick-header">
-        <div class="commands-wrapper">
-            <a class="command btn-warning" href="{{ path("trick_edit", {"id": trick.id}) }}">🖉</a><a class="command btn-danger" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
-        </div>
+        {% if is_granted('ROLE_EDITOR') or trick.author is same as(app.user) %}
+            <div class="commands-wrapper">
+                <a class="command btn-warning" href="{{ path("edit_trick", {"id": trick.id}) }}">🖉</a><a class="command btn-danger" href="{{ path("delete_trick", {"id": trick.id}) }}">🗑</a>
+            </div>
+        {% endif %}
         <div id="trick-title">
             <div id="trick-main-image"></div>
             <h1>{{ trick.name }}</h1>
@@ -67,7 +69,7 @@
     {# Info #}
     <div class="trick-metadata">
         <div class="d-flex justify-content-center flex-wrap">
-            <span class="metadata m-3">Trick créé le {{ trick.createdAt|date('d/m/Y') }} à {{ trick.createdAt|date('H:i') }}</span>
+            <span class="metadata m-3">Trick créé le {{ trick.createdAt|date('d/m/Y') }} à {{ trick.createdAt|date('H:i') }} par {{ trick.author.name }}</span>
             {% if trick.modifiedAt %}
                 <span class="metadata m-3">Modifié le {{ trick.modifiedAt|date('d/m/Y') }} à {{ trick.modifiedAt|date('H:i') }}</span>
             {% endif %}
