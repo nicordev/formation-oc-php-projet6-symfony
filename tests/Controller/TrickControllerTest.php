@@ -4,13 +4,15 @@ namespace App\Tests\Controller;
 
 
 use App\Entity\Trick;
+use App\Tests\HelperTrait\HelperTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 
 class TrickControllerTest extends WebTestCase
 {
+    use HelperTrait;
+
     /**
      * @var Client
      */
@@ -150,28 +152,5 @@ class TrickControllerTest extends WebTestCase
         return $this->client->getContainer()->get('doctrine')->getRepository(Trick::class)->findOneBy([
             'name' => $name
         ]);
-    }
-
-    /**
-     * Echo the response's content
-     */
-    private function printPage()
-    {
-        echo $this->client->getResponse()->getContent();
-    }
-
-    /**
-     * Log in using the log in form
-     *
-     * @param Crawler $crawler
-     * @return Crawler
-     */
-    private function logIn(Crawler $crawler)
-    {
-        $form = $crawler->selectButton("Connexion")->form();
-        $form["email"] = "god@snow.com";
-        $form["password"] = "pwdSucks!0";
-
-        return $this->client->submit($form);
     }
 }

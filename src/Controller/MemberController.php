@@ -12,11 +12,22 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class MemberController extends AbstractController
 {
+    public const FLASH_ALREADY_CONNECTED = "Vous êtes déjà inscrit. Si vous voulez inscrire un nouveau compte, veuillez vous déconnecter.";
+
     /**
      * @Route("/registration", name="registration_route")
      */
     public function showRegistration(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder)
     {
+        // For visitors only
+        if ($this->getUser()) {
+            $this->addFlash(
+                "notice",
+                self::FLASH_ALREADY_CONNECTED
+            );
+            return $this->redirectToRoute("home");
+        }
+
         $newMember = new Member();
 
         $registrationForm = $this->createForm(RegistrationType::class, $newMember);
