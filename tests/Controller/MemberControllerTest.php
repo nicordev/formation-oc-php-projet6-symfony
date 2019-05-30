@@ -4,7 +4,9 @@ namespace App\Tests\Controller;
 
 
 use App\Controller\MemberController;
+use App\Entity\Member;
 use App\Tests\HelperTrait\HelperTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
@@ -23,6 +25,11 @@ class MemberControllerTest extends WebTestCase
     public function setUp()
     {
         $this->client = static::createClient();
+    }
+
+    public function tearDown()
+    {
+        $this->deleteTestUser();
     }
 
     public function testShowRegistration()
@@ -48,9 +55,25 @@ class MemberControllerTest extends WebTestCase
 
         // Now that we are logged in we can't access the registration page anymore
         $this->client->request("GET", "/registration");
-        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->followRedirect();
-        $this->assertContains("SnowTricks", $crawler->filter("h1")->text()); // Home page
-        $this->assertContains(MemberController::FLASH_ALREADY_CONNECTED, $crawler->filter("div.flash-messages")->text());
+        $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+    }
+
+    // Private
+
+    private function deleteTestUser()
+    {
+        $testUser = $this->getMemberByName(self::TEST_USER_NAME);
+        if ($testUser) {
+            $manager = $this->client->getContainer()->get('doctrine')->getManager();
+            $manager->remove($testUser);
+            $manager->flush();
+        }
+    }
+
+    private function getMemberByName(string $name): ?Member
+    {
+        return $this->client->getContainer()->get('doctrine')->getRepository(Member::class)->findOneBy([
+            'name' => $name
+        ]);
     }
 }

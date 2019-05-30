@@ -6,6 +6,7 @@ use App\Entity\Member;
 use App\Form\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -21,11 +22,7 @@ class MemberController extends AbstractController
     {
         // For visitors only
         if ($this->getUser()) {
-            $this->addFlash(
-                "notice",
-                self::FLASH_ALREADY_CONNECTED
-            );
-            return $this->redirectToRoute("home");
+            throw new AccessDeniedException(self::FLASH_ALREADY_CONNECTED);
         }
 
         $newMember = new Member();
