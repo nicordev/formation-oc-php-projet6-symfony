@@ -23,6 +23,7 @@ class TrickControllerTest extends WebTestCase
     public const EDITED_TEST_TRICK_NAME = "Trick test - name - edited";
 
     public const TEST_COMMENT = "Test comment";
+    public const TEST_COMMENT_EDITED = "Test comment - edited";
 
     public function setUp()
     {
@@ -136,9 +137,9 @@ class TrickControllerTest extends WebTestCase
         $this->assertEquals(0, $crawler->filter("form[name=comment]")->count());
         $trickName = $crawler->filter("h1")->text();
 
-        // Logging in
+        // Logging in as user
         $crawler = $this->client->clickLink("Connectez-vous");
-        $this->logIn($crawler);
+        $this->logInAsUser($crawler);
 
         // Now we should be able to add a comment
         $crawler = $this->client->followRedirect();
@@ -151,6 +152,28 @@ class TrickControllerTest extends WebTestCase
         $crawler = $this->client->followRedirect();
         $this->assertContains($trickName, $crawler->filter("h1")->text());
         $this->assertContains(self::TEST_COMMENT, $crawler->filter("div.comment-content")->text());
+    }
+
+    /**
+     * Should be tested after testAddComment to see the test comment
+     */
+    public function testEditComment()
+    {
+        $this->navigateToTheFirstTrickPageFromHome();
+
+        // Logging in as user
+        $crawler = $this->client->clickLink("Connectez-vous");
+        $this->logInAsUser($crawler);
+
+        // Now we should be able to edit the test comment
+        $crawler = $this->client->followRedirect();
+        $this->assertGreaterThanOrEqual(1, $crawler->filter("div.comment-tools-wrapper")->count());
+        $crawler = $this->client->clickLink("🖉");
+        $form = $crawler->selectButton("Modifier")->form();
+        $form['comment[content]'] = self::TEST_COMMENT_EDITED;
+        $this->client->submit($form);
+        $crawler = $this->client->followRedirect();
+        $this->assertContains(self::TEST_COMMENT_EDITED, $crawler->filter("div.comment-content")->text());
     }
 
     // Private

@@ -29,4 +29,19 @@ trait HelperTrait
 
         return $this->client->submit($form);
     }
+
+    /**
+     * Log in as a common user using the login form
+     *
+     * @param Crawler $crawler from the login page
+     * @return Crawler
+     */
+    private function logInAsUser(Crawler $crawler)
+    {
+        $form = $crawler->selectButton("Connexion")->form();
+        $form["email"] = "testuser@snow.com";
+        $form["password"] = "pwdSucks!0";
+
+        return $this->client->submit($form);
+    }
 }

@@ -66,6 +66,10 @@ class MemberFixtures extends Fixture
                 }
             }
 
+            if ($i === 4) {
+                $member->setEmail("testuser@snow.com");
+            }
+
             // Picture
             if (mt_rand(0, 2)) {
                 $picture = $this->newImage(500, 300);
