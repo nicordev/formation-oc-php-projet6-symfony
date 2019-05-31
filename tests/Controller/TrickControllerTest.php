@@ -159,7 +159,10 @@ class TrickControllerTest extends WebTestCase
      */
     public function testEditComment()
     {
-        $this->navigateToTheFirstTrickPageFromHome();
+        $crawler = $this->navigateToTheFirstTrickPageFromHome();
+
+        // Anonymous, so no edit command button should appear
+        $this->assertEquals(0, $crawler->filter("div.comment-tools-wrapper")->count());
 
         // Logging in as user
         $crawler = $this->client->clickLink("Connectez-vous");
@@ -176,7 +179,50 @@ class TrickControllerTest extends WebTestCase
         $this->assertContains(self::TEST_COMMENT_EDITED, $crawler->filter("div.comment-content")->text());
     }
 
+    /**
+     * Should be tested after testAddComment to see the test comment
+     */
+    public function testDeleteComment()
+    {
+        $crawler = $this->navigateToTheFirstTrickPageFromHome();
+
+        // Anonymous, so no edit command button should appear
+        $this->assertEquals(0, $crawler->filter("div.comment-tools-wrapper")->count());
+
+        // Logging in as user
+        $crawler = $this->client->clickLink("Connectez-vous");
+        $this->logInAsUser($crawler);
+        $crawler = $this->client->followRedirect();
+
+        $commentContent = $this->getTestCommentContent($crawler);
+
+        // Now let's delete the test comment!
+        $this->assertGreaterThanOrEqual(1, $crawler->filter("div.comment-tools-wrapper")->count());
+        $this->client->clickLink("🗑");
+        $crawler = $this->client->followRedirect();
+        $this->assertRegExp("/Le commentaire de .+ a été supprimé/", $crawler->filter("div.flash-messages")->text());
+        $this->assertNotContains($commentContent, $crawler->filter("div.comment-content")->text());
+    }
+
     // Private
+
+    /**
+     * Get the content of the test comment, either the new or the edited one
+     *
+     * @param Crawler $crawler
+     * @return string|null
+     */
+    private function getTestCommentContent(Crawler $crawler): ?string
+    {
+        $commentContents = $crawler->filter("div.comment-content");
+        foreach ($commentContents as $commentContent) {
+            if ($commentContent->textContent === self::TEST_COMMENT_EDITED || $commentContent->textContent === self::TEST_COMMENT) {
+                return $commentContent->textContent;
+            }
+        }
+
+        return null;
+    }
 
     /**
      * Open the first trick showing on the home page

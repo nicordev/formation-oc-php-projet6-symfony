@@ -100,7 +100,7 @@ class MemberFixtures extends Fixture
             $trick = new Trick();
             $trick->setName("trick $i")
                 ->setDescription("<h2>description $i</h2>$description")
-                ->setCreatedAt($this->faker->dateTimeThisYear())
+                ->setCreatedAt($this->faker->dateTimeThisYear()) // WARNING: this will be override by Trick::setCreatedAtToNow() so comment its content before loading these fixtures
                 ->setMainImage($this->faker->imageUrl($imageWidth, $imageHeight));
 
             // Images
