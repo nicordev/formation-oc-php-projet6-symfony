@@ -9,6 +9,7 @@ use App\Repository\CommentRepository;
 use App\Repository\MemberRepository;
 use App\Service\Paginator;
 use Doctrine\ORM\EntityManagerInterface;
+use Prophecy\Exception\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,7 +34,6 @@ class ModerationController extends AbstractController
      * @Route("/moderation-panel/page{page}/filter{filter}", name="moderation_panel_filter", requirements={"page": "\d+"})
      *
      * @param CommentRepository $commentRepository
-     * @param MemberRepository $memberRepository
      * @param Paginator $paginator
      * @param int|null $page
      * @param int|null $filter
@@ -41,7 +41,6 @@ class ModerationController extends AbstractController
      */
     public function moderationPanel(
         CommentRepository $commentRepository,
-        MemberRepository $memberRepository,
         Paginator $paginator,
         ?int $page = null,
         ?int $filter = null
@@ -57,7 +56,6 @@ class ModerationController extends AbstractController
         }
 
         $comments = $commentRepository->getComments(
-            $memberRepository,
             $paginator,
             $session->get('moderation_panel_filter') ?? CommentRepository::FILTER_NOT_APPROVED,
             $page ?? 1,
@@ -102,7 +100,7 @@ class ModerationController extends AbstractController
             $this->addFlash("notice", "Le commentaire du {$comment->getCreatedAt()->format('d/m/Y H:i')} a été modifié");
         }
 
-        return $this->redirectToRoute("moderation_panel", ['page' => $page]);
+        return $this->redirectToRoute(self::ROUTE_MODERATION_PANEL, ['page' => $page]);
     }
 
     /**
@@ -128,7 +126,7 @@ class ModerationController extends AbstractController
 
         $this->addFlash("notice", "Le commentaire de {$comment->getAuthor()->getName()} a été supprimé");
 
-        return $this->redirectToRoute("moderation_panel", ['page' => $page]);
+        return $this->redirectToRoute(self::ROUTE_MODERATION_PANEL, ['page' => $page]);
     }
 
     /**
@@ -160,7 +158,7 @@ class ModerationController extends AbstractController
             $this->addFlash("notice", "Le commentaire de {$comment->getAuthor()->getName()} n'est plus approuvé");
         }
 
-        return $this->redirectToRoute("moderation_panel", ['page' => $page]);
+        return $this->redirectToRoute(self::ROUTE_MODERATION_PANEL, ['page' => $page]);
     }
 
     /**
@@ -213,7 +211,7 @@ class ModerationController extends AbstractController
                 break;
 
             default:
-                throw new \Exception("The task $task does not exist", 500);
+                throw new InvalidArgumentException("The task $task does not exist", 500);
                 break;
         }
 

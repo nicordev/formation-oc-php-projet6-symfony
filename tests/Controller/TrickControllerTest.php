@@ -6,6 +6,7 @@ namespace App\Tests\Controller;
 use App\Entity\Trick;
 use App\Tests\HelperTrait\HelperTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 
@@ -21,6 +22,8 @@ class TrickControllerTest extends WebTestCase
     public const NEW_TEST_TRICK_NAME = "Trick test - name";
     public const EDITED_TEST_TRICK_NAME = "Trick test - name - edited";
 
+    public const TEST_COMMENT = "Test comment";
+
     public function setUp()
     {
         $this->client = static::createClient();
@@ -29,9 +32,7 @@ class TrickControllerTest extends WebTestCase
     public function testShow()
     {
         // From home to trick page
-        $crawler = $this->client->request('GET', '/');
-        $link = $crawler->filter('a.card-img-link')->first();
-        $crawler = $this->client->click($link->link());
+        $crawler = $this->navigateToTheFirstTrickPageFromHome();
 
         // Tests as anonymous
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -127,7 +128,45 @@ class TrickControllerTest extends WebTestCase
         $this->assertContains("Le trick {$trick->getName()} a été supprimé", $crawler->filter("div.flash-messages")->text());
     }
 
+    public function testAddComment()
+    {
+        $crawler = $this->navigateToTheFirstTrickPageFromHome();
+
+        // Anonymous so the comment form should not appear
+        $this->assertEquals(0, $crawler->filter("form[name=comment]")->count());
+        $trickName = $crawler->filter("h1")->text();
+
+        // Logging in
+        $crawler = $this->client->clickLink("Connectez-vous");
+        $this->logIn($crawler);
+
+        // Now we should be able to add a comment
+        $crawler = $this->client->followRedirect();
+        $this->assertEquals(1, $crawler->filter("form[name=comment]")->count());
+        $form = $crawler->selectButton("Publier")->form();
+        $form['comment[content]'] = self::TEST_COMMENT;
+        $this->client->submit($form);
+
+        // Now we see our comment on the trick page
+        $crawler = $this->client->followRedirect();
+        $this->assertContains($trickName, $crawler->filter("h1")->text());
+        $this->assertContains(self::TEST_COMMENT, $crawler->filter("div.comment-content")->text());
+    }
+
     // Private
+
+    /**
+     * Open the first trick showing on the home page
+     *
+     * @return Crawler
+     */
+    private function navigateToTheFirstTrickPageFromHome(): Crawler
+    {
+        $crawler = $this->client->request('GET', '/');
+        $link = $crawler->filter('a.card-img-link')->first();
+
+        return $this->client->click($link->link());
+    }
 
     /**
      * Get the test trick to either the new or the edited one

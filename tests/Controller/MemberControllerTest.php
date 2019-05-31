@@ -3,10 +3,8 @@
 namespace App\Tests\Controller;
 
 
-use App\Controller\MemberController;
 use App\Entity\Member;
 use App\Tests\HelperTrait\HelperTrait;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
