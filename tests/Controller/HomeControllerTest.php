@@ -18,15 +18,18 @@ class HomeControllerTest extends WebTestCase
     {
         $crawler = $this->client->request('GET', '/');
 
-        $this->assertEquals(1, $crawler->filter('h1')->count()); // Only 1 h1
-
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(1, $crawler->filter('h1')->count()); // Only 1 h1
+        $this->assertGreaterThanOrEqual(1, $crawler->filter('div.card')->count());
+        $this->assertLessThanOrEqual(10, $crawler->filter('div.card')->count());
     }
 
     public function testGetPage()
     {
-        $this->client->request("GET", "/get-page/2");
+        $crawler = $this->client->request("GET", "/get-page/2");
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertGreaterThanOrEqual(1, $crawler->filter('div.card')->count());
+        $this->assertLessThanOrEqual(10, $crawler->filter('div.card')->count());
     }
 }
