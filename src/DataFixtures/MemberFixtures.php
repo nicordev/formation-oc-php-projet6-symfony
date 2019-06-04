@@ -98,6 +98,7 @@ class MemberFixtures extends Fixture
 
     // Realistic fixtures
 
+    // TODO: select groups according to the trick name
     private function generateTrick()
     {
         $trick = new Trick();
@@ -125,11 +126,9 @@ class MemberFixtures extends Fixture
         return $trick;
     }
 
-    private function generateTrickName() // TODO: avoid empty names
+    private function generateTrickName()
     {
         $addJump = function (array &$nameParts) {
-
-            $hasOffsetRotation = false;
 
             // Switch
             if (mt_rand(0, 2) === 1) {
@@ -138,7 +137,6 @@ class MemberFixtures extends Fixture
 
             // Offset rotation
             if (mt_rand(0, 2) === 1) {
-                $hasOffsetRotation = true;
                 $offsetRotations = [
                     "Cork",
                     "Rodeo",
@@ -148,9 +146,7 @@ class MemberFixtures extends Fixture
             }
 
             // Rotation
-            if (mt_rand(0, 3) >= 1 || $hasOffsetRotation) {
-                $nameParts[] = mt_rand(1, 6) * 180;
-            }
+            $nameParts[] = mt_rand(1, 6) * 180;
         };
 
         $addSlide = function (array &$nameParts, bool $beginWithJump, bool $finishWithJump) {
@@ -191,7 +187,16 @@ class MemberFixtures extends Fixture
             }
         }
 
-        return implode(" ", $nameParts);
+        $trickName = implode(" ", $nameParts);
+
+        foreach ($this->tricks as $trick) {
+            if ($trick->getName() === $trickName) {
+                $trickName = $this->generateTrickName();
+                break;
+            }
+        }
+
+        return $trickName;
     }
 
     private function generateDescription(string $trickName) // TODO: add descriptions to every trick part
