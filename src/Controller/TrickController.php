@@ -11,7 +11,6 @@ use App\Security\CommentVoter;
 use App\Security\TrickVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CommentRepository;
-use App\Repository\MemberRepository;
 use App\Service\HtmlKeys;
 use App\Service\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +21,7 @@ class TrickController extends AbstractController
 {
     public const COMMENTS_PER_PAGE = 5;
 
-    public const ROUTE_TRICK = "trick_show";
+    public const ROUTE_TRICK_SHOW = "trick_show";
     public const ROUTE_ADD_COMMENT = "trick_add_comment";
     public const ROUTE_EDIT_COMMENT = "trick_edit_comment";
 
@@ -34,7 +33,6 @@ class TrickController extends AbstractController
      *
      * @param Trick $trick
      * @param CommentRepository $commentRepository
-     * @param MemberRepository $memberRepository
      * @param Paginator $commentsPaginator
      * @param int $commentsPage
      * @return \Symfony\Component\HttpFoundation\Response
@@ -42,7 +40,6 @@ class TrickController extends AbstractController
     public function show(
         Trick $trick,
         CommentRepository $commentRepository,
-        MemberRepository $memberRepository,
         Paginator $commentsPaginator,
         ?int $commentsPage = null
     )
@@ -61,7 +58,6 @@ class TrickController extends AbstractController
         // Existing comments
 
         $comments = $commentRepository->getTrickComments(
-            $memberRepository,
             $commentsPaginator,
             $trick,
             $commentsPage ?? 1
@@ -104,7 +100,7 @@ class TrickController extends AbstractController
                 "Le trick {$trick->getName()} a été créé"
             );
 
-            return $this->redirectToRoute("trick_show", ['id' => $trick->getId()]);
+            return $this->redirectToRoute(self::ROUTE_TRICK_SHOW, ['id' => $trick->getId()]);
         }
 
         return $this->render('trick/trickEditor.html.twig', [
@@ -140,7 +136,7 @@ class TrickController extends AbstractController
                 "Le trick {$trick->getName()} a été modifié"
             );
 
-            return $this->redirectToRoute("trick_show", ['id' => $trick->getId()]);
+            return $this->redirectToRoute(self::ROUTE_TRICK_SHOW, ['id' => $trick->getId()]);
         }
 
         return $this->render('trick/trickEditor.html.twig', [
@@ -188,7 +184,6 @@ class TrickController extends AbstractController
      * @param EntityManagerInterface $objectManager
      * @param Trick $trick
      * @param CommentRepository $commentRepository
-     * @param MemberRepository $memberRepository
      * @param Paginator $commentsPaginator
      * @return bool|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
@@ -197,7 +192,6 @@ class TrickController extends AbstractController
         EntityManagerInterface $objectManager,
         Trick $trick,
         CommentRepository $commentRepository,
-        MemberRepository $memberRepository,
         Paginator $commentsPaginator
     )
     {
@@ -224,7 +218,6 @@ class TrickController extends AbstractController
         // Existing comments
 
         $comments = $commentRepository->getTrickComments(
-            $memberRepository,
             $commentsPaginator,
             $trick,
             1
@@ -247,7 +240,6 @@ class TrickController extends AbstractController
      * @param EntityManagerInterface $manager
      * @param Comment $comment
      * @param CommentRepository $commentRepository
-     * @param MemberRepository $memberRepository
      * @param Paginator $commentsPaginator
      * @param int|null $commentsPage
      * @return \Symfony\Component\HttpFoundation\Response
@@ -257,7 +249,6 @@ class TrickController extends AbstractController
         EntityManagerInterface $manager,
         Comment $comment,
         CommentRepository $commentRepository,
-        MemberRepository $memberRepository,
         Paginator $commentsPaginator,
         ?int $commentsPage = null
     )
@@ -279,7 +270,6 @@ class TrickController extends AbstractController
         // Existing comments
 
         $comments = $commentRepository->getTrickComments(
-            $memberRepository,
             $commentsPaginator,
             $comment->getTrick(),
             $commentsPage
@@ -335,7 +325,7 @@ class TrickController extends AbstractController
      */
     private function redirectToTrickRoute(int $trickId, int $commentPage = 1, string $urlComplements = "")
     {
-        $trickUrl = $this->generateUrl(self::ROUTE_TRICK, ["id" => $trickId, "commentsPage" => $commentPage]);
+        $trickUrl = $this->generateUrl(self::ROUTE_TRICK_SHOW, ["id" => $trickId, "commentsPage" => $commentPage]);
 
         return $this->redirect("{$trickUrl}{$urlComplements}");
     }

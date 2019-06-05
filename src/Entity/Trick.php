@@ -43,7 +43,7 @@ class Trick
     private $modifiedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\TrickGroup", mappedBy="tricks")
+     * @ORM\ManyToMany(targetEntity="App\Entity\TrickGroup", inversedBy="tricks")
      */
     private $trickGroups;
 

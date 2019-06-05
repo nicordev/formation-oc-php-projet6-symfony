@@ -6,17 +6,25 @@ use App\Entity\Member;
 use App\Form\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class MemberController extends AbstractController
 {
+    public const FLASH_ALREADY_CONNECTED = "Vous êtes déjà inscrit. Si vous voulez inscrire un nouveau compte, veuillez vous déconnecter.";
+
     /**
      * @Route("/registration", name="registration_route")
      */
     public function showRegistration(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder)
     {
+        // For visitors only
+        if ($this->getUser()) {
+            throw new AccessDeniedException(self::FLASH_ALREADY_CONNECTED);
+        }
+
         $newMember = new Member();
 
         $registrationForm = $this->createForm(RegistrationType::class, $newMember);
