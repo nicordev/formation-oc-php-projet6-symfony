@@ -26,11 +26,7 @@ class RequestListener
         $request = $event->getRequest();
         $route = $request->attributes->get('_route');
 
-        if (
-            $route !== "app_login" &&
-            $route !== "registration_route" &&
-            $route[0] !== '_'
-        ) {
+        if ($route !== "app_login" && $route[0] !== '_') {
             $uri = $request->getRequestUri();
             $this->saveTargetPath($request->getSession(), "main", $uri);
         }

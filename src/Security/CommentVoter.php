@@ -82,10 +82,10 @@ class CommentVoter extends Voter
      */
     private function isAuthorized(Comment $comment, Member $member)
     {
-        if (
-            $member->isCommentAuthor($comment) ||
-            in_array(Member::ROLE_MODERATOR, $member->getRoles()) // TODO: use of roles hierarchy
-        ) {
+        if ($member->isCommentAuthor($comment)) {
+            return true;
+
+        } elseif (in_array(Member::ROLE_MODERATOR, $member->getRoles())) { // TODO: use of roles hierarchy
             return true;
         }
 
