@@ -98,7 +98,7 @@ class MemberFixtures extends Fixture
 
     // Realistic fixtures
 
-    // TODO: set groups according to the trick name
+    // TODO: select groups according to the trick name
     private function generateTrick()
     {
         $trick = new Trick();
@@ -199,7 +199,7 @@ class MemberFixtures extends Fixture
         return $trickName;
     }
 
-    private function generateDescription(string $trickName) // TODO: add descriptions to every trick part
+    private function generateDescription(string $trickName)
     {
         $descriptionParts = [];
         $trickParts = explode(" ", $trickName);
@@ -216,6 +216,9 @@ class MemberFixtures extends Fixture
             if ($trickParts[$i] === "Switch") {
                 $descriptionParts[] = "<li>Tu te place en regular si tu est goofy et inversement</li>";
 
+            } elseif (preg_match("/[0-9]+/", $trickParts[$i])) {
+                $descriptionParts[] = "<li>Tu pivotes de {$trickParts[$i]} degrés</li>";
+
             } elseif ($trickParts[$i] === "Rail") {
                 $descriptionParts[] = "<li>Tu glisse sur la barre</li>";
 
@@ -224,10 +227,6 @@ class MemberFixtures extends Fixture
 
             } elseif ($trickParts[$i] === "Tail") {
                 $descriptionParts[] = "<li>Tu glisse sur la barre avec l'arrière de ta planche</li>";
-
-            } elseif (preg_match("/[0-9]+/", $trickParts[$i])) {
-                $descriptionParts[] = "<li>Tu pivotes de {$trickParts[$i]} degrés</li>";
-                break;
             }
         }
 

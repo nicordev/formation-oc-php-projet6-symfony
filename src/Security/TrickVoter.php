@@ -92,10 +92,10 @@ class TrickVoter extends Voter
      */
     private function isAuthorized(Trick $trick, Member $member)
     {
-        if ($member->isAuthor($trick)) {
-            return true;
-
-        } elseif ($this->authorizationChecker->isGranted(Member::ROLE_EDITOR, $member)) {
+        if (
+            $member->isAuthor($trick) ||
+            $this->authorizationChecker->isGranted(Member::ROLE_EDITOR, $member)
+        ) {
             return true;
         }
 

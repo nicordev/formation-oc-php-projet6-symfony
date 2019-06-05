@@ -30,7 +30,7 @@ class TrickGroup
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Trick", inversedBy="trickGroups")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Trick", mappedBy="trickGroups")
      */
     private $tricks;
 
