@@ -28,6 +28,7 @@ class CommentRepository extends ServiceEntityRepository
     /**
      * Get the comments of a trick
      *
+     * @param MemberRepository $memberRepository
      * @param Paginator $commentsPaginator
      * @param Trick $trick
      * @param int $commentsPage
@@ -35,6 +36,7 @@ class CommentRepository extends ServiceEntityRepository
      * @return array
      */
     public function getTrickComments(
+        MemberRepository $memberRepository,
         Paginator $commentsPaginator,
         Trick $trick,
         int $commentsPage = 1,
@@ -48,17 +50,20 @@ class CommentRepository extends ServiceEntityRepository
             $commentsCount
         );
 
-        return $this->findBy(
+        $comments = $this->findBy(
             ["trick" => $trick],
             ["createdAt" => "DESC"],
             $commentsPaginator->itemsPerPage,
             $commentsPaginator->pagingOffset
         );
+
+        return $comments;
     }
 
     /**
      * Get comments
      *
+     * @param MemberRepository $memberRepository
      * @param Paginator $paginator
      * @param int $filterApproved
      * @param int $commentsPage
@@ -66,6 +71,7 @@ class CommentRepository extends ServiceEntityRepository
      * @return Comment[]
      */
     public function getComments(
+        MemberRepository $memberRepository,
         Paginator $paginator,
         int $filterApproved = self::FILTER_NOT_APPROVED,
         int $commentsPage = 1,
