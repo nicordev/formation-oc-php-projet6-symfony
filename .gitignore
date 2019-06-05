@@ -1,8 +1,6 @@
 .idea/
 .scannerwork/
 code_review.bat
-codecov_token
-test.html
 
 ###> symfony/framework-bundle ###
 /.env.local
