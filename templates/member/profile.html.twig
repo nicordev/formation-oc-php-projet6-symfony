@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/profile.css">
+{% endblock %}
+
+{% block title %}
+    Profil de {{ member.name }}
+{% endblock %}
+
+{% block header %}
+    <header>
+        <h1>{{ member.name }}</h1>
+        <figure>
+            <img id="member-picture" src="{{ member.picture.url ?? constant("App\\Entity\\Member::DEFAULT_PICTURE_URL") }}" alt="Photo">
+        </figure>
+    </header>
+{% endblock %}
+
+{% block body %}
+
+    <h4>Tricks</h4>
+
+    {% if member.tricks %}
+        <ul>
+            {% for trick in member.tricks %}
+                <li>
+                    <a href="{{ path("trick_show_simple", {"id": trick.id}) }}">{{ trick.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>{{ member.name }} n'a publié aucun trick.</p>
+    {% endif %}
+
+{% endblock %}

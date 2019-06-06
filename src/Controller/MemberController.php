@@ -46,4 +46,14 @@ class MemberController extends AbstractController
             'registrationForm' => $registrationForm->createView(),
         ]);
     }
+
+    /**
+     * @Route("/member/{id}", name="member_profile", requirements={"id": "\d+"}))
+     */
+    public function showProfile(Member $member)
+    {
+        return $this->render("member/profile.html.twig", [
+            "member" => $member
+        ]);
+    }
 }

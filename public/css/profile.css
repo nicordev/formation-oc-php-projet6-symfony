@@ -1,0 +1,11 @@
+#member-picture {
+    max-width: 300px;
+    max-height: 300px;
+    transition-property: transform;
+    transition-duration: 200ms;
+}
+
+#member-picture:hover {
+    transform: scale(2);
+    z-index: 10;
+}

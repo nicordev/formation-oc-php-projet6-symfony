@@ -69,7 +69,7 @@
     {# Info #}
     <div class="trick-metadata">
         <div class="d-flex justify-content-center flex-wrap">
-            <span class="metadata m-3">Trick créé le {{ trick.createdAt|date('d/m/Y') }} à {{ trick.createdAt|date('H:i') }} par {{ trick.author.name }}</span>
+            <span class="metadata m-3">Trick créé le {{ trick.createdAt|date('d/m/Y') }} à {{ trick.createdAt|date('H:i') }} par <a href="{{ path("member_profile", {"id": trick.author.id}) }}">{{ trick.author.name }}</a></span>
             {% if trick.modifiedAt %}
                 <span class="metadata m-3">Modifié le {{ trick.modifiedAt|date('d/m/Y') }} à {{ trick.modifiedAt|date('H:i') }}</span>
             {% endif %}
