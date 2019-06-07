@@ -3,12 +3,11 @@
 namespace App\Security;
 
 use App\Entity\Member;
-use App\Entity\Trick;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class TrickVoter extends Voter
+class MemberVoter extends Voter
 {
     public const ADD = "add";
     public const EDIT = "edit";
@@ -41,9 +40,8 @@ class TrickVoter extends Voter
     {
         if (!in_array($attribute, self::ACTIONS)) {
             return false;
-        }
 
-        if ($subject instanceof Trick || $subject === null) {
+        } elseif ($subject instanceof Member) {
             return true;
         }
 
@@ -67,37 +65,23 @@ class TrickVoter extends Voter
         if (!$user instanceof Member) {
             // the user must be logged in; if not, deny access
             return false;
-
-        } elseif ($attribute === self::ADD) {
-            // Every member can add tricks
-            return true;
         }
 
-        $trick = $subject;
+        $member = $subject;
 
-        if (in_array($attribute, [self::EDIT, self::DELETE])){
-            return $this->isAuthorized($trick, $user);
+        if (in_array($attribute, [self::EDIT, self::DELETE, self::ADD])){
+            if (
+                in_array(Member::ROLE_MANAGER, $user->getRoles()) ||
+                in_array(Member::ROLE_ADMIN, $user->getRoles()) ||
+                $user === $member
+            ) {
+
+                return true;
+            }
+
+            return false;
         }
 
         throw new \LogicException('This code should not be reached!');
-    }
-
-    /**
-     * Check if a Member can add, edit or delete a trick
-     *
-     * @param Trick $trick
-     * @param Member $member
-     * @return bool
-     */
-    private function isAuthorized(Trick $trick, Member $member)
-    {
-        if (
-            $member->isAuthor($trick) ||
-            $this->authorizationChecker->isGranted(Member::ROLE_EDITOR, $member)
-        ) {
-            return true;
-        }
-
-        return false;
     }
 }

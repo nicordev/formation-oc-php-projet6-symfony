@@ -55,4 +55,10 @@
         <p>{{ member.name }} n'a publié aucun trick.</p>
     {% endif %}
 
+    {% if app.user is same as(member) or is_granted(constant("App\\Entity\\Member::ROLE_MANAGER")) %}
+        <div>
+            <a href="{{ path("member_delete", {"id": member.id}) }}" class="btn btn-danger">Supprimer le compte</a>
+        </div>
+    {% endif %}
+
 {% endblock %}

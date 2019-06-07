@@ -49,17 +49,17 @@ class Member implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Image", mappedBy="member")
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", mappedBy="member", cascade={"remove"})
      */
     private $picture;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author", cascade={"remove"})
      */
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="author")
+     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="author", cascade={"remove"})
      */
     private $tricks;
 
