@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Member;
 use App\Form\RegistrationType;
+use App\Repository\MemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -62,8 +63,12 @@ class MemberController extends AbstractController
      * @Route("/member-management", name="member_management")
      * @Security("is_granted('ROLE_MANAGER')")
      */
-    public function showMemberManagement()
+    public function showMemberManagement(MemberRepository $repository, EntityManagerInterface $manager)
     {
+        $members = $repository->findAll();
 
+        return $this->render("member/management.html.twig", [
+            "members" => $members
+        ]);
     }
 }

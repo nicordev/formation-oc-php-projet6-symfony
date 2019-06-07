@@ -22,7 +22,7 @@
     {% if member.roles %}
         {% if member.roles|length > 2 %}
             <h4>Rôles particuliers</h4>
-        {% else %}
+        {% elseif member.roles|length > 1 %}
             <h4>Rôle particulier</h4>
         {% endif %}
 
