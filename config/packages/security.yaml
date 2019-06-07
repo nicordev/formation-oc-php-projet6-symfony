@@ -39,7 +39,8 @@ security:
     role_hierarchy:
         ROLE_MODERATOR: ROLE_USER
         ROLE_EDITOR: ROLE_USER
-        ROLE_ADMIN: ROLE_USER
+        ROLE_MANAGER: ROLE_USER
+        ROLE_ADMIN: [ROLE_USER, ROLE_MODERATOR, ROLE_EDITOR, ROLE_MANAGER]
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

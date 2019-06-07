@@ -287,22 +287,24 @@ class MemberFixtures extends Fixture
                 ->setRoles([Member::ROLE_USER]);
 
             if ($i <= 3) {
-                if ($i === 0 || $i === 1) {
+                if ($i === 1) {
                     $member->setEmail("moderator@snow.com");
                     $member->addRole(Member::ROLE_MODERATOR);
                 }
 
-                if ($i === 0 || $i === 2) {
+                if ($i === 2) {
                     $member->setEmail("editor@snow.com");
                     $member->addRole(Member::ROLE_EDITOR);
                 }
-                if ($i === 0 || $i === 3) {
-                    $member->setEmail("admin@snow.com");
-                    $member->addRole(Member::ROLE_ADMIN);
+
+                if ($i === 3) {
+                    $member->setEmail("manager@snow.com");
+                    $member->addRole(Member::ROLE_MANAGER);
                 }
 
                 if ($i === 0) {
-                    $member->setEmail("god@snow.com");
+                    $member->addRole(Member::ROLE_ADMIN);
+                    $member->setEmail("admin@snow.com");
                 }
             }
 

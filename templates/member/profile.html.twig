@@ -19,6 +19,28 @@
 
 {% block body %}
 
+    {% if member.roles %}
+        {% if member.roles|length > 2 %}
+            <h4>Rôles particuliers</h4>
+        {% else %}
+            <h4>Rôle particulier</h4>
+        {% endif %}
+
+        <ul>
+            {% for role in member.roles %}
+                {% if role is same as(constant("App\\Entity\\Member::ROLE_EDITOR")) %}
+                    <li>Editeur</li>
+                {% elseif role is same as(constant("App\\Entity\\Member::ROLE_MODERATOR")) %}
+                    <li>Modérateur</li>
+                {% elseif role is same as(constant("App\\Entity\\Member::ROLE_MANAGER")) %}
+                    <li>Manager des membres</li>
+                {% elseif role is same as(constant("App\\Entity\\Member::ROLE_ADMIN")) %}
+                    <li>Administrateur</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <h4>Tricks</h4>
 
     {% if member.tricks %}

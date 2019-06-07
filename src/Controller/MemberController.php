@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Member;
 use App\Form\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,5 +56,14 @@ class MemberController extends AbstractController
         return $this->render("member/profile.html.twig", [
             "member" => $member
         ]);
+    }
+
+    /**
+     * @Route("/member-management", name="member_management")
+     * @Security("is_granted('ROLE_MANAGER')")
+     */
+    public function showMemberManagement()
+    {
+
     }
 }
