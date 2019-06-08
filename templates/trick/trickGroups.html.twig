@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tricks par groupe{% endblock %}
+
+{% block header %}
+    <header>
+        <h1>Tricks par groupe</h1>
+    </header>
+{% endblock %}
+
+{% block body %}
+
+    <ul>
+        {% for group in groups %}
+            <li><a href="{{ path("show_trick_group", {"id": group.id}) }}">{{ group.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
