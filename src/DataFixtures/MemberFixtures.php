@@ -203,6 +203,11 @@ class MemberFixtures extends Fixture
     {
         $descriptionParts = [];
         $trickParts = explode(" ", $trickName);
+        $beginnings = [
+            "<p>Voici la recette :</p>",
+            "<p>Bon, alors c'est tout simple, il suffit de :</p>",
+            "<p>Attention les yeux ! Voici comment ça se danse :</p>",
+        ];
         $endings = [
             "<p>Et voilà !</p>",
             "<p>Alors, tu tentes le coup ?</p>",
@@ -210,6 +215,8 @@ class MemberFixtures extends Fixture
             "<p>Un trick facile, pour les débutants.</p>",
             "<p>Un trick de malade !</p>"
         ];
+
+        $descriptionParts[] = $beginnings[mt_rand(0, count($beginnings) - 1)];
 
         for ($i = 0, $size = count($trickParts); $i < $size; $i++) {
 

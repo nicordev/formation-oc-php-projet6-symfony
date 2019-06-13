@@ -84,7 +84,6 @@ class MemberController extends AbstractController
         $manager->remove($member);
         $manager->flush();
 
-
         if ($member === $this->getUser()) {
             $session->invalidate();
             $this->addFlash("notice", "Votre compte a bien été supprimé");
