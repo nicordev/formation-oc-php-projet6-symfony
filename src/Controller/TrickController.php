@@ -5,8 +5,11 @@ namespace App\Controller;
 use App\Entity\Member;
 use App\Entity\Comment;
 use App\Entity\Trick;
+use App\Entity\TrickGroup;
 use App\Form\CommentType;
 use App\Form\TrickType;
+use App\Repository\TrickGroupRepository;
+use App\Repository\TrickRepository;
 use App\Security\CommentVoter;
 use App\Security\TrickVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -107,6 +110,26 @@ class TrickController extends AbstractController
             'trickForm' => $form->createView(),
             'editMode' => false
         ]);
+    }
+
+    /**
+     * @Route("/trick-groups", name="show_trick_groups")
+     */
+    public function showTrickGroups(TrickGroupRepository $repository)
+    {
+        $groups = $repository->findAll();
+
+        return $this->render("trick/trickGroups.html.twig", [
+            "groups" => $groups
+        ]);
+    }
+
+    /**
+     * @Route("/trick-group/{id}", name="show_trick_group", requirements={"id": "\d+"})
+     */
+    public function showTrickGroup(TrickGroup $trickGroup)
+    {
+        return $this->render("trick/trickGroup.html.twig", ["group" => $trickGroup]);
     }
 
     /**

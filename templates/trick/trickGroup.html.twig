@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block header %}
+    <header>
+        <h1>{{ group.name }}</h1>
+    </header>
+{% endblock %}
+
+{% block body %}
+    {% set tricks = group.tricks %}
+    <section class="py-3 row flex-jc-center" id="trick-list">
+        {% include 'home/trickDeck.html.twig' %}
+    </section>
+{% endblock %}
