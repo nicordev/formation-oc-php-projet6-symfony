@@ -14,10 +14,6 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ path("show_trick_groups") }}">Tricks par groupe</a>
             </li>
-            {% if is_granted('ROLE_USER') %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('add_trick') }}">New trick</a>
-                </li>
             {% endif %}
             {% if is_granted(constant("App\\Entity\\Member::ROLE_MODERATOR")) %}
                 <li class="nav-item">
