@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tricks par groupe{% endblock %}
+{% block title %}Tricks{% endblock %}
 
 {% block header %}
     <header>
-        <h1>Tricks par groupe</h1>
+        <h1>Tricks</h1>
     </header>
 {% endblock %}
 
 {% block body %}
+
+    <h2>Catégories</h2>
 
     <ul>
         {% for group in groups %}
