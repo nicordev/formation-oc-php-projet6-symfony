@@ -8,19 +8,11 @@
     <link rel="stylesheet" href="/css/trick.css">
     <style>
         .trick-header {
-            {% if trick.mainImage %}
-                background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("{{ trick.mainImage }}");
-            {% else %}
-                background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("/public/img/mountain_1.jpg");
-            {% endif %}
+                background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("{{ trick.mainImage ?? "/public/img/mountain_1.jpg" }}");
         }
 
         #trick-main-image {
-            {% if trick.mainImage %}
-                background-image: url("{{ trick.mainImage }}");
-            {% else %}
-                background-image: url("/public/img/no_image.jpg");
-            {% endif %}
+            background-image: url("{{ trick.mainImage ?? "/public/img/no_image.jpg" }}");
         }
     </style>
 {% endblock %}
@@ -45,9 +37,7 @@
     <div class="trick-medias row mt-3">
         <div class="trick-media-type col-sm-6 col-12">
             {% for image in trick.images %}
-                <a href="{{ image.url }}" class="trick-media">
-                    <img class="img-fluid" src="{{ image.url }}" alt="Image du trick">
-                </a>
+                <a href="{{ image.url }}" class="trick-media" style="background-image: url('{{ image.url }}')"></a>
             {% endfor %}
         </div>
         {% if trick.videos %}

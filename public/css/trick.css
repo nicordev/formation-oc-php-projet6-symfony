@@ -23,6 +23,9 @@ header h1 {
     margin: 10px;
     transition-property: transform;
     transition-duration: 175ms;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .trick-media:hover {
