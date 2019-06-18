@@ -1,12 +1,16 @@
+<style>
+    .card-img-link {
+        height: 200px;
+        width: fit-content;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+
 {% for trick in tricks %}
     <div class="card col-lg-3 m-3">
-        <a class="card-img-link" href="{{ path('trick_show', {'id': trick.id}) }}">
-            {% if trick.mainImage %}
-                <img src="{{ trick.mainImage }}" class="card-img-top" alt="image">
-            {% else %}
-                <img src="/public/img/no_image.jpg" class="card-img-top" alt="image">
-            {% endif %}
-        </a>
+        <a class="card-img-link" href="{{ path('trick_show', {'id': trick.id}) }}" style="background-image: url('{{ trick.mainImage ?? "/public/img/no_image.jpg" }}')"></a>
         <div class="card-body text-center">
             <h5 class="card-title"><a href="{{ path('trick_show', {'id': trick.id}) }}">{{ trick.name }}</a></h5>
         </div>
