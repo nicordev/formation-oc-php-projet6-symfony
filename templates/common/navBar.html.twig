@@ -11,16 +11,21 @@
                 <a class="nav-link" href="/">Accueil</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path("show_trick_groups") }}">Tricks par groupe</a>
+                <a class="nav-link" href="{{ path("show_trick_groups") }}">Tricks</a>
             </li>
-            {% if is_granted('ROLE_USER') %}
+            {% if is_granted(constant("App\\Entity\\Member::ROLE_USER")) %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('add_trick') }}">New trick</a>
+                    <a class="nav-link" href="{{ path("add_trick") }}">Nouveau trick</a>
                 </li>
             {% endif %}
-            {% if is_granted('ROLE_MODERATOR') %}
+            {% if is_granted(constant("App\\Entity\\Member::ROLE_MODERATOR")) %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('moderation_panel') }}">Modération</a>
+                </li>
+            {% endif %}
+            {% if is_granted(constant("App\\Entity\\Member::ROLE_MANAGER")) %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('member_management') }}">Gestion des membres</a>
                 </li>
             {% endif %}
             {% set connected = false %}

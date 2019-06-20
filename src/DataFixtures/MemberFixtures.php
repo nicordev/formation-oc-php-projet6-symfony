@@ -10,6 +10,7 @@ use App\Entity\TrickGroup;
 use App\Entity\Video;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Exception;
 use Faker\Factory;
 use phpDocumentor\Reflection\Types\Boolean;
 
@@ -26,6 +27,12 @@ class MemberFixtures extends Fixture
     private $videos = [];
     private $realisticFixtures = true; // Set this boolean to true to load realistic fixtures
 
+    private const OFFSET_ROTATIONS = [
+        "Cork",
+        "Rodeo",
+        "Misty"
+    ];
+
     /**
      * Generate members along with their tricks and comments
      *
@@ -41,27 +48,10 @@ class MemberFixtures extends Fixture
 
         // Trick groups
         if ($this->realisticFixtures) {
-            $trickGroupJsonData = file_get_contents(dirname(dirname(__DIR__)) . "/demodata/groups.json");
-            $trickGroupData = \json_decode($trickGroupJsonData);
-            $this->trickGroupsCount = count($trickGroupData);
-
-            foreach ($trickGroupData as $trickGroupDatum) {
-                $trickGroup = new TrickGroup();
-                $trickGroup->setName($trickGroupDatum->name)
-                    ->setDescription($trickGroupDatum->description);
-                $this->manager->persist($trickGroup);
-                $this->trickGroups[] = $trickGroup;
-            }
+            $this->generateTrickGroups();
 
         } else {
-            for ($i = 1; $i <= $this->trickGroupsCount; $i++) {
-                $description = "<p>" . implode("</p><p>", $this->faker->paragraphs(mt_rand(1, 2))) . "</p>";
-                $trickGroup = new TrickGroup();
-                $trickGroup->setName("Groupe n°$i")
-                    ->setDescription("<h2>Description du groupe n°$i</h2>$description");
-                $this->manager->persist($trickGroup);
-                $this->trickGroups[] = $trickGroup;
-            }
+            $this->generateDummyTrickGroups();
         }
 
         // Tricks
@@ -80,17 +70,19 @@ class MemberFixtures extends Fixture
         $this->addVideosToTricks();
 
         // Link tricks and trick groups
-        for ($i = 0; $i < $this->tricksCount; $i++) {
-            for ($j = 0; $j < mt_rand(0, $this->trickGroupsCount - 1); $j++) {
-                $trickGroupKey = mt_rand(0, $this->trickGroupsCount - 1);
-                $this->tricks[$i]->addTrickGroup($this->trickGroups[$trickGroupKey]);
-                $this->trickGroups[$trickGroupKey]->addTrick($this->tricks[$i]);
+        if (!$this->realisticFixtures) {
+            for ($i = 0; $i < $this->tricksCount; $i++) {
+                for ($j = 0; $j < mt_rand(0, $this->trickGroupsCount - 1); $j++) {
+                    $trickGroupKey = mt_rand(0, $this->trickGroupsCount - 1);
+                    $this->tricks[$i]->addTrickGroup($this->trickGroups[$trickGroupKey]);
+                    $this->trickGroups[$trickGroupKey]->addTrick($this->tricks[$i]);
+                }
+                $this->manager->persist($this->tricks[$i]);
             }
-            $this->manager->persist($this->tricks[$i]);
-        }
 
-        for ($i = 0; $i < $this->trickGroupsCount; $i++) {
-            $this->manager->persist($this->trickGroups[$i]);
+            foreach ($this->trickGroups as $trickGroup) {
+                $this->manager->persist($trickGroup);
+            }
         }
 
         $this->manager->flush();
@@ -98,7 +90,21 @@ class MemberFixtures extends Fixture
 
     // Realistic fixtures
 
-    // TODO: select groups according to the trick name
+    private function generateTrickGroups()
+    {
+        $trickGroupJsonData = file_get_contents(dirname(dirname(__DIR__)) . "/demodata/groups.json");
+        $trickGroupData = \json_decode($trickGroupJsonData);
+        $this->trickGroupsCount = count($trickGroupData);
+
+        foreach ($trickGroupData as $trickGroupDatum) {
+            $trickGroup = new TrickGroup();
+            $trickGroup->setName($trickGroupDatum->name)
+                ->setDescription($trickGroupDatum->description);
+            $this->manager->persist($trickGroup);
+            $this->trickGroups[] = $trickGroup;
+        }
+    }
+
     private function generateTrick()
     {
         $trick = new Trick();
@@ -123,6 +129,30 @@ class MemberFixtures extends Fixture
         // Comments
         $this->addCommentsToTrick($trick);
 
+        // TrickGroups
+        $trickParts = explode(" ", $trick->getName());
+        $rotationTrickGroup = $this->getTrickGroupFromName("Rotation");
+        $offsetRotationTrickGroup = $this->getTrickGroupFromName("Rotation désaxée");
+
+        foreach ($trickParts as $trickPart) {
+            if (is_numeric($trickPart)) {
+                $this->linkTrickToTrickGroup($trick, $rotationTrickGroup);
+
+            } elseif (in_array($trickPart, self::OFFSET_ROTATIONS)) {
+                $this->linkTrickToTrickGroup($trick, $offsetRotationTrickGroup);
+
+            } else {
+                foreach ($this->trickGroups as $trickGroup) {
+                    if (strtolower($trickPart) === strtolower($trickGroup->getName())) {
+                        $this->linkTrickToTrickGroup($trick, $trickGroup);
+                        break;
+                    }
+                }
+            }
+        }
+
+        $this->manager->persist($trick);
+
         return $trick;
     }
 
@@ -137,12 +167,7 @@ class MemberFixtures extends Fixture
 
             // Offset rotation
             if (mt_rand(0, 2) === 1) {
-                $offsetRotations = [
-                    "Cork",
-                    "Rodeo",
-                    "Misty"
-                ];
-                $nameParts[] = $offsetRotations[mt_rand(0, 2)];
+                $nameParts[] = self::OFFSET_ROTATIONS[mt_rand(0, 2)];
             }
 
             // Rotation
@@ -203,6 +228,11 @@ class MemberFixtures extends Fixture
     {
         $descriptionParts = [];
         $trickParts = explode(" ", $trickName);
+        $beginnings = [
+            "<p>Voici la recette :</p>",
+            "<p>Bon, alors c'est tout simple, il suffit de :</p>",
+            "<p>Attention les yeux ! Voici comment ça se danse :</p>",
+        ];
         $endings = [
             "<p>Et voilà !</p>",
             "<p>Alors, tu tentes le coup ?</p>",
@@ -210,6 +240,8 @@ class MemberFixtures extends Fixture
             "<p>Un trick facile, pour les débutants.</p>",
             "<p>Un trick de malade !</p>"
         ];
+
+        $descriptionParts[] = $beginnings[mt_rand(0, count($beginnings) - 1)];
 
         for ($i = 0, $size = count($trickParts); $i < $size; $i++) {
 
@@ -273,6 +305,18 @@ class MemberFixtures extends Fixture
 
     // Dummy fixtures
 
+    private function generateDummyTrickGroups()
+    {
+        for ($i = 1; $i <= $this->trickGroupsCount; $i++) {
+            $description = "<p>" . implode("</p><p>", $this->faker->paragraphs(mt_rand(1, 2))) . "</p>";
+            $trickGroup = new TrickGroup();
+            $trickGroup->setName("Groupe n°$i")
+                ->setDescription("<h2>Description du groupe n°$i</h2>$description");
+            $this->manager->persist($trickGroup);
+            $this->trickGroups[] = $trickGroup;
+        }
+    }
+
     private function generateMembers()
     {
         for ($i = 0; $i < $this->membersCount; $i++) {
@@ -287,22 +331,24 @@ class MemberFixtures extends Fixture
                 ->setRoles([Member::ROLE_USER]);
 
             if ($i <= 3) {
-                if ($i === 0 || $i === 1) {
+                if ($i === 1) {
                     $member->setEmail("moderator@snow.com");
                     $member->addRole(Member::ROLE_MODERATOR);
                 }
 
-                if ($i === 0 || $i === 2) {
+                if ($i === 2) {
                     $member->setEmail("editor@snow.com");
                     $member->addRole(Member::ROLE_EDITOR);
                 }
-                if ($i === 0 || $i === 3) {
-                    $member->setEmail("admin@snow.com");
-                    $member->addRole(Member::ROLE_ADMIN);
+
+                if ($i === 3) {
+                    $member->setEmail("manager@snow.com");
+                    $member->addRole(Member::ROLE_MANAGER);
                 }
 
                 if ($i === 0) {
-                    $member->setEmail("god@snow.com");
+                    $member->addRole(Member::ROLE_ADMIN);
+                    $member->setEmail("admin@snow.com");
                 }
             }
 
@@ -379,5 +425,31 @@ class MemberFixtures extends Fixture
             $trick->addComment($comment);
             $this->manager->persist($comment);
         }
+    }
+
+    // Utilities
+
+    private function linkTrickToTrickGroup(Trick $trick, TrickGroup $trickGroup)
+    {
+        $trick->addTrickGroup($trickGroup);
+        $trickGroup->addTrick($trick);
+        $this->manager->persist($trickGroup);
+    }
+
+    /**
+     * Get a trick group from its name
+     *
+     * @param string $groupName
+     * @return mixed
+     * @throws Exception
+     */
+    private function getTrickGroupFromName(string $groupName)
+    {
+        foreach ($this->trickGroups as $trickGroup) {
+            if ($trickGroup->getName() === $groupName) {
+                return $trickGroup;
+            }
+        }
+        throw new Exception("$groupName is not a valid trick group name");
     }
 }

@@ -44,6 +44,7 @@ header h2 {
 
 .card-img-link {
     margin: 0 -15px;
+    max-height: 210px;
 }
 
 .card-body {

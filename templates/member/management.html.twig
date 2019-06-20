@@ -1,0 +1,49 @@
+{% extends "base.html.twig" %}
+
+{% block stylesheets %}
+    <style>
+        .card {
+            border: none;
+        }
+
+        .card-img-top {
+            max-width: 200px;
+        }
+
+        .card-img-link {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}
+    Gestion des membres
+{% endblock %}
+
+{% block header %}
+    <header>
+        <h1>Gestion des membres</h1>
+    </header>
+{% endblock %}
+
+{% block body %}
+
+    <section class="py-3 row flex-jc-center" id="member-list">
+        {% for member in members %}
+            <div class="card col-lg-3 m-3">
+                <a class="card-img-link" href="{{ path('member_profile', {'id': member.id}) }}">
+                    {% if member.picture %}
+                        <img src="{{ member.picture.url }}" class="card-img-top" alt="image">
+                    {% else %}
+                        <img src="{{ member.picture.url ?? constant("App\\Entity\\Member::DEFAULT_PICTURE_URL") }}" class="card-img-top" alt="image">
+                    {% endif %}
+                </a>
+                <div class="card-body text-center">
+                    <h5 class="card-title"><a href="{{ path('member_profile', {'id': member.id}) }}">{{ member.name }}</a></h5>
+                    <p><a href="mailto:{{ member.email }}">{{ member.email }}</a></p>
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+
+{% endblock %}

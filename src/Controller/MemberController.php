@@ -4,8 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Member;
 use App\Form\RegistrationType;
+use App\Repository\MemberRepository;
+use App\Security\MemberVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,5 +49,51 @@ class MemberController extends AbstractController
         return $this->render('member/registration.html.twig', [
             'registrationForm' => $registrationForm->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/member/{id}", name="member_profile", requirements={"id": "\d+"}))
+     */
+    public function showProfile(Member $member)
+    {
+        return $this->render("member/profile.html.twig", [
+            "member" => $member
+        ]);
+    }
+
+    /**
+     * @Route("/member-management", name="member_management")
+     * @Security("is_granted('ROLE_MANAGER')")
+     */
+    public function showMemberManagement(MemberRepository $repository)
+    {
+        $members = $repository->findAll();
+
+        return $this->render("member/management.html.twig", [
+            "members" => $members
+        ]);
+    }
+
+    /**
+     * @Route("/delete-member/{id}", name="member_delete", requirements={"id": "\d+"}))
+     */
+    public function deleteMember(Member $member, EntityManagerInterface $manager, SessionInterface $session)
+    {
+        $this->denyAccessUnlessGranted(MemberVoter::ADD, $member);
+
+        $manager->remove($member);
+        $manager->flush();
+
+        if ($member === $this->getUser()) {
+            $session->invalidate();
+            $this->addFlash("notice", "Votre compte a bien été supprimé");
+
+            return $this->redirectToRoute("home");
+
+        } else {
+            $this->addFlash("notice", "{$member->getName()} a été supprimé");
+
+            return $this->redirectToRoute("member_management");
+        }
     }
 }
