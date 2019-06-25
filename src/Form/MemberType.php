@@ -2,9 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Image;
 use App\Entity\Member;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,9 +25,7 @@ class MemberType extends AbstractType
         $builder
             ->add('name')
             ->add('email')
-            ->add('picture', EntityType::class, [
-                'class' => Image::class
-            ])
+            ->add('picture', ImageType::class)
         ;
 
         if ($options[self::KEY_EDIT_ROLES]) {

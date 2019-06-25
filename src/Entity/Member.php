@@ -49,7 +49,7 @@ class Member implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Image", mappedBy="member", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", mappedBy="member", cascade={"remove", "persist"})
      */
     private $picture;
 
