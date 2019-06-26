@@ -84,7 +84,8 @@ class CommentVoter extends Voter
     {
         if (
             $member->isCommentAuthor($comment) ||
-            in_array(Member::ROLE_MODERATOR, $member->getRoles())
+            in_array(Member::ROLE_MODERATOR, $member->getRoles()) ||
+            in_array(Member::ROLE_ADMIN, $member->getRoles())
         ) {
             return true;
         }

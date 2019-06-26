@@ -37,7 +37,11 @@
                 {% if commentToEditId is defined and comment.id is same as(commentToEditId) %}
                     {{ form_start(editCommentForm) }}
                     <div class="my-3">
-                        {{ form_widget(editCommentForm.content) }}
+                        {{ form_widget(editCommentForm.content, {
+                            "attr": {
+                                "id": "comment-content" ~ loop.index
+                            }
+                        }) }}
                     </div>
                     <button type="submit" class="btn btn-primary">Modifier</button>
                     {{ form_end(editCommentForm) }}

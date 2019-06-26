@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .error-image {
+            background-image: url("img/no_image.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 400px;
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+        }
+    </style>
+{% endblock %}
+
+{% block header %}
+    <header>
+        <h1>Une erreur est survenue</h1>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div class="error-image"></div>
+{% endblock %}

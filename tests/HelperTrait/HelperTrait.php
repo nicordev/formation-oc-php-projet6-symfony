@@ -24,7 +24,7 @@ trait HelperTrait
     private function logIn(Crawler $crawler)
     {
         $form = $crawler->selectButton("Connexion")->form();
-        $form["email"] = "god@snow.com";
+        $form["email"] = "admin@snow.com";
         $form["password"] = "pwdSucks!0";
 
         return $this->client->submit($form);
