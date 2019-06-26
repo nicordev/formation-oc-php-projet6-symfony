@@ -1,5 +1,7 @@
 # OpenClassrooms PHP/Symfony course - Project 6 - SnowTricks
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nicordev_formation-oc-php-projet6-symfony&metric=alert_status)](https://sonarcloud.io/dashboard?id=nicordev_formation-oc-php-projet6-symfony)
+
 A community website on snowboard tricks created with Symfony.
 
 ## Setup

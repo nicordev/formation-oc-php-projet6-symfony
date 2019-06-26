@@ -86,8 +86,8 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-around">
-                                <button class="btn btn-secondary edit-btn mx-1" commentid="{{ comment.id }}">🖉</button>
-                                <a class="btn btn-danger d-block mx-1" href="{{ path("moderation_delete_comment", {"id": comment.id, "page": paginator.currentPage}) }}">🗑</a>
+                                <button class="btn btn-secondary edit-btn mx-1" commentid="{{ comment.id }}"><i class="fas fa-edit"></i></button>
+                                <a class="btn btn-danger d-block mx-1" href="{{ path("moderation_delete_comment", {"id": comment.id, "page": paginator.currentPage}) }}"><i class="fas fa-trash-alt"></i></a>
                             </div>
                         </td>
                     </tr>

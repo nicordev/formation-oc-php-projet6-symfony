@@ -6,10 +6,8 @@ use App\Entity\Comment;
 use App\Entity\Member;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
-use App\Repository\MemberRepository;
 use App\Service\Paginator;
 use Doctrine\ORM\EntityManagerInterface;
-use Prophecy\Exception\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -211,7 +209,7 @@ class ModerationController extends AbstractController
                 break;
 
             default:
-                throw new InvalidArgumentException("The task $task does not exist", 500);
+                throw new \InvalidArgumentException("The task $task does not exist", 500);
                 break;
         }
 
