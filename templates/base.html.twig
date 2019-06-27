@@ -12,7 +12,9 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% include 'common/navBar.html.twig' %}
+        {% block navBar %}
+            {% include 'common/navBar.html.twig' %}
+        {% endblock %}
 
         {% block header %}{% endblock %}
 

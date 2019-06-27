@@ -25,7 +25,9 @@ class MemberType extends AbstractType
         $builder
             ->add('name')
             ->add('email')
-            ->add('picture', ImageType::class)
+            ->add('picture', ImageType::class, [
+                "required" => false
+            ])
         ;
 
         if ($options[self::KEY_EDIT_ROLES]) {

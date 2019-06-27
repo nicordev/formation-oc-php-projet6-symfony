@@ -16,9 +16,14 @@
     </style>
 {% endblock %}
 
+{% block navBar %}
+    {# Empty to avoid showing registration and login links #}
+{% endblock %}
+
 {% block header %}
     <header>
         <h1>Une erreur est survenue</h1>
+        <h2><a href="{{ path("home") }}">Revenir à l'accueil</a></h2>
     </header>
 {% endblock %}
 

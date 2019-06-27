@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -112,7 +113,12 @@ class MemberController extends AbstractController
     /**
      * @Route("/delete-member/{id}", name="member_delete", requirements={"id": "\d+"}))
      */
-    public function deleteMember(Member $member, EntityManagerInterface $manager, SessionInterface $session)
+    public function deleteMember(
+        Member $member,
+        EntityManagerInterface $manager,
+        SessionInterface $session,
+        TokenStorageInterface $tokenStorage
+    )
     {
         $this->denyAccessUnlessGranted(MemberVoter::ADD, $member);
 
@@ -121,6 +127,7 @@ class MemberController extends AbstractController
 
         if ($member === $this->getUser()) {
             $session->invalidate();
+            $tokenStorage->setToken(null);
             $this->addFlash("notice", "Votre compte a bien été supprimé");
 
             return $this->redirectToRoute("home");

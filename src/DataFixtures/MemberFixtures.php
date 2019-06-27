@@ -12,7 +12,6 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Exception;
 use Faker\Factory;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class MemberFixtures extends Fixture
 {
@@ -353,6 +352,7 @@ class MemberFixtures extends Fixture
             }
 
             if ($i === 4) {
+                $member->setName("Jim Nastique");
                 $member->setEmail("testuser@snow.com");
             }
 
