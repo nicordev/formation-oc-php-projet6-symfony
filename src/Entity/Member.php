@@ -138,6 +138,7 @@ class Member implements UserInterface
     public function setPicture(?Image $picture): self
     {
         $this->picture = $picture;
+        $picture->setMember($this);
 
         return $this;
     }

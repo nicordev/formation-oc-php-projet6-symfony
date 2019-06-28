@@ -78,7 +78,6 @@ class MemberController extends AbstractController
                         $member->setPassword($hash);
                     }
                     $member->addRole(Member::ROLE_USER);
-                    $member->getPicture()->setMember($member);
                     $manager->persist($member);
                     $manager->flush();
 
