@@ -18,7 +18,17 @@ class MemberControllerTest extends WebTestCase
      */
     private $client;
 
-    public const TEST_USER_NAME = "bob test";
+    public const TEST_NEW_USER_NAME = "test new member";
+    public const TEST_NEW_USER_EMAIL = "new.member@test.com";
+    public const TEST_NEW_USER_PASSWORD = "pwdSucks!0";
+
+    public const TEST_USER_NAME = "Jim Nastique";
+    public const TEST_USER_EMAIL = "testuser@snow.com";
+    public const TEST_USER_HASHED_PASSWORD = '$2y$13$qACYre5/bO7y2jW4n8S.m.Es6vjYpz7x8XBhZxBvckcr.VoC5cvqq';
+
+    public const TEST_USER_NAME_MODIFIED = "test edit member";
+    public const TEST_USER_EMAIL_MODIFIED = "test.edit.member@test.com";
+    public const TEST_USER_PASSWORD_MODIFIED = "pwdSucks!0mod";
 
     public function setUp()
     {
@@ -27,7 +37,8 @@ class MemberControllerTest extends WebTestCase
 
     public function tearDown()
     {
-        $this->deleteTestUser();
+        $this->deleteNewTestUser();
+        $this->restoreTestUser();
     }
 
     public function testShowRegistration()
@@ -37,9 +48,9 @@ class MemberControllerTest extends WebTestCase
         $this->assertContains("Inscription", $crawler->filter("h1")->text());
 
         $form = $crawler->selectButton("Inscription")->form();
-        $form['registration[name]'] = self::TEST_USER_NAME;
-        $form['registration[email]'] = "bob@test.com";
-        $form['registration[password]'] = "pwdSucks!0";
+        $form['registration[name]'] = self::TEST_NEW_USER_NAME;
+        $form['registration[email]'] = self::TEST_NEW_USER_EMAIL;
+        $form['registration[password]'] = self::TEST_NEW_USER_PASSWORD;
         $this->client->submit($form);
 
         // The newly registered user gets redirected to the login page
@@ -56,14 +67,69 @@ class MemberControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testShowProfile()
+    {
+        $this->loginFromHome(false);
+
+        // Show the profile of the test member
+        $crawler = $this->client->clickLink("Mon profil");
+        $this->assertContains(self::TEST_USER_NAME, $crawler->filter("h1")->text());
+
+        // Edit the profile
+        $form = $crawler->selectButton("Enregistrer les modifications")->form();
+        $form['member[name]'] = self::TEST_USER_NAME_MODIFIED;
+        $form['member[email]'] = self::TEST_USER_EMAIL_MODIFIED;
+        $this->client->submit($form);
+
+        $crawler = $this->client->followRedirect();
+        $this->assertContains(self::TEST_USER_NAME_MODIFIED, $crawler->filter("h1")->text());
+        $this->assertContains(self::TEST_USER_EMAIL_MODIFIED, $crawler->filter("#member_email")->attr("value"));
+    }
+
+    public function testDeleteMember()
+    {
+        $this->loginFromHome(false);
+
+        // Show the profile of the test member
+        $crawler = $this->client->clickLink("Mon profil");
+        $this->assertContains(self::TEST_USER_NAME, $crawler->filter("h1")->text());
+
+        // Delete the member
+        $this->client->clickLink("Supprimer le compte");
+        $crawler = $this->client->followRedirect();
+        $this->assertContains("Votre compte a bien été supprimé", $crawler->filter(".flash-message")->text());
+    }
+
     // Private
 
-    private function deleteTestUser()
+    private function deleteNewTestUser()
     {
-        $testUser = $this->getMemberByName(self::TEST_USER_NAME);
+        $testUser = $this->getMemberByName(self::TEST_NEW_USER_NAME);
         if ($testUser) {
             $manager = $this->client->getContainer()->get('doctrine')->getManager();
             $manager->remove($testUser);
+            $manager->flush();
+        }
+    }
+
+    private function restoreTestUser()
+    {
+        $testUser = $this->getMemberByName(self::TEST_USER_NAME);
+
+        if (!$testUser) {
+            $testUser = $this->getMemberByName(self::TEST_USER_NAME_MODIFIED);
+
+            if (!$testUser) {
+                $testUser = new Member();
+                $testUser->setRoles([Member::ROLE_USER]);
+            }
+
+            $testUser->setName(self::TEST_USER_NAME)
+                ->setEmail(self::TEST_USER_EMAIL)
+                ->setPassword(self::TEST_USER_HASHED_PASSWORD);
+
+            $manager = $this->client->getContainer()->get('doctrine')->getManager();
+            $manager->persist($testUser);
             $manager->flush();
         }
     }

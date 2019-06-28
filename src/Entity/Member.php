@@ -49,7 +49,7 @@ class Member implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Image", mappedBy="member", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", mappedBy="member", cascade={"remove", "persist"})
      */
     private $picture;
 
@@ -138,6 +138,7 @@ class Member implements UserInterface
     public function setPicture(?Image $picture): self
     {
         $this->picture = $picture;
+        $picture->setMember($this);
 
         return $this;
     }

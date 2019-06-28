@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Member;
+use App\Form\MemberType;
 use App\Form\RegistrationType;
 use App\Repository\MemberRepository;
 use App\Security\MemberVoter;
@@ -10,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,11 +55,45 @@ class MemberController extends AbstractController
 
     /**
      * @Route("/member/{id}", name="member_profile", requirements={"id": "\d+"}))
+     * @Route("/member/{id}/edit-password{editPassword}", name="member_profile_password", requirements={"id": "\d+", "editPassword": "[0-1]"}))
      */
-    public function showProfile(Member $member)
+    public function showProfile(Request $request, EntityManagerInterface $manager, Member $member, UserPasswordEncoderInterface $encoder, int $editPassword = 0)
     {
+        $user = $this->getUser();
+
+        // Edition form
+        if ($user) {
+            $userIsManager = in_array(Member::ROLE_MANAGER, $user->getRoles()) || in_array(Member::ROLE_ADMIN, $user->getRoles());
+
+            if ($user === $member || $userIsManager) {
+                $form = $this->createForm(MemberType::class, $member, [
+                    MemberType::KEY_EDIT_ROLES => $userIsManager,
+                    MemberType::KEY_EDIT_PASSWORD => $editPassword
+                ]);
+                $form->handleRequest($request);
+
+                if ($form->isSubmitted() && $form->isValid()) {
+                    if ($editPassword) {
+                        $hash = $encoder->encodePassword($member, $member->getPassword());
+                        $member->setPassword($hash);
+                    }
+                    $member->addRole(Member::ROLE_USER);
+                    $manager->persist($member);
+                    $manager->flush();
+
+                    $this->addFlash(
+                        "notice",
+                        "Le profil de {$member->getName()} a été modifié"
+                    );
+
+                    return $this->redirectToRoute("member_profile", ['id' => $member->getId()]);
+                }
+            }
+        }
+
         return $this->render("member/profile.html.twig", [
-            "member" => $member
+            "member" => $member,
+            "memberForm" => isset($form) ? $form->createView() : null
         ]);
     }
 
@@ -77,7 +113,12 @@ class MemberController extends AbstractController
     /**
      * @Route("/delete-member/{id}", name="member_delete", requirements={"id": "\d+"}))
      */
-    public function deleteMember(Member $member, EntityManagerInterface $manager, SessionInterface $session)
+    public function deleteMember(
+        Member $member,
+        EntityManagerInterface $manager,
+        SessionInterface $session,
+        TokenStorageInterface $tokenStorage
+    )
     {
         $this->denyAccessUnlessGranted(MemberVoter::ADD, $member);
 
@@ -86,6 +127,7 @@ class MemberController extends AbstractController
 
         if ($member === $this->getUser()) {
             $session->invalidate();
+            $tokenStorage->setToken(null);
             $this->addFlash("notice", "Votre compte a bien été supprimé");
 
             return $this->redirectToRoute("home");

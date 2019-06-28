@@ -1,6 +1,7 @@
 .idea/
 .scannerwork/
 code_review.bat
+test.html
 
 ###> symfony/framework-bundle ###
 /.env.local

@@ -27,8 +27,8 @@
 
                     {% if commentToEditId is not defined or comment.id is not same as(commentToEditId) %}
                         <div class="comment-tools-wrapper">
-                            <a class="command" href="{{ path("trick_edit_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments">🖉</a>
-                            <a class="command" href="{{ path("trick_delete_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments">🗑</a>
+                            <a id="edit-{{ comment.id }}" class="command" href="{{ path("trick_edit_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments"><i class="fas fa-edit"></i></a>
+                            <a id="delete-{{ comment.id }}" class="command" href="{{ path("trick_delete_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments"><i class="fas fa-trash-alt"></i></a>
                         </div>
                     {% endif %}
                 {% endif %}
@@ -37,7 +37,11 @@
                 {% if commentToEditId is defined and comment.id is same as(commentToEditId) %}
                     {{ form_start(editCommentForm) }}
                     <div class="my-3">
-                        {{ form_widget(editCommentForm.content) }}
+                        {{ form_widget(editCommentForm.content, {
+                            "attr": {
+                                "id": "comment-content" ~ loop.index
+                            }
+                        }) }}
                     </div>
                     <button type="submit" class="btn btn-primary">Modifier</button>
                     {{ form_end(editCommentForm) }}

@@ -67,6 +67,7 @@ class TrickControllerTest extends WebTestCase
         $crawler = $this->client->followRedirect();
 
         // Add a test trick
+        $this->assertContains("Création d'un trick de foufou", $crawler->filter("h1")->text());
         $form = $crawler->selectButton("Ajouter le trick")->form();
         $form['trick[name]'] = self::NEW_TEST_TRICK_NAME;
         $form['trick[description]'] = "Trick test - description";
@@ -171,7 +172,12 @@ class TrickControllerTest extends WebTestCase
         // Now we should be able to edit the test comment
         $crawler = $this->client->followRedirect();
         $this->assertGreaterThanOrEqual(1, $crawler->filter("div.comment-tools-wrapper")->count());
-        $crawler = $this->client->clickLink("🖉");
+
+        $editLink = $crawler->filter('a[id*="edit-"]')
+            ->eq(0)
+            ->link()
+        ;
+        $crawler = $this->client->click($editLink);
         $form = $crawler->selectButton("Modifier")->form();
         $form['comment[content]'] = self::TEST_COMMENT_EDITED;
         $this->client->submit($form);
@@ -198,7 +204,11 @@ class TrickControllerTest extends WebTestCase
 
         // Now let's delete the test comment!
         $this->assertGreaterThanOrEqual(1, $crawler->filter("div.comment-tools-wrapper")->count());
-        $this->client->clickLink("🗑");
+        $editLink = $crawler->filter('a[id*="delete-"]')
+            ->eq(0)
+            ->link()
+        ;
+        $this->client->click($editLink);
         $crawler = $this->client->followRedirect();
         $this->assertRegExp("/Le commentaire de .+ a été supprimé/", $crawler->filter("div.flash-messages")->text());
         $this->assertNotContains($commentContent, $crawler->filter("div.comment-content")->text());

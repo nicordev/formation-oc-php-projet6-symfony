@@ -19,6 +19,47 @@
 
 {% block body %}
 
+    {# Edition #}
+    {% if app.user is same as(member) or is_granted(constant("App\\Entity\\Member::ROLE_MANAGER")) %}
+
+        <div class="mb-3">
+            {{ form_start(memberForm) }}
+
+            {{ form_row(memberForm.name, {
+                "label": "Nom"
+            }) }}
+
+            {{ form_row(memberForm.email) }}
+
+            {% if memberForm.password is defined %}
+                {{ form_row(memberForm.password, {
+                    "label": "Nouveau mot de passe",
+                    "value": ""
+                }) }}
+            {% else %}
+                <a href="{{ path("member_profile_password", {"id": member.id, "editPassword": 1}) }}" class="btn btn-secondary mb-3">Changer le mot de passe</a>
+            {% endif %}
+
+            {% if memberForm.roles is defined and is_granted(constant("App\\Entity\\Member::ROLE_MANAGER")) %}
+                {{ form_row(memberForm.roles, {
+                    "label": "Roles supplémentaires"
+                }) }}
+            {% endif %}
+
+            {# TODO: replace the select tag by an input #}
+            {{ form_row(memberForm.picture, {
+                "label": "Photo"
+            }) }}
+
+            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+
+            {{ form_end(memberForm) }}
+
+            <a href="{{ path("member_delete", {"id": member.id}) }}" class="btn btn-danger mt-3">Supprimer le compte</a>
+        </div>
+    {% endif %}
+
+    {# Roles #}
     {% if member.roles %}
         {% if member.roles|length > 2 %}
             <h4>Rôles particuliers</h4>
@@ -41,24 +82,21 @@
         </ul>
     {% endif %}
 
-    <h4>Tricks</h4>
+    {# Tricks #}
+    <div class="my-5">
+        <h4>Tricks publiés</h4>
 
-    {% if member.tricks %}
-        <ul>
-            {% for trick in member.tricks %}
-                <li>
-                    <a href="{{ path("trick_show_simple", {"id": trick.id}) }}">{{ trick.name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>{{ member.name }} n'a publié aucun trick.</p>
-    {% endif %}
-
-    {% if app.user is same as(member) or is_granted(constant("App\\Entity\\Member::ROLE_MANAGER")) %}
-        <div>
-            <a href="{{ path("member_delete", {"id": member.id}) }}" class="btn btn-danger">Supprimer le compte</a>
-        </div>
-    {% endif %}
+        {% if member.tricks %}
+            <ul>
+                {% for trick in member.tricks %}
+                    <li>
+                        <a href="{{ path("trick_show_simple", {"id": trick.id}) }}">{{ trick.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>{{ member.name }} n'a publié aucun trick.</p>
+        {% endif %}
+    </div>
 
 {% endblock %}
