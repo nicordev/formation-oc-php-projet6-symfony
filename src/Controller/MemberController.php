@@ -61,8 +61,8 @@ class MemberController extends AbstractController
     {
         $user = $this->getUser();
 
+        // Edition form
         if ($user) {
-            // Edition form
             $userIsManager = in_array(Member::ROLE_MANAGER, $user->getRoles()) || in_array(Member::ROLE_ADMIN, $user->getRoles());
 
             if ($user === $member || $userIsManager) {
@@ -78,6 +78,7 @@ class MemberController extends AbstractController
                         $member->setPassword($hash);
                     }
                     $member->addRole(Member::ROLE_USER);
+                    $member->getPicture()->setMember($member);
                     $manager->persist($member);
                     $manager->flush();
 
