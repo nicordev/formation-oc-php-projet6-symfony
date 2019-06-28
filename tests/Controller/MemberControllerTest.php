@@ -8,7 +8,6 @@ use App\Tests\HelperTrait\HelperTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
 class MemberControllerTest extends WebTestCase
 {
@@ -96,7 +95,9 @@ class MemberControllerTest extends WebTestCase
         $this->assertContains(self::TEST_USER_NAME, $crawler->filter("h1")->text());
 
         // Delete the member
-        $crawler = $this->client->clickLink("Supprimer le compte");
+        $this->client->clickLink("Supprimer le compte");
+        $crawler = $this->client->followRedirect();
+        $this->assertContains("Votre compte a bien été supprimé", $crawler->filter(".flash-message")->text());
     }
 
     // Private

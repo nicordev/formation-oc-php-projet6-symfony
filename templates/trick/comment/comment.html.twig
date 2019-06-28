@@ -27,8 +27,8 @@
 
                     {% if commentToEditId is not defined or comment.id is not same as(commentToEditId) %}
                         <div class="comment-tools-wrapper">
-                            <a class="command" href="{{ path("trick_edit_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments"><i class="fas fa-edit"></i></a>
-                            <a class="command" href="{{ path("trick_delete_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments"><i class="fas fa-trash-alt"></i></a>
+                            <a id="edit-{{ comment.id }}" class="command" href="{{ path("trick_edit_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments"><i class="fas fa-edit"></i></a>
+                            <a id="delete-{{ comment.id }}" class="command" href="{{ path("trick_delete_comment", {"id": comment.id, "commentsPage": commentsPaginator.currentPage}) }}#trick-comments"><i class="fas fa-trash-alt"></i></a>
                         </div>
                     {% endif %}
                 {% endif %}
