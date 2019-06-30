@@ -2,6 +2,7 @@
 .scannerwork/
 code_review.bat
 test.html
+coverage
 
 ###> symfony/framework-bundle ###
 /.env.local
