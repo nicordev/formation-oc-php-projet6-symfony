@@ -28,6 +28,7 @@ class RequestListener
 
         if (
             $route !== "app_login" &&
+            $route !== "home_ajax_get_page" &&
             $route !== "registration_route" &&
             $route[0] !== '_'
         ) {
