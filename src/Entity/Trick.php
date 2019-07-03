@@ -72,6 +72,11 @@ class Trick
      */
     private $author;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $slug;
+
     public function __construct()
     {
         $this->trickGroups = new ArrayCollection();
@@ -93,6 +98,7 @@ class Trick
     public function setName(string $name): self
     {
         $this->name = $name;
+        $this->setSlug($this->createSlug($name));
 
         return $this;
     }
@@ -306,5 +312,24 @@ class Trick
         $this->author = $author;
 
         return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function createSlug(string $name)
+    {
+        $slugParts = explode(" ", $name);
+
+        return implode("_", $slugParts);
     }
 }
