@@ -221,12 +221,12 @@ class TrickController extends AbstractController
     {
         $this->denyAccessUnlessGranted(TrickVoter::DELETE, $trick);
 
-        // Delete trick files
-        $this->deleteTrickFiles($trick);
-
         $trickName = $trick->getName();
         $manager->remove($trick);
         $manager->flush();
+
+        // Delete trick files
+        $this->deleteTrickFiles($trick);
 
         $this->addFlash(
             "notice",
@@ -403,10 +403,15 @@ class TrickController extends AbstractController
     private function deleteTrickFiles(Trick $trick)
     {
         $rootDirectory = dirname(dirname(__DIR__));
-        unlink($rootDirectory . "/public" . $trick->getMainImage());
+
+        if (strpos($trick->getMainImage(), "http") === false) {
+            unlink($rootDirectory . "/public" . $trick->getMainImage());
+        }
 
         foreach ($trick->getImages() as $image) {
-            unlink($rootDirectory . $image->getUrl());
+            if (strpos($image->getUrl(), "http") === false) {
+                unlink($rootDirectory . $image->getUrl());
+            }
         }
     }
 }
