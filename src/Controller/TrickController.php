@@ -221,6 +221,9 @@ class TrickController extends AbstractController
     {
         $this->denyAccessUnlessGranted(TrickVoter::DELETE, $trick);
 
+        // Delete trick files
+        $this->deleteTrickFiles($trick);
+
         $trickName = $trick->getName();
         $manager->remove($trick);
         $manager->flush();
@@ -390,5 +393,20 @@ class TrickController extends AbstractController
         $trickUrl = $this->generateUrl(self::ROUTE_TRICK_SHOW, ["id" => $trickId, "commentsPage" => $commentPage]);
 
         return $this->redirect("{$trickUrl}{$urlComplements}");
+    }
+
+    /**
+     * Delete images files of a trick
+     *
+     * @param Trick $trick
+     */
+    private function deleteTrickFiles(Trick $trick)
+    {
+        $rootDirectory = dirname(dirname(__DIR__));
+        unlink($rootDirectory . "/public" . $trick->getMainImage());
+
+        foreach ($trick->getImages() as $image) {
+            unlink($rootDirectory . $image->getUrl());
+        }
     }
 }
