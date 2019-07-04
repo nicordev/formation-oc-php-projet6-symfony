@@ -50,10 +50,14 @@
     }) }}
 
     {{ form_row(trickForm.mainImage, {
-        "label": "Image principale",
+        "label": "Photo principale",
         "attr": {
-            "placeholder": "Image principale : https://url.de.ma.superbe.image"
+            "placeholder": "Adresse : https://url.de.ma.superbe.image"
         }
+    }) }}
+
+    {{ form_row(trickForm.uploadMainImage, {
+        "label": "Charger la photo principale depuis mon ordi"
     }) }}
 
     <hr>

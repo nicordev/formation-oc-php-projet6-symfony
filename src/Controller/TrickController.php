@@ -12,6 +12,7 @@ use App\Repository\TrickGroupRepository;
 use App\Repository\TrickRepository;
 use App\Security\CommentVoter;
 use App\Security\TrickVoter;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CommentRepository;
 use App\Service\HtmlKeys;
@@ -102,7 +103,12 @@ class TrickController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function addTrick(Request $request, EntityManagerInterface $manager, TrickRepository $repository)
+    public function addTrick(
+        Request $request,
+        EntityManagerInterface $manager,
+        TrickRepository $repository,
+        FileUploader $fileUploader
+    )
     {
         $this->denyAccessUnlessGranted(TrickVoter::ADD);
 
@@ -120,6 +126,12 @@ class TrickController extends AbstractController
                 );
 
             } else {
+                $mainImageFile = $form['uploadMainImage']->getData();
+
+                if ($mainImageFile) {
+                    $trick->setMainImage("/img/tricks/" . $fileUploader->upload($mainImageFile));
+                }
+
                 $trick->setAuthor($this->getUser());
                 $manager->persist($trick);
                 $manager->flush();
@@ -150,7 +162,13 @@ class TrickController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function editTrick(Request $request, EntityManagerInterface $manager, TrickRepository $repository, Trick $trick)
+    public function editTrick(
+        Request $request,
+        EntityManagerInterface $manager,
+        TrickRepository $repository,
+        FileUploader $fileUploader,
+        Trick $trick
+    )
     {
         $this->denyAccessUnlessGranted(TrickVoter::EDIT, $trick);
 
@@ -166,6 +184,12 @@ class TrickController extends AbstractController
                 );
 
             } else {
+                $mainImageFile = $form['uploadMainImage']->getData();
+
+                if ($mainImageFile) {
+                    $trick->setMainImage("/img/tricks/" . $fileUploader->upload($mainImageFile));
+                }
+
                 $manager->flush();
 
                 $this->addFlash(
