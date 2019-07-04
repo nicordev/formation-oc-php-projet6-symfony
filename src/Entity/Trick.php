@@ -326,6 +326,12 @@ class Trick
         return $this;
     }
 
+    /**
+     * Create a slug from a name
+     *
+     * @param string $name
+     * @return string
+     */
     public function createSlug(string $name)
     {
         $slugParts = explode(" ", $name);

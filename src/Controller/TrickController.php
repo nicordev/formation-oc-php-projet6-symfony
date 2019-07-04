@@ -86,7 +86,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/trick-group/{id}", name="show_trick_group", requirements={"id": "\d+"})
+     * @Route("/trick-group/{slug}", name="show_trick_group")
      */
     public function showTrickGroup(TrickGroup $trickGroup)
     {
