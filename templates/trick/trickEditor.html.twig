@@ -3,7 +3,7 @@
 {% block title %}Editeur{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="/css/image_library.css">
+    <link rel="stylesheet" href="/css/trick_editor.css">
     <style>
         .close, .close:hover {
             color: #2C3E50;
@@ -50,52 +50,49 @@
         }
     }) }}
 
+    <label class="btn btn-secondary" for="trick_uploadMainImage">Charger l'image principale</label>
+    {{ form_widget(trickForm.uploadMainImage) }}
+
     {{ form_row(trickForm.mainImage, {
-        "label": "Photo principale",
+        "label": "Ou entrer l'adresse de l'image principale",
         "attr": {
             "placeholder": "Adresse : https://url.de.ma.superbe.image"
         }
     }) }}
 
-    {{ form_row(trickForm.uploadMainImage, {
-        "label": "Charger la photo principale"
-    }) }}
-
     <hr>
 
-    <div id="image-library" class="media-inputs-wrapper mb-4">
+    <div class="media-inputs-wrapper mb-2">
         <label for="">Images</label>
         <div>
             <label class="btn btn-secondary" for="image_upload">Charger une image</label>
             <input class="d-none" id="image_upload" name="image_upload" type="file">
         </div>
-        <div class="mb-4">
+        <div class="mb-2">
             <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_images')">Entrer une adresse</button>
         </div>
         {{ form_errors(trickForm.images) }}
         {{ form_widget(trickForm.images) }}
+        <div id="image-library"></div>
     </div>
 
     <div class="media-inputs-wrapper">
         <label for="">Vidéos YouTube</label>
         {{ form_errors(trickForm.videos) }}
         {{ form_widget(trickForm.videos) }}
-        <div class="text-center">
-            <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_videos')">Ajouter une adresse</button>
-        </div>
+
+        <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_videos')">Ajouter une adresse</button>
     </div>
 
     <hr>
 
-    <div class="text-center my-5">
-        <button type="submit" class="btn btn-success">
-            {% if editMode %}
-                Enregistrer les modifications
-            {% else %}
-                Ajouter le trick
-            {% endif %}
-        </button>
-    </div>
+    <button type="submit" class="btn btn-success mb-4">
+        {% if editMode %}
+            Enregistrer les modifications
+        {% else %}
+            Ajouter le trick
+        {% endif %}
+    </button>
 
     {{ form_end(trickForm) }}
 
@@ -103,7 +100,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {# Add buttons to delete inputs #}
     <script>
         // Image manager
 
@@ -188,22 +184,20 @@
             addImage: (imageUrl, imageInputElt) => {
 
                 let figureElt = document.createElement("figure"),
-                    figCaptionElt = document.createElement("figcaption"),
+                    deleteElt = document.createElement("figcaption"),
                     imageElt = document.createElement("img");
 
                 imageElt.src = imageUrl;
                 imageElt.alt = "Image de snowboard";
-                imageElt.classList.add("image-library-element");
-
+                figureElt.classList.add("image-library-element");
                 figureElt.appendChild(imageElt);
-
-                figCaptionElt.textContent = "×";
-                figureElt.appendChild(figCaptionElt);
-
+                deleteElt.textContent = "×";
+                deleteElt.classList.add("image-library-element-delete");
+                figureElt.appendChild(deleteElt);
                 imageLibrary.element.appendChild(figureElt);
 
                 // Delete image on click
-                figureElt.addEventListener("click", () => {
+                deleteElt.addEventListener("click", () => {
 
                     imageManager.delete(imageUrl);
                     figureElt.remove();
@@ -271,7 +265,7 @@
              * @param hidden
              * @returns {DOM Element} the input field
              */
-            addInput: function (wrapperId, hidden = false) {
+            addInput: function (wrapperId, hidden = false, placeholder = null) {
 
                 var wrapperElt = document.getElementById(wrapperId),
                     lastKey = wrapperElt.children.length,
@@ -280,6 +274,10 @@
                 wrapperElt.appendChild(newInputWrapperElt);
 
                 var lastInput = getLastInput(wrapperElt, lastKey);
+
+                if (placeholder) {
+                    lastInput.placeholder = placeholder;
+                }
 
                 if (hidden) {
                     lastInput.parentElement.parentElement.parentElement.style.display = "none";
@@ -317,6 +315,6 @@
 
         myTrickEditor.addDeleteButtons();
         // myTrickEditor.addInput("trick_images");
-        myTrickEditor.addInput("trick_videos");
+        myTrickEditor.addInput("trick_videos", false, "Adresse : https://url.de.ma.superbe.video");
     </script>
 {% endblock %}
