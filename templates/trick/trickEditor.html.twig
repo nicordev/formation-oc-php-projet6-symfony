@@ -65,6 +65,9 @@
 
     <div id="image-library" class="media-inputs-wrapper">
         <label for="">Images</label>
+        <div>
+            <input id="image_upload" name="image_upload" type="file">
+        </div>
         <div class="text-center">
             <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_images')">Ajouter une url</button>
         </div>
@@ -95,11 +98,6 @@
 
     {{ form_end(trickForm) }}
 
-    {{ form_start(imageUploadForm) }}
-    {{ form_row(imageUploadForm.imageFile) }}
-    <button type="submit" class="btn btn-success">Charger une image</button>
-    {{ form_end(imageUploadForm) }}
-
 {% endblock %}
 
 {% block javascripts %}
@@ -110,22 +108,23 @@
 
         let imageManager = {
 
-            formElt: document.getElementsByName("image_upload")[0],
+            uploadInputElt: document.getElementById("image_upload"),
 
             init: () => {
 
-                imageManager.formElt.addEventListener("submit", (event) => {
-                    event.preventDefault();
-                    imageManager.upload();
-                });
+                imageManager.uploadInputElt.addEventListener("change", imageManager.upload);
             },
 
+            /**
+             * Upload the image file
+             */
             upload: () => {
 
-                let xhr = new XMLHttpRequest();
+                var xhr = new XMLHttpRequest(),
+                    form = new FormData();
 
+                form.append(imageManager.uploadInputElt.name, imageManager.uploadInputElt.files[0]);
                 xhr.open("POST", "{{ path("image_upload") }}");
-
                 xhr.addEventListener("readystatechange", () => {
 
                     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -148,18 +147,19 @@
                     }
                 });
 
-                xhr.send(new FormData(imageManager.formElt));
+                xhr.send(form);
             },
 
+            /**
+             * Delete the image file on the server
+             */
             delete: (filePath) => {
 
                 let xhr = new XMLHttpRequest(),
                     form = new FormData();
 
                 form.append("imageUrl", filePath);
-
                 xhr.open("POST", "{{ path("image_delete") }}");
-
                 xhr.addEventListener("readystatechange", () => {
 
                     if (xhr.readyState === XMLHttpRequest.DONE) {

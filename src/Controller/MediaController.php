@@ -18,16 +18,12 @@ class MediaController extends AbstractController
      */
     public function upload(Request $request, FileUploader $fileUploader)
     {
-        $form = $this->createForm(ImageUploadType::class);
-        $form->handleRequest($request);
+        $imageFile = $request->files->get(ImageUploadType::IMAGE_INPUT_NAME);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form['imageFile']->getData();
-            if ($imageFile) {
-                $imageUrl = "/img/tricks/" . $fileUploader->upload($imageFile);
+        if ($imageFile) {
+            $imageUrl = "/img/tricks/" . $fileUploader->upload($imageFile);
 
-                return new JsonResponse($imageUrl);
-            }
+            return new JsonResponse($imageUrl);
         }
 
         return new JsonResponse("Error with the form or with the uploader", 500);

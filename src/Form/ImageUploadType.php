@@ -10,13 +10,12 @@ use Symfony\Component\Validator\Constraints\File;
 
 class ImageUploadType extends AbstractType
 {
-    public const IMAGE_INPUT = "imageFile";
+    public const IMAGE_INPUT_NAME = "image_upload";
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add(self::IMAGE_INPUT, FileType::class, [
-                'label' => 'Charger une image',
+            ->add(self::IMAGE_INPUT_NAME, FileType::class, [
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
