@@ -63,24 +63,25 @@
 
     <hr>
 
-    <div id="image-library" class="media-inputs-wrapper">
+    <div id="image-library" class="media-inputs-wrapper mb-4">
         <label for="">Images</label>
         <div>
-            <input id="image_upload" name="image_upload" type="file">
+            <label class="btn btn-secondary" for="image_upload">Charger une image</label>
+            <input class="d-none" id="image_upload" name="image_upload" type="file">
         </div>
-        <div class="text-center">
-            <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_images')">Ajouter une url</button>
+        <div class="mb-4">
+            <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_images')">Entrer une adresse</button>
         </div>
         {{ form_errors(trickForm.images) }}
         {{ form_widget(trickForm.images) }}
     </div>
 
     <div class="media-inputs-wrapper">
-        <label for="">Vidéos</label>
+        <label for="">Vidéos YouTube</label>
         {{ form_errors(trickForm.videos) }}
         {{ form_widget(trickForm.videos) }}
         <div class="text-center">
-            <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_videos')">Ajouter une vidéo</button>
+            <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_videos')">Ajouter une adresse</button>
         </div>
     </div>
 
@@ -281,6 +282,7 @@
                 var lastInput = getLastInput(wrapperElt, lastKey);
 
                 if (hidden) {
+                    lastInput.parentElement.parentElement.parentElement.style.display = "none";
                     lastInput.type = "hidden";
 
                 } else {
@@ -314,7 +316,7 @@
         };
 
         myTrickEditor.addDeleteButtons();
-        myTrickEditor.addInput("trick_images");
+        // myTrickEditor.addInput("trick_images");
         myTrickEditor.addInput("trick_videos");
     </script>
 {% endblock %}
