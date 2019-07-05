@@ -7,6 +7,7 @@ use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Entity\TrickGroup;
 use App\Form\CommentType;
+use App\Form\ImageUploadType;
 use App\Form\TrickType;
 use App\Repository\TrickGroupRepository;
 use App\Repository\TrickRepository;
@@ -17,8 +18,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CommentRepository;
 use App\Service\HtmlKeys;
 use App\Service\Paginator;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TrickController extends AbstractController
@@ -38,7 +42,7 @@ class TrickController extends AbstractController
      * @param CommentRepository $commentRepository
      * @param Paginator $commentsPaginator
      * @param int $commentsPage
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function show(
         Trick $trick,
@@ -101,7 +105,7 @@ class TrickController extends AbstractController
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      */
     public function addTrick(
         Request $request,
@@ -145,8 +149,11 @@ class TrickController extends AbstractController
             }
         }
 
+        $imageUploadForm = $this->createForm(ImageUploadType::class);
+
         return $this->render('trick/trickEditor.html.twig', [
             'trickForm' => $form->createView(),
+            'imageUploadForm' => $imageUploadForm->createView(),
             'editMode' => false
         ]);
     }
@@ -159,8 +166,8 @@ class TrickController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @param Trick|null $trick
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
+     * @return RedirectResponse|Response
+     * @throws Exception
      */
     public function editTrick(
         Request $request,
@@ -215,7 +222,7 @@ class TrickController extends AbstractController
      *
      * @param EntityManagerInterface $manager
      * @param Trick $trick
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function delete(EntityManagerInterface $manager, Trick $trick)
     {
@@ -250,7 +257,7 @@ class TrickController extends AbstractController
      * @param Trick $trick
      * @param CommentRepository $commentRepository
      * @param Paginator $commentsPaginator
-     * @return bool|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return bool|RedirectResponse|Response
      */
     public function addComment(
         Request $request,
@@ -307,7 +314,7 @@ class TrickController extends AbstractController
      * @param CommentRepository $commentRepository
      * @param Paginator $commentsPaginator
      * @param int|null $commentsPage
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function editComment(
         Request $request,
@@ -360,7 +367,7 @@ class TrickController extends AbstractController
      * @param EntityManagerInterface $manager
      * @param Comment $comment
      * @param int $commentsPage
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function deleteComment(
         EntityManagerInterface $manager,
@@ -386,7 +393,7 @@ class TrickController extends AbstractController
      * @param int $trickId
      * @param int $commentPage
      * @param string $urlComplements
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     private function redirectToTrickRoute(int $trickId, int $commentPage = 1, string $urlComplements = "")
     {
