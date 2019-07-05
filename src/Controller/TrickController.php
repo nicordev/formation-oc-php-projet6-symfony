@@ -419,7 +419,7 @@ class TrickController extends AbstractController
     {
         $rootDirectory = dirname(dirname(__DIR__));
 
-        if (strpos($trick->getMainImage(), "http") === false) {
+        if ($trick->getMainImage() && strpos($trick->getMainImage(), "http") === false) {
             unlink($rootDirectory . "/public" . $trick->getMainImage());
         }
 
