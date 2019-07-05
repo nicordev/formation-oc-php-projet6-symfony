@@ -38,9 +38,11 @@ class MediaController extends AbstractController
         $imageUrl = $request->request->get("imageUrl");
 
         if (unlink($rootDirectory . "/public" . $imageUrl)) {
+
             return new JsonResponse("Image $imageUrl deleted");
 
         } else {
+
             return new JsonResponse("Error when deleting image " . $imageUrl);
         }
     }

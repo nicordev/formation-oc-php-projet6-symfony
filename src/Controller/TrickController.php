@@ -130,11 +130,15 @@ class TrickController extends AbstractController
                 );
 
             } else {
+                // Main image
                 $mainImageFile = $form['uploadMainImage']->getData();
 
                 if ($mainImageFile) {
                     $trick->setMainImage("/img/tricks/" . $fileUploader->upload($mainImageFile));
                 }
+
+                // Images
+                $this->removeHttpFromUploadedImages($trick);
 
                 $trick->setAuthor($this->getUser());
                 $manager->persist($trick);
@@ -191,11 +195,15 @@ class TrickController extends AbstractController
                 );
 
             } else {
+                // Main image
                 $mainImageFile = $form['uploadMainImage']->getData();
 
                 if ($mainImageFile) {
                     $trick->setMainImage("/img/tricks/" . $fileUploader->upload($mainImageFile));
                 }
+
+                // Images
+                $this->removeHttpFromUploadedImages($trick);
 
                 $manager->flush();
 
@@ -417,7 +425,22 @@ class TrickController extends AbstractController
 
         foreach ($trick->getImages() as $image) {
             if (strpos($image->getUrl(), "http") === false) {
-                unlink($rootDirectory . $image->getUrl());
+                unlink($rootDirectory . "/public" . $image->getUrl());
+            }
+        }
+    }
+
+    /**
+     * Remove http:// on uploaded images
+     *
+     * @param array $images
+     */
+    private function removeHttpFromUploadedImages(Trick $trick)
+    {
+        foreach ($trick->getImages() as $image) {
+            $imageUrl = $image->getUrl();
+            if (strpos($imageUrl, "http:///") !== false) {
+                $image->setUrl(str_replace("http://", "", $imageUrl));
             }
         }
     }
