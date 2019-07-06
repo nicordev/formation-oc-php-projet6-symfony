@@ -12,7 +12,7 @@
 
 .image-library-element img {
     max-width: 300px;
-    border: #95a5a6 4px solid;
+    border: lightgray 4px solid;
     border-radius: 0.5rem;
 }
 
@@ -23,8 +23,12 @@
     margin: 10px;
     padding: 0 8px 2px 8px;
     border-radius: 100%;
-    background-color: #95a5a6;
+    background-color: lightgray;
     color: whitesmoke;
+}
+
+.main-image-selected {
+    border: rgb(44, 62, 80) 4px solid !important;
 }
 
 .image-library-element-delete:hover {

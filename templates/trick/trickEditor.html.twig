@@ -50,16 +50,6 @@
         }
     }) }}
 
-    <label class="btn btn-secondary" for="trick_uploadMainImage">Charger l'image principale</label>
-    {{ form_widget(trickForm.uploadMainImage) }}
-
-    {{ form_row(trickForm.mainImage, {
-        "label": "Ou entrer l'adresse de l'image principale",
-        "attr": {
-            "placeholder": "Adresse : https://url.de.ma.superbe.image"
-        }
-    }) }}
-
     <hr>
 
     <div class="media-inputs-wrapper mb-2">
@@ -68,13 +58,25 @@
             <label class="btn btn-secondary" for="image_upload">Charger une image</label>
             <input class="d-none" id="image_upload" name="image_upload" type="file">
         </div>
+
         <div class="mb-2">
             <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_images')">Entrer une adresse</button>
         </div>
+
         {{ form_errors(trickForm.images) }}
         {{ form_widget(trickForm.images) }}
+
         <div id="image-library"></div>
+
+        {{ form_row(trickForm.mainImage, {
+            "label": "Entrez l'adresse de l'image principale ou cliquez sur une image que vous avez chargé",
+            "attr": {
+                "placeholder": "Adresse : https://url.de.ma.superbe.image"
+            }
+        }) }}
     </div>
+
+    <hr>
 
     <div class="media-inputs-wrapper">
         <label for="">Vidéos YouTube</label>
@@ -180,6 +182,7 @@
         let imageLibrary = {
 
             element: document.getElementById("image-library"),
+            mainImageClass: "main-image-selected",
 
             addImage: (imageUrl, imageInputElt) => {
 
@@ -203,6 +206,27 @@
                     figureElt.remove();
                     imageInputElt.remove();
                 });
+
+                // Select this image as main image on click
+                imageElt.addEventListener("click", () => {
+
+                    imageLibrary.setAsMainImage(imageElt);
+                });
+            },
+
+            setAsMainImage: (imageElt) => {
+
+                let mainImageInput = document.getElementById("trick_mainImage"),
+                    imgElements = document.getElementsByTagName("img");
+
+                for (let i = 0, size = imgElements.length; i < size; i++) {
+                    if (imgElements[i].classList.contains(imageLibrary.mainImageClass)) {
+                        imgElements[i].classList.remove(imageLibrary.mainImageClass);
+                    }
+                }
+
+                imageElt.classList.add(imageLibrary.mainImageClass);
+                mainImageInput.value = imageElt.src;
             }
         };
 

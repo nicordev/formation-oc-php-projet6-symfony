@@ -7,7 +7,6 @@ use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Entity\TrickGroup;
 use App\Form\CommentType;
-use App\Form\ImageUploadType;
 use App\Form\TrickType;
 use App\Repository\TrickGroupRepository;
 use App\Repository\TrickRepository;
@@ -105,13 +104,13 @@ class TrickController extends AbstractController
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
+     * @param TrickRepository $repository
      * @return RedirectResponse|Response
      */
     public function addTrick(
         Request $request,
         EntityManagerInterface $manager,
-        TrickRepository $repository,
-        FileUploader $fileUploader
+        TrickRepository $repository
     )
     {
         $this->denyAccessUnlessGranted(TrickVoter::ADD);
@@ -130,16 +129,7 @@ class TrickController extends AbstractController
                 );
 
             } else {
-                // Main image
-                $mainImageFile = $form['uploadMainImage']->getData();
-
-                if ($mainImageFile) {
-                    $trick->setMainImage("/img/tricks/" . $fileUploader->upload($mainImageFile));
-                }
-
-                // Images
                 $this->removeHttpFromUploadedImages($trick);
-
                 $trick->setAuthor($this->getUser());
                 $manager->persist($trick);
                 $manager->flush();
@@ -153,11 +143,8 @@ class TrickController extends AbstractController
             }
         }
 
-        $imageUploadForm = $this->createForm(ImageUploadType::class);
-
         return $this->render('trick/trickEditor.html.twig', [
             'trickForm' => $form->createView(),
-            'imageUploadForm' => $imageUploadForm->createView(),
             'editMode' => false
         ]);
     }
@@ -169,15 +156,14 @@ class TrickController extends AbstractController
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
+     * @param TrickRepository $repository
      * @param Trick|null $trick
      * @return RedirectResponse|Response
-     * @throws Exception
      */
     public function editTrick(
         Request $request,
         EntityManagerInterface $manager,
         TrickRepository $repository,
-        FileUploader $fileUploader,
         Trick $trick
     )
     {
@@ -195,16 +181,7 @@ class TrickController extends AbstractController
                 );
 
             } else {
-                // Main image
-                $mainImageFile = $form['uploadMainImage']->getData();
-
-                if ($mainImageFile) {
-                    $trick->setMainImage("/img/tricks/" . $fileUploader->upload($mainImageFile));
-                }
-
-                // Images
                 $this->removeHttpFromUploadedImages($trick);
-
                 $manager->flush();
 
                 $this->addFlash(

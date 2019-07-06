@@ -49,6 +49,7 @@ class Trick
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(message="Veuillez sélectionner une image principale")
      */
     private $mainImage;
 
