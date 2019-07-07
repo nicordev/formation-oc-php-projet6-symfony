@@ -7,6 +7,7 @@ use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MediaController extends AbstractController
@@ -16,12 +17,13 @@ class MediaController extends AbstractController
     /**
      * @Route("/image-upload", name="image_upload")
      */
-    public function upload(Request $request, FileUploader $fileUploader)
+    public function upload(Request $request, FileUploader $fileUploader, SessionInterface $session)
     {
         $imageFile = $request->files->get(self::IMAGE_INPUT_NAME);
 
         if ($imageFile) {
             $imageUrl = "/img/tricks/" . $fileUploader->upload($imageFile);
+            $this->addImageUrlToSession($imageUrl, $session);
 
             return new JsonResponse($imageUrl);
         }
@@ -44,6 +46,19 @@ class MediaController extends AbstractController
         } else {
 
             return new JsonResponse("Error when deleting image " . $imageUrl);
+        }
+    }
+
+    private function addImageUrlToSession(string $imageUrl, SessionInterface $session)
+    {
+        $uploadedFiles = $session->get('uploaded_images');
+
+        if ($uploadedFiles === null) {
+            $session->set('uploaded_images', [$imageUrl]);
+
+        } else {
+            $uploadedFiles[] = $imageUrl;
+            $session->set('uploaded_images', $uploadedFiles);
         }
     }
 }
