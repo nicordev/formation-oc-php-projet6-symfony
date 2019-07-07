@@ -19,6 +19,7 @@ class TrickVoter extends Voter
         self::EDIT,
         self::DELETE
     ];
+
     /**
      * @var AuthorizationCheckerInterface
      */

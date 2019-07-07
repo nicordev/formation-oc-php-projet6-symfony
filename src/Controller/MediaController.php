@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -13,12 +14,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class MediaController extends AbstractController
 {
     public const IMAGE_INPUT_NAME = "image_upload";
+    public const KEY_UPLOADED_IMAGES = "uploaded_images";
 
     /**
      * @Route("/image-upload", name="image_upload")
      */
     public function upload(Request $request, FileUploader $fileUploader, SessionInterface $session)
     {
+        if ($this->getUser() === null) {
+            throw new AccessDeniedException("User must be connected to upload an image");
+        }
+
         $imageFile = $request->files->get(self::IMAGE_INPUT_NAME);
 
         if ($imageFile) {
@@ -36,6 +42,10 @@ class MediaController extends AbstractController
      */
     public function delete(Request $request)
     {
+        if ($this->getUser() === null) {
+            throw new AccessDeniedException("User must be connected to delete an image");
+        }
+
         $rootDirectory = dirname(dirname(__DIR__));
         $imageUrl = $request->request->get("imageUrl");
 
@@ -54,11 +64,11 @@ class MediaController extends AbstractController
         $uploadedFiles = $session->get('uploaded_images');
 
         if ($uploadedFiles === null) {
-            $session->set('uploaded_images', [$imageUrl]);
+            $session->set(self::KEY_UPLOADED_IMAGES, [$imageUrl]);
 
         } else {
             $uploadedFiles[] = $imageUrl;
-            $session->set('uploaded_images', $uploadedFiles);
+            $session->set(self::KEY_UPLOADED_IMAGES, $uploadedFiles);
         }
     }
 }

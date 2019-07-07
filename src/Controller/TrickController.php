@@ -22,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TrickController extends AbstractController
@@ -110,7 +111,8 @@ class TrickController extends AbstractController
     public function addTrick(
         Request $request,
         EntityManagerInterface $manager,
-        TrickRepository $repository
+        TrickRepository $repository,
+        SessionInterface $session
     )
     {
         $this->denyAccessUnlessGranted(TrickVoter::ADD);
@@ -139,6 +141,9 @@ class TrickController extends AbstractController
                     "Le trick {$trick->getName()} a été créé"
                 );
 
+                // Remove uploaded images url from session to avoid deletion
+                $session->set('uploaded_images', null);
+
                 return $this->redirectToRoute(self::ROUTE_TRICK_SHOW, ['slug' => $trick->getSlug()]);
             }
         }
@@ -164,7 +169,8 @@ class TrickController extends AbstractController
         Request $request,
         EntityManagerInterface $manager,
         TrickRepository $repository,
-        Trick $trick
+        Trick $trick,
+        SessionInterface $session
     )
     {
         $this->denyAccessUnlessGranted(TrickVoter::EDIT, $trick);
@@ -188,6 +194,9 @@ class TrickController extends AbstractController
                     "notice",
                     "Le trick {$trick->getName()} a été modifié"
                 );
+
+                // Remove uploaded images url from session to avoid deletion
+                $session->set('uploaded_images', null);
 
                 return $this->redirectToRoute(self::ROUTE_TRICK_SHOW, ['slug' => $trick->getSlug()]);
             }
