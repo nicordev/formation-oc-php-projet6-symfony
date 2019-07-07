@@ -45,6 +45,8 @@ class MemberController extends AbstractController
             $manager->persist($newMember);
             $manager->flush();
 
+            $this->addFlash("notice", "Vous êtes enregistré");
+
             return $this->redirectToRoute("app_login");
         }
 
