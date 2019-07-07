@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Controller\MemberController;
 use App\Entity\Member;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -22,7 +23,12 @@ class RegistrationType extends AbstractType
                 'invalid_message' => 'Les 2 mots de passe doivent être identiques',
                 'options' => ['attr' => ['class' => 'password-field']],
                 'required' => true,
-                'first_options'  => ['label' => 'Mot de passe'],
+                'first_options'  => [
+                    'label' => 'Mot de passe',
+                    'attr' => [
+                        'placeholder' => MemberController::PASSWORD_REQUIREMENTS
+                    ]
+                ],
                 'second_options' => ['label' => 'Confirmez le mot de passe'],
             ])
         ;
