@@ -34,9 +34,9 @@
 
 {% block body %}
 
-    <div id="filter-commands" class="mb-4">
-        <a class="btn btn-primary mr-3" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage, "filter": 0}) }}">Afficher les commentaires approuvés</a>
-        <a class="btn btn-primary" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage, "filter": 2}) }}">Masquer les commentaires approuvés</a>
+    <div id="filter-commands">
+        <a class="btn btn-primary mr-3 mb-3" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage, "filter": 0}) }}">Afficher les commentaires approuvés</a>
+        <a class="btn btn-primary mb-3" href="{{ path("moderation_panel_filter", {"page": paginator.currentPage, "filter": 2}) }}">Masquer les commentaires approuvés</a>
     </div>
     
     {% if comments %}
