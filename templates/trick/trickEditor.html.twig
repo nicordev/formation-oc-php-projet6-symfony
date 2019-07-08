@@ -66,6 +66,8 @@
         {{ form_errors(trickForm.images) }}
         {{ form_widget(trickForm.images) }}
 
+        <div id="image-manager-message" class="d-none">Chargement...</div>
+
         <div id="image-library"></div>
 
         {{ form_row(trickForm.mainImage, {
