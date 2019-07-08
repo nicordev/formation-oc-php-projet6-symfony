@@ -74,19 +74,19 @@
                             <div class="edit-form d-none" id="edit-form-{{ comment.id }}">
                                 {{ form_start(commentEditForms[i]) }}
                                 {{ form_widget(commentEditForms[i].content) }}
-                                <button type="submit" class="btn btn-secondary">Modifier</button>
+                                <button type="submit" class="btn btn-secondary my-3">Modifier</button>
                                 {{ form_end(commentEditForms[i]) }}
                             </div>
                         </td>
                         <td>
-                            <a href="{{ path("trick_show", {"id": comment.trick.id}) }}">{{ comment.trick.name }}</a>
+                            <a href="{{ path("trick_show", {"slug": comment.trick.slug}) }}">{{ comment.trick.name }}</a>
                         </td>
                         <td>
                             <span>{{ comment.createdAt|date('d/m/Y à h:m') }}</span>
                         </td>
                         <td>
                             <div class="d-flex justify-content-around">
-                                <button class="btn btn-secondary edit-btn mx-1" commentid="{{ comment.id }}"><i class="fas fa-edit"></i></button>
+                                <button id="edit-comment-btn-{{ comment.id }}" class="btn btn-secondary edit-btn mx-1"><i class="fas fa-edit"></i></button>
                                 <a class="btn btn-danger d-block mx-1" href="{{ path("moderation_delete_comment", {"id": comment.id, "page": paginator.currentPage}) }}"><i class="fas fa-trash-alt"></i></a>
                             </div>
                         </td>
@@ -145,7 +145,7 @@
              * @param buttonElt
              */
             switchEditionForm: function (buttonElt) {
-                var commentId = buttonElt.getAttribute("commentid"),
+                var commentId = buttonElt.id.split("-").pop(),
                     formElt = document.getElementById("edit-form-" + commentId),
                     contentElt = document.getElementById("comment-content-" + commentId);
 
@@ -235,7 +235,7 @@
         for (let i = 0, size = editBtnElts.length; i < size; i++) {
             editBtnElts[i].addEventListener("click", function (event) {
                 event.preventDefault();
-                moderation.switchEditionForm(event.target);
+                moderation.switchEditionForm(editBtnElts[i]);
             });
         }
 
