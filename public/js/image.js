@@ -78,11 +78,12 @@ function ImageManager (uploadUrl, deleteUrl, uploadInputElement) {
 
 // Image library
 
-function ImageLibrary(libraryElement, mainImageClass) {
+function ImageLibrary(libraryElement, mainImageInputElement, mainImageClass) {
 
     let imageLibrary = {
 
         element: libraryElement,
+        mainImageInputElement: mainImageInputElement,
         mainImageClass: mainImageClass,
 
         addImage: (imageUrl, imageInputElt) => {
@@ -104,8 +105,11 @@ function ImageLibrary(libraryElement, mainImageClass) {
             deleteElt.addEventListener("click", () => {
 
                 imageManager.delete(imageUrl);
+                if (imageLibrary.mainImageInputElement.value.includes(imageUrl)) {
+                    imageLibrary.mainImageInputElement.value = "";
+                }
                 figureElt.remove();
-                imageInputElt.remove();
+                imageInputElt.parentElement.parentElement.parentElement.remove();
             });
 
             // Select this image as main image on click
@@ -113,12 +117,13 @@ function ImageLibrary(libraryElement, mainImageClass) {
 
                 imageLibrary.setAsMainImage(imageElt);
             });
+
+            return imageElt;
         },
 
         setAsMainImage: (imageElt) => {
 
-            let mainImageInput = document.getElementById("trick_mainImage"),
-                imgElements = document.getElementsByTagName("img");
+            let imgElements = document.getElementsByTagName("img");
 
             for (let i = 0, size = imgElements.length; i < size; i++) {
                 if (imgElements[i].classList.contains(imageLibrary.mainImageClass)) {
@@ -127,7 +132,7 @@ function ImageLibrary(libraryElement, mainImageClass) {
             }
 
             imageElt.classList.add(imageLibrary.mainImageClass);
-            mainImageInput.value = imageElt.src;
+            imageLibrary.mainImageInputElement.value = imageElt.src;
         }
     };
 

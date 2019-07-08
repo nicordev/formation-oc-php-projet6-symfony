@@ -410,8 +410,9 @@ class TrickController extends AbstractController
         }
 
         foreach ($trick->getImages() as $image) {
-            if (strpos($image->getUrl(), "http") === false) {
-                unlink($rootDirectory . "/public" . $image->getUrl());
+            $imageUrl = $image->getUrl();
+            if (strpos($imageUrl, "http") === false && file_exists($rootDirectory . "/public" . $imageUrl)) {
+                unlink($rootDirectory . "/public" . $imageUrl);
             }
         }
     }

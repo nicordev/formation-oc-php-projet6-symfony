@@ -112,7 +112,19 @@
 
         // Image library
 
-        let imageLibrary = new ImageLibrary(document.getElementById("image-library"), "main-image-selected");
+        let imageLibrary = new ImageLibrary(document.getElementById("image-library"), document.getElementById("trick_mainImage"), "main-image-selected"),
+            imagesInputsElements = document.querySelectorAll('input[name*="trick[images]"]'),
+            mainImageInputElement = document.getElementById("trick_mainImage");
+
+        // Show images from inputs at loading
+        let imageElt;
+
+        for (let i = 0, size = imagesInputsElements.length; i < size; i++) {
+            imageElt = imageLibrary.addImage(imagesInputsElements[i].value, imagesInputsElements[i]);
+            if (mainImageInputElement.value.includes(imagesInputsElements[i].value)) {
+                imageLibrary.setAsMainImage(imageElt);
+            }
+        }
 
         // Trick editor
 

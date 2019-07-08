@@ -12,12 +12,12 @@ class RequestListener
 
     public function onKernelRequest(GetResponseEvent $event)
     {
+        // To get back to the last visited page after login
+        $this->saveCurrentRouteInSession($event);
+
         // To delete unused uploaded images when leaving the trick editor without saving the trick
         $this->deleteUnusedUploadedImages($event);
         $this->setLastRoute($event);
-
-        // To get back to the last visited page after login
-        $this->saveCurrentRouteInSession($event);
     }
 
     // Private
@@ -80,6 +80,8 @@ class RequestListener
             ($lastRoute === "edit_trick" || $lastRoute === "add_trick") &&
             $route !== "image_upload" &&
             $route !== "image_delete" &&
+            $route !== "add_trick" &&
+            $route !== "edit_trick" &&
             $route[0] !== '_'
         ) {
             $rootDirectory = dirname(dirname(__DIR__));
@@ -89,6 +91,8 @@ class RequestListener
                     unlink($rootDirectory . "/public" . $uploadedImage);
                 }
             }
+
+            $session->set(MediaController::KEY_UPLOADED_IMAGES, null);
         }
     }
 }
