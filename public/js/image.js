@@ -41,10 +41,13 @@ function ImageManager (uploadUrl, deleteUrl, uploadInputElement) {
                     } else {
                         console.log("Error with AJAX request to load an image: " + xhr.status);
                     }
+
+                    imageManager.hideLoadingMessage();
                 }
             });
 
             xhr.send(form);
+            imageManager.showLoadingMessage();
         },
 
         /**
@@ -70,6 +73,16 @@ function ImageManager (uploadUrl, deleteUrl, uploadInputElement) {
             });
 
             xhr.send(form);
+        },
+
+        showLoadingMessage: () => {
+
+            document.getElementById("image-manager-message").classList.remove("d-none");
+        },
+
+        hideLoadingMessage: () => {
+
+            document.getElementById("image-manager-message").classList.add("d-none");
         }
     };
 

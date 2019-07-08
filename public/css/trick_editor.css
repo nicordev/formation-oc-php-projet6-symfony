@@ -1,3 +1,13 @@
+#image-manager-message {
+    border-radius: 0.25rem;
+    background-color: #2e6da4;
+    color: whitesmoke;
+    padding: 10px;
+    animation-name: loading;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
 #image-library {
     display: flex;
     justify-content: flex-start;
@@ -43,4 +53,18 @@
 
 .custom-file {
     display: none;
+}
+
+@keyframes loading {
+    from {
+        color:whitesmoke;
+    }
+
+    50% {
+        color: #2C3E50;
+    }
+
+    to {
+        color:whitesmoke;
+    }
 }
