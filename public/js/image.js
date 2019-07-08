@@ -118,6 +118,16 @@ function ImageLibrary(libraryElement, mainImageInputElement, mainImageClass) {
                 imageLibrary.setAsMainImage(imageElt);
             });
 
+            // Refresh image on change
+            imageInputElt.addEventListener("change", () => {
+
+                imageElt.src = imageInputElt.value;
+
+                if (imageElt.classList.contains(imageLibrary.mainImageClass)) {
+                    imageLibrary.mainImageInputElement.value = imageInputElt.value;
+                }
+            });
+
             return imageElt;
         },
 

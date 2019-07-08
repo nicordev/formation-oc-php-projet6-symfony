@@ -24,7 +24,7 @@
 {% block body %}
 
     {% if editMode %}
-        <div><a class="btn btn-primary" href="{{ path("trick_show", {"slug": slug}) }}">Annuler</a></div>
+        <div class="mb-4"><a class="btn btn-primary" href="{{ path("trick_show", {"slug": slug}) }}">Annuler</a></div>
     {% endif %}
 
     {{ form_start(trickForm) }}
