@@ -7,6 +7,7 @@ use App\Form\MemberType;
 use App\Form\RegistrationType;
 use App\Repository\MemberRepository;
 use App\Security\MemberVoter;
+use App\Service\SecurityHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,6 +21,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class MemberController extends AbstractController
 {
     public const FLASH_ALREADY_CONNECTED = "Vous êtes déjà inscrit. Si vous voulez inscrire un nouveau compte, veuillez vous déconnecter.";
+    public const PASSWORD_REQUIREMENTS = "Le mot de passe doit comporter au moins 8 caractères dont une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial. Bon courage ! ☺";
 
     /**
      * @Route("/registration", name="registration_route")
@@ -38,14 +40,22 @@ class MemberController extends AbstractController
         $registrationForm->handleRequest($request);
 
         if ($registrationForm->isSubmitted() && $registrationForm->isValid()) {
-            $hash = $encoder->encodePassword($newMember, $newMember->getPassword());
-            $newMember->setPassword($hash);
-            $newMember->setRoles([Member::ROLE_USER]);
+            if (!SecurityHelper::hasStrongPassword($newMember->getPassword())) {
+                $this->addFlash("warning", self::PASSWORD_REQUIREMENTS);
 
-            $manager->persist($newMember);
-            $manager->flush();
+            } else {
+                $hash = $encoder->encodePassword($newMember, $newMember->getPassword());
+                $newMember->setPassword($hash);
+                $newMember->setRoles([Member::ROLE_USER]);
 
-            return $this->redirectToRoute("app_login");
+                $manager->persist($newMember);
+                $manager->flush();
+
+                $this->addFlash("notice", "Vous êtes enregistré");
+
+                return $this->redirectToRoute("app_login");
+            }
+
         }
 
         return $this->render('member/registration.html.twig', [

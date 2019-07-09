@@ -85,7 +85,7 @@
     <div class="my-5">
         <h4>Tricks publiés</h4>
 
-        {% if member.tricks %}
+        {% if member.tricks is not empty %}
             <ul>
                 {% for trick in member.tricks %}
                     <li>
@@ -93,6 +93,8 @@
                     </li>
                 {% endfor %}
             </ul>
+        {% elseif member is same as(app.user) %}
+            <p>Vous n'avez pas publié de trick.</p>
         {% else %}
             <p>{{ member.name }} n'a publié aucun trick.</p>
         {% endif %}
