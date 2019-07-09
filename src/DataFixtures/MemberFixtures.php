@@ -261,7 +261,7 @@ class MemberFixtures extends Fixture
             }
         }
 
-        return "<ul>" . implode("", $descriptionParts) . "</ul>" . $endings[mt_rand(0, count($endings) - 1)];
+        return "<ul>" . implode("", $descriptionParts) . "</ul><p>" . implode("</p><p>", $this->faker->paragraphs(mt_rand(3, 5))) . "</p>" . $endings[mt_rand(0, count($endings) - 1)];
     }
 
     private function addRealisticImage()

@@ -29,6 +29,10 @@ class Trick
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Le trick doit être décrit")
+     * @Assert\Length(
+     *     min = 50,
+     *     minMessage = "Veuillez étoffer la description du trick (50 caractères minimum)"
+     * )
      */
     private $description;
 

@@ -16,6 +16,10 @@ header h1 {
     background-size: cover;
 }
 
+.trick-description {
+    word-wrap: break-word;
+}
+
 .trick-media {
     display: block;
     width: 200px;
