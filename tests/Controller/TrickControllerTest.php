@@ -88,7 +88,7 @@ class TrickControllerTest extends WebTestCase
         $trick = $this->getTestTrick();
 
         // Anonymous users are redirected to the login page
-        $this->client->request('GET', "/edit-trick/{$trick->getId()}");
+        $this->client->request('GET', "/edit-trick/{$trick->getSlug()}");
         $crawler = $this->client->followRedirect();
         $this->assertContains("Connexion", $crawler->filter("h1")->text());
 
@@ -115,7 +115,7 @@ class TrickControllerTest extends WebTestCase
         $trick = $this->getTestTrick();
 
         // Anonymous users are redirected to the login page
-        $this->client->request('GET', "/delete-trick/{$trick->getId()}");
+        $this->client->request('GET', "/delete-trick/{$trick->getSlug()}");
         $crawler = $this->client->followRedirect();
         $this->assertContains("Connexion", $crawler->filter("h1")->text());
 

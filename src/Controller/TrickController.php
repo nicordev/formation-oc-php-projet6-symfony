@@ -15,7 +15,6 @@ use App\Security\TrickVoter;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CommentRepository;
-use App\Service\HtmlKeys;
 use App\Service\Paginator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -57,7 +56,7 @@ class TrickController extends AbstractController
             $newComment = new Comment();
             $commentForm = $this->createForm(CommentType::class, $newComment, [
                 'action' => $this->generateUrl(self::ROUTE_ADD_COMMENT, [
-                    'id' => $trick->getId()
+                    'slug' => $trick->getSlug()
                 ])
             ]);
         }
@@ -218,7 +217,7 @@ class TrickController extends AbstractController
      * @param Trick $trick
      * @return RedirectResponse
      */
-    public function delete(EntityManagerInterface $manager, Trick $trick)
+    public function deleteTrick(EntityManagerInterface $manager, Trick $trick)
     {
         $this->denyAccessUnlessGranted(TrickVoter::DELETE, $trick);
 
@@ -244,7 +243,7 @@ class TrickController extends AbstractController
     /**
      * Add a comment
      *
-     * @Route("/trick/{id}/add-comment", name="trick_add_comment", requirements={"id": "\d+"})
+     * @Route("/trick/{slug}/add-comment", name="trick_add_comment")
      *
      * @param Request $request
      * @param EntityManagerInterface $objectManager
@@ -278,7 +277,7 @@ class TrickController extends AbstractController
                 "Votre commentaire a été publié"
             );
 
-            return $this->redirectToTrickRoute($trick->getId(), 1, HtmlKeys::ID_TRICK_COMMENTS);
+            return $this->redirectToTrickRoute($trick->getSlug(), 1, "#trick-comments");
         }
 
         // Existing comments
@@ -330,7 +329,7 @@ class TrickController extends AbstractController
             $manager->flush();
             $this->addFlash("notice", "Le commentaire du {$comment->getCreatedAt()->format('d/m/Y H:i')} a été modifié");
 
-            return $this->redirectToTrickRoute($trick->getId(), $commentsPage, HtmlKeys::ID_TRICK_COMMENTS);
+            return $this->redirectToTrickRoute($trick->getSlug(), $commentsPage, "#trick-comments");
         }
 
         // Existing comments
@@ -376,7 +375,7 @@ class TrickController extends AbstractController
 
         $this->addFlash("notice", "Le commentaire de {$comment->getAuthor()->getName()} a été supprimé");
 
-        return $this->redirectToTrickRoute($comment->getTrick()->getId(), $commentsPage, HtmlKeys::ID_TRICK_COMMENTS);
+        return $this->redirectToTrickRoute($comment->getTrick()->getSlug(), $commentsPage, "#trick-comments");
     }
 
     // Private
@@ -384,14 +383,14 @@ class TrickController extends AbstractController
     /**
      * Redirect to the trick page
      *
-     * @param int $trickId
+     * @param string $trickSlug
      * @param int $commentPage
      * @param string $urlComplements
      * @return RedirectResponse
      */
-    private function redirectToTrickRoute(int $trickId, int $commentPage = 1, string $urlComplements = "")
+    private function redirectToTrickRoute(string $trickSlug, int $commentPage = 1, string $urlComplements = "")
     {
-        $trickUrl = $this->generateUrl(self::ROUTE_TRICK_SHOW, ["id" => $trickId, "commentsPage" => $commentPage]);
+        $trickUrl = $this->generateUrl(self::ROUTE_TRICK_SHOW, ["slug" => $trickSlug, "commentsPage" => $commentPage]);
 
         return $this->redirect("{$trickUrl}{$urlComplements}");
     }
