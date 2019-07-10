@@ -39,8 +39,7 @@ class CommentRepository extends ServiceEntityRepository
         Trick $trick,
         int $commentsPage = 1,
         int $commentsPerPage = 10
-    ): array
-    {
+    ): array {
         $commentsCount = $this->count(["trick" => $trick]);
         $commentsPaginator->update(
             $commentsPage,
@@ -70,8 +69,7 @@ class CommentRepository extends ServiceEntityRepository
         int $filterApproved = self::FILTER_NOT_APPROVED,
         int $commentsPage = 1,
         int $commentsPerPage = 10
-    )
-    {
+    ) {
         $commentsCount = $this->count([]);
         $paginator->update(
             $commentsPage,

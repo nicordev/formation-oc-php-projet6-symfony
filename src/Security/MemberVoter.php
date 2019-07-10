@@ -40,7 +40,6 @@ class MemberVoter extends Voter
     {
         if (!in_array($attribute, self::ACTIONS)) {
             return false;
-
         } elseif ($subject instanceof Member) {
             return true;
         }
@@ -69,13 +68,11 @@ class MemberVoter extends Voter
 
         $member = $subject;
 
-        if (in_array($attribute, [self::EDIT, self::DELETE, self::ADD])){
-            if (
-                in_array(Member::ROLE_MANAGER, $user->getRoles()) ||
+        if (in_array($attribute, [self::EDIT, self::DELETE, self::ADD])) {
+            if (in_array(Member::ROLE_MANAGER, $user->getRoles()) ||
                 in_array(Member::ROLE_ADMIN, $user->getRoles()) ||
                 $user === $member
             ) {
-
                 return true;
             }
 
