@@ -66,7 +66,7 @@
         {{ form_errors(trickForm.images) }}
         {{ form_widget(trickForm.images) }}
 
-        <div id="image-manager-message" class="d-none m-3">Chargement...</div>
+        <div id="image-manager-message" class="d-none m-3"></div>
 
         <div id="image-library"></div>
 
@@ -119,13 +119,24 @@
             mainImageInputElement = document.getElementById("trick_mainImage");
 
         // Show images from inputs at loading
-        let imageElt;
+        let imageElt, images = [];
 
         for (let i = 0, size = imagesInputsElements.length; i < size; i++) {
             imageElt = imageLibrary.addImage(imagesInputsElements[i].value, imagesInputsElements[i]);
+
             if (mainImageInputElement.value.includes(imagesInputsElements[i].value)) {
                 imageLibrary.setAsMainImage(imageElt);
             }
+
+            images.push({
+                imgElement: imageElt,
+                inputElement: imagesInputsElements[i]
+            });
+
+            imagesInputsElements[i].addEventListener("change", () => {
+
+                images[i].inputElement.value = images[i].imgElement.src;
+            });
         }
 
         // Trick editor
