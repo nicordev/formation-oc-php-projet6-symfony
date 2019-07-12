@@ -34,6 +34,11 @@ class TrickGroup
      */
     private $tricks;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $slug;
+
     public function __construct()
     {
         $this->tricks = new ArrayCollection();
@@ -52,6 +57,7 @@ class TrickGroup
     public function setName(string $name): self
     {
         $this->name = $name;
+        $this->setSlug($this->createSlug($name));
 
         return $this;
     }
@@ -90,6 +96,31 @@ class TrickGroup
         if ($this->tricks->contains($trick)) {
             $this->tricks->removeElement($trick);
         }
+
+        return $this;
+    }
+
+    /**
+     * Create a slug from a name
+     *
+     * @param string $name
+     * @return string
+     */
+    public function createSlug(string $name)
+    {
+        $slugParts = explode(" ", $name);
+
+        return implode("_", $slugParts);
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

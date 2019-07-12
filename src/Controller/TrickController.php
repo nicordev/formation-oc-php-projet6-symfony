@@ -31,8 +31,7 @@ class TrickController extends AbstractController
     /**
      * Show a trick
      *
-     * @Route("/trick/{id}/comments-page/{commentsPage}", name="trick_show", requirements={"id": "\d+"})
-     * @Route("/trick/{id}", name="trick_show_simple", requirements={"id": "\d+"})
+     * @Route("/trick/{slug}/comments-page/{commentsPage}", name="trick_show", requirements={"commentsPage": "\d+"})
      *
      * @param Trick $trick
      * @param CommentRepository $commentRepository
@@ -74,44 +73,6 @@ class TrickController extends AbstractController
     }
 
     /**
-     * Create a trick
-     *
-     * @Route("/add-trick", name="add_trick")
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function addTrick(Request $request, EntityManagerInterface $manager)
-    {
-        $this->denyAccessUnlessGranted(TrickVoter::ADD);
-
-        $trick = new Trick();
-
-        $form = $this->createForm(TrickType::class, $trick);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $trick->setAuthor($this->getUser());
-            $manager->persist($trick);
-            $manager->flush();
-
-            $this->addFlash(
-                "notice",
-                "Le trick {$trick->getName()} a été créé"
-            );
-
-            return $this->redirectToRoute(self::ROUTE_TRICK_SHOW, ['id' => $trick->getId()]);
-        }
-
-        return $this->render('trick/trickEditor.html.twig', [
-            'trickForm' => $form->createView(),
-            'editMode' => false
-        ]);
-    }
-
-    /**
      * @Route("/trick-groups", name="show_trick_groups")
      */
     public function showTrickGroups(TrickGroupRepository $repository)
@@ -124,7 +85,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/trick-group/{id}", name="show_trick_group", requirements={"id": "\d+"})
+     * @Route("/trick-group/{slug}", name="show_trick_group")
      */
     public function showTrickGroup(TrickGroup $trickGroup)
     {
@@ -132,9 +93,55 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Create a trick
+     *
+     * @Route("/add-trick", name="add_trick")
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function addTrick(Request $request, EntityManagerInterface $manager, TrickRepository $repository)
+    {
+        $this->denyAccessUnlessGranted(TrickVoter::ADD);
+
+        $trick = new Trick();
+
+        $form = $this->createForm(TrickType::class, $trick);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($repository->getByName($trick->getName())) {
+                $this->addFlash(
+                    "notice",
+                    "Le trick {$trick->getName()} existe déjà"
+                );
+
+            } else {
+                $trick->setAuthor($this->getUser());
+                $manager->persist($trick);
+                $manager->flush();
+
+                $this->addFlash(
+                    "notice",
+                    "Le trick {$trick->getName()} a été créé"
+                );
+
+                return $this->redirectToRoute(self::ROUTE_TRICK_SHOW, ['slug' => $trick->getSlug()]);
+            }
+        }
+
+        return $this->render('trick/trickEditor.html.twig', [
+            'trickForm' => $form->createView(),
+            'editMode' => false
+        ]);
+    }
+
+    /**
      * Edit a trick
      *
-     * @Route("/edit-trick/{id}", name="edit_trick", requirements={"id": "\d+"})
+     * @Route("/edit-trick/{slug}", name="edit_trick")
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -142,7 +149,7 @@ class TrickController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function editTrick(Request $request, EntityManagerInterface $manager, Trick $trick)
+    public function editTrick(Request $request, EntityManagerInterface $manager, TrickRepository $repository, Trick $trick)
     {
         $this->denyAccessUnlessGranted(TrickVoter::EDIT, $trick);
 
@@ -151,27 +158,35 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $manager->flush();
+            if ($repository->hasDuplicate($trick)) {
+                $this->addFlash(
+                    "notice",
+                    "Le trick {$trick->getName()} existe déjà"
+                );
 
-            $this->addFlash(
-                "notice",
-                "Le trick {$trick->getName()} a été modifié"
-            );
+            } else {
+                $manager->flush();
 
-            return $this->redirectToRoute(self::ROUTE_TRICK_SHOW, ['id' => $trick->getId()]);
+                $this->addFlash(
+                    "notice",
+                    "Le trick {$trick->getName()} a été modifié"
+                );
+
+                return $this->redirectToRoute(self::ROUTE_TRICK_SHOW, ['slug' => $trick->getSlug()]);
+            }
         }
 
         return $this->render('trick/trickEditor.html.twig', [
             'trickForm' => $form->createView(),
             'editMode' => true,
-            'trickId' => $trick->getId()
+            'slug' => $trick->getSlug()
         ]);
     }
 
     /**
      * Delete a trick
      *
-     * @Route("/delete-trick/{id}", name="delete_trick", requirements={"id": "\d+"})
+     * @Route("/delete-trick/{slug}", name="delete_trick")
      *
      * @param EntityManagerInterface $manager
      * @param Trick $trick

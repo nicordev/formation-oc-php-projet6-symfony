@@ -18,4 +18,32 @@ class TrickRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Trick::class);
     }
+
+    public function getByName(string $trickName)
+    {
+        return $this->findOneBy(['name' => $trickName]);
+    }
+
+    public function countTricks(string $trickName)
+    {
+        return $this->count(["name" => $trickName]);
+    }
+
+    public function hasDuplicate(Trick $trick)
+    {
+        $count = $this->countTricks($trick->getName());
+
+        if ($count > 1) {
+            return true;
+
+        } elseif ($count === 1) {
+            $duplicate = $this->getByName($trick->getName());
+
+            if ($trick->getId() !== $duplicate->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

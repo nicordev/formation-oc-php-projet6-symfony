@@ -90,7 +90,7 @@
             <ul>
                 {% for trick in member.tricks %}
                     <li>
-                        <a href="{{ path("trick_show_simple", {"id": trick.id}) }}">{{ trick.name }}</a>
+                        <a href="{{ path("trick_show", {"slug": trick.slug}) }}">{{ trick.name }}</a>
                     </li>
                 {% endfor %}
             </ul>

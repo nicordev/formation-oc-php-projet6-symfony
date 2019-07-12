@@ -23,7 +23,7 @@
 {% block body %}
 
     {% if editMode %}
-        <div><a class="btn btn-primary" href="{{ path("trick_show", {"id": trickId}) }}">Annuler</a></div>
+        <div><a class="btn btn-primary" href="{{ path("trick_show", {"slug": slug}) }}">Annuler</a></div>
     {% endif %}
 
     {{ form_start(trickForm) }}
@@ -60,6 +60,7 @@
 
     <div class="media-inputs-wrapper">
         <label for="">Images</label>
+        {{ form_errors(trickForm.images) }}
         {{ form_widget(trickForm.images) }}
         <div class="text-center">
             <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_images')">Ajouter une image</button>
@@ -68,6 +69,7 @@
 
     <div class="media-inputs-wrapper">
         <label for="">Vidéos</label>
+        {{ form_errors(trickForm.videos) }}
         {{ form_widget(trickForm.videos) }}
         <div class="text-center">
             <button class="btn btn-secondary" type="button" onclick="myTrickEditor.addInput('trick_videos')">Ajouter une vidéo</button>

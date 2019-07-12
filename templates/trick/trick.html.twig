@@ -21,7 +21,7 @@
     <header class="trick-header">
         {% if is_granted('ROLE_EDITOR') or trick.author is same as(app.user) %}
             <div class="commands-wrapper">
-                <a class="command btn-warning" href="{{ path("edit_trick", {"id": trick.id}) }}"><i class="fas fa-edit"></i></a><a class="command btn-danger" href="{{ path("delete_trick", {"id": trick.id}) }}"><i class="fas fa-trash-alt"></i></a>
+                <a class="command btn-warning" href="{{ path("edit_trick", {"slug": trick.slug}) }}"><i class="fas fa-edit"></i></a><a class="command btn-danger" href="{{ path("delete_trick", {"slug": trick.slug}) }}"><i class="fas fa-trash-alt"></i></a>
             </div>
         {% endif %}
         <div id="trick-title">
