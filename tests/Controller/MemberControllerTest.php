@@ -50,7 +50,8 @@ class MemberControllerTest extends WebTestCase
         $form = $crawler->selectButton("Inscription")->form();
         $form['registration[name]'] = self::TEST_NEW_USER_NAME;
         $form['registration[email]'] = self::TEST_NEW_USER_EMAIL;
-        $form['registration[password]'] = self::TEST_NEW_USER_PASSWORD;
+        $form['registration[password][first]'] = self::TEST_NEW_USER_PASSWORD;
+        $form['registration[password][second]'] = self::TEST_NEW_USER_PASSWORD;
         $this->client->submit($form);
 
         // The newly registered user gets redirected to the login page
