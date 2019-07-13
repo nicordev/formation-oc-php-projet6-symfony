@@ -11,7 +11,6 @@ class ModerationControllerTest extends WebTestCase
     use HelperTrait;
 
     private $client;
-    private const COMMENT_EDITED = "Test comment edition from the moderation panel";
 
     public function setUp()
     {

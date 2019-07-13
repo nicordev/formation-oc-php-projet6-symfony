@@ -48,15 +48,15 @@ class MediaController extends AbstractController
 
         $rootDirectory = dirname(dirname(__DIR__));
         $imageUrl = $request->request->get("imageUrl");
+        $filePath = $rootDirectory . "/public" . $imageUrl;
 
-        if (unlink($rootDirectory . "/public" . $imageUrl)) {
-
+        if (strpos($imageUrl, "/img") !== 0 || !file_exists($filePath)) {
+            return new JsonResponse("The file $filePath should not be deleted or does not exist");
+        } elseif (unlink($filePath)) {
             return new JsonResponse("Image $imageUrl deleted");
-
-        } else {
-
-            return new JsonResponse("Error when deleting image " . $imageUrl);
         }
+
+        return new JsonResponse("Error when deleting image " . $imageUrl);
     }
 
     private function addImageUrlToSession(string $imageUrl, SessionInterface $session)

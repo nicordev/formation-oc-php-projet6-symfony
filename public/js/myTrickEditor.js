@@ -95,20 +95,20 @@ var myTrickEditor = {
          * Build a new input from a prototype
          *
          * @param prototype
-         * @param lastKey
+         * @param key
          * @returns {Element}
          */
-        function buildNewInputWrapperElt(prototype, lastKey) {
+        function buildNewInputWrapperElt(prototype, key) {
 
             var elt = document.createElement('div');
-            elt.innerHTML = prototype.replace(/__name__/g, lastKey);
+            elt.innerHTML = prototype.replace(/__name__/g, key);
 
             return elt.firstElementChild;
         }
 
-        function getLastInput(wrapperElt, lastKey) {
+        function getLastInput(wrapperElement, key) {
 
-            return wrapperElt.children[lastKey].firstElementChild.firstElementChild.firstElementChild;
+            return wrapperElement.children[key].firstElementChild.firstElementChild.firstElementChild;
         }
     }
 };
