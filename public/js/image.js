@@ -124,6 +124,7 @@ function ImageLibrary(libraryElement, mainImageInputElement, mainImageClass) {
                 imageManager.delete(imageUrl);
                 if (imageLibrary.mainImageInputElement.value.includes(imageUrl)) {
                     imageLibrary.mainImageInputElement.value = "";
+                    myTrickEditor.updateMainImagePreview("");
                 }
                 figureElt.remove();
                 imageInputElt.parentElement.parentElement.parentElement.remove();
@@ -160,6 +161,7 @@ function ImageLibrary(libraryElement, mainImageInputElement, mainImageClass) {
 
             imageElt.classList.add(imageLibrary.mainImageClass);
             imageLibrary.mainImageInputElement.value = imageElt.src;
+            myTrickEditor.updateMainImagePreview(imageElt.src);
         }
     };
 

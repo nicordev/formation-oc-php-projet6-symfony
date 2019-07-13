@@ -8,6 +8,11 @@
     animation-iteration-count: infinite;
 }
 
+#main-image-preview {
+    max-width: 400px;
+    max-height: 400px;
+}
+
 #image-library {
     display: flex;
     justify-content: flex-start;
