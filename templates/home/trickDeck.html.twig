@@ -9,7 +9,7 @@
 
 {% for trick in tricks %}
     <div class="card col-lg-3 m-3">
-        <a class="card-img-link" href="{{ path('trick_show', {'slug': trick.slug}) }}" style="background-image: url('{{ trick.mainImage ?? "/public/img/no_image.jpg" }}')"></a>
+        <a class="card-img-link" href="{{ path('trick_show', {'slug': trick.slug}) }}" style="background-image: url('{{ trick.mainImage ?? "/img/no_image.jpg" }}')"></a>
         <div class="card-body text-center">
             <h5 class="card-title"><a href="{{ path('trick_show', {'slug': trick.slug}) }}">{{ trick.name }}</a></h5>
         </div>

@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="/css/trick.css">
     <style>
         .trick-header {
-                background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("{{ trick.mainImage ?? "/public/img/mountain_1.jpg" }}");
+            background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 1)), url("{{ trick.mainImage ?? "/img/mountain_1.jpg" }}");
         }
 
         #trick-main-image {
-            background-image: url("{{ trick.mainImage ?? "/public/img/no_image.jpg" }}");
+            background-image: url("{{ trick.mainImage ?? "/img/no_image.jpg" }}");
         }
     </style>
 {% endblock %}
