@@ -66,7 +66,7 @@ class CommentVoter extends Voter
 
         $comment = $subject;
 
-        if (in_array($attribute, [self::EDIT, self::DELETE])){
+        if (in_array($attribute, [self::EDIT, self::DELETE])) {
             return $this->isAuthorized($comment, $user);
         }
 
@@ -82,8 +82,7 @@ class CommentVoter extends Voter
      */
     private function isAuthorized(Comment $comment, Member $member)
     {
-        if (
-            $member->isCommentAuthor($comment) ||
+        if ($member->isCommentAuthor($comment) ||
             in_array(Member::ROLE_MODERATOR, $member->getRoles()) ||
             in_array(Member::ROLE_ADMIN, $member->getRoles())
         ) {

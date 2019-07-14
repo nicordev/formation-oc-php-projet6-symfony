@@ -68,7 +68,6 @@ class TrickVoter extends Voter
         if (!$user instanceof Member) {
             // the user must be logged in; if not, deny access
             return false;
-
         } elseif ($attribute === self::ADD) {
             // Every member can add tricks
             return true;
@@ -76,7 +75,7 @@ class TrickVoter extends Voter
 
         $trick = $subject;
 
-        if (in_array($attribute, [self::EDIT, self::DELETE])){
+        if (in_array($attribute, [self::EDIT, self::DELETE])) {
             return $this->isAuthorized($trick, $user);
         }
 
@@ -92,8 +91,7 @@ class TrickVoter extends Voter
      */
     private function isAuthorized(Trick $trick, Member $member)
     {
-        if (
-            $member->isAuthor($trick) ||
+        if ($member->isAuthor($trick) ||
             $this->authorizationChecker->isGranted(Member::ROLE_EDITOR, $member)
         ) {
             return true;

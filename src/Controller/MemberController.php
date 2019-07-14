@@ -128,8 +128,7 @@ class MemberController extends AbstractController
         EntityManagerInterface $manager,
         SessionInterface $session,
         TokenStorageInterface $tokenStorage
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(MemberVoter::ADD, $member);
 
         $manager->remove($member);
@@ -141,7 +140,6 @@ class MemberController extends AbstractController
             $this->addFlash("notice", "Votre compte a bien été supprimé");
 
             return $this->redirectToRoute("home");
-
         } else {
             $this->addFlash("notice", "{$member->getName()} a été supprimé");
 
