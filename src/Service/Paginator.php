@@ -24,8 +24,7 @@ class Paginator
         ?int $itemsPerPage = null,
         ?int $itemsCount = null,
         bool $fitCurrentPageInBoundaries = true
-    )
-    {
+    ) {
         $this->currentPage = $currentPage;
         $this->itemsPerPage = $itemsPerPage;
         $this->itemsCount = $itemsCount;
@@ -53,8 +52,7 @@ class Paginator
         ?int $itemsPerPage = null,
         ?int $itemsCount = null,
         bool $fitCurrentPageInBoundaries = true
-    )
-    {
+    ) {
         $this->currentPage = $currentPage;
         $this->itemsPerPage = $itemsPerPage;
         $this->itemsCount = $itemsCount;

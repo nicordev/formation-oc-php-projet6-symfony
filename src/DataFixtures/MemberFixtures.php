@@ -48,7 +48,6 @@ class MemberFixtures extends Fixture
         // Trick groups
         if ($this->realisticFixtures) {
             $this->generateTrickGroups();
-
         } else {
             $this->generateDummyTrickGroups();
         }
@@ -58,7 +57,6 @@ class MemberFixtures extends Fixture
             for ($i = 1; $i <= $this->tricksCount; $i++) {
                 $this->tricks[] = $this->generateTrick();
             }
-
         } else {
             for ($i = 1; $i <= $this->tricksCount; $i++) {
                 $this->tricks[] = $this->generateDummyTrick($i);
@@ -136,10 +134,8 @@ class MemberFixtures extends Fixture
         foreach ($trickParts as $trickPart) {
             if (is_numeric($trickPart)) {
                 $this->linkTrickToTrickGroup($trick, $rotationTrickGroup);
-
             } elseif (in_array($trickPart, self::OFFSET_ROTATIONS)) {
                 $this->linkTrickToTrickGroup($trick, $offsetRotationTrickGroup);
-
             } else {
                 foreach ($this->trickGroups as $trickGroup) {
                     if (strtolower($trickPart) === strtolower($trickGroup->getName())) {
@@ -243,19 +239,14 @@ class MemberFixtures extends Fixture
         $descriptionParts[] = $beginnings[mt_rand(0, count($beginnings) - 1)];
 
         for ($i = 0, $size = count($trickParts); $i < $size; $i++) {
-
             if ($trickParts[$i] === "Switch") {
                 $descriptionParts[] = "<li>Tu te place en regular si tu est goofy et inversement</li>";
-
             } elseif (preg_match("/[0-9]+/", $trickParts[$i])) {
                 $descriptionParts[] = "<li>Tu pivotes de {$trickParts[$i]} degrés</li>";
-
             } elseif ($trickParts[$i] === "Rail") {
                 $descriptionParts[] = "<li>Tu glisse sur la barre</li>";
-
             } elseif ($trickParts[$i] === "Nose") {
                 $descriptionParts[] = "<li>Tu glisse sur la barre avec l'avant de ta planche</li>";
-
             } elseif ($trickParts[$i] === "Tail") {
                 $descriptionParts[] = "<li>Tu glisse sur la barre avec l'arrière de ta planche</li>";
             }

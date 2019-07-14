@@ -1,5 +1,6 @@
 .idea/
 .scannerwork/
+sonarcloud/
 code_review.bat
 test.html
 coverage

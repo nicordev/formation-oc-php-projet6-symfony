@@ -42,8 +42,7 @@ class ModerationController extends AbstractController
         Paginator $paginator,
         ?int $page = null,
         ?int $filter = null
-    )
-    {
+    ) {
         // Access control
         $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
 
@@ -85,8 +84,7 @@ class ModerationController extends AbstractController
         EntityManagerInterface $manager,
         Comment $comment,
         ?int $page = null
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
 
         $editCommentForm = $this->createForm(CommentType::class, $comment);
@@ -115,8 +113,7 @@ class ModerationController extends AbstractController
         EntityManagerInterface $manager,
         Comment $comment,
         ?int $page = null
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
 
         $manager->remove($comment);
@@ -143,8 +140,7 @@ class ModerationController extends AbstractController
         Comment $comment,
         bool $approved,
         ?int $page = null
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
 
         $comment->setApproved($approved);
@@ -176,8 +172,7 @@ class ModerationController extends AbstractController
         EntityManagerInterface $manager,
         ?string $task = null,
         ?int $page = null
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(Member::ROLE_MODERATOR);
 
         $commentIds = $request->request->all();
@@ -186,7 +181,6 @@ class ModerationController extends AbstractController
         $flashMessage = null;
 
         switch ($task) {
-
             case self::TASK_APPROVE:
                 foreach ($comments as $comment) {
                     $comment->setApproved(true);

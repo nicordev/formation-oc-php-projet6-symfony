@@ -48,8 +48,7 @@ class TrickController extends AbstractController
         CommentRepository $commentRepository,
         Paginator $commentsPaginator,
         ?int $commentsPage = null
-    )
-    {
+    ) {
         // Add a new comment form
 
         if ($this->isGranted(Member::ROLE_USER)) {
@@ -250,8 +249,7 @@ class TrickController extends AbstractController
         Trick $trick,
         CommentRepository $commentRepository,
         Paginator $commentsPaginator
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(CommentVoter::ADD);
 
         $newComment = new Comment();
@@ -308,8 +306,7 @@ class TrickController extends AbstractController
         CommentRepository $commentRepository,
         Paginator $commentsPaginator,
         ?int $commentsPage = null
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(CommentVoter::EDIT, $comment);
 
         $editCommentForm = $this->createForm(CommentType::class, $comment);
@@ -358,8 +355,7 @@ class TrickController extends AbstractController
         EntityManagerInterface $manager,
         Comment $comment,
         ?int $commentsPage = null
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(CommentVoter::DELETE, $comment);
 
         $manager->remove($comment);
