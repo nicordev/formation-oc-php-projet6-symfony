@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 
+use App\Repository\ImageRepository;
+use App\Repository\TrickRepository;
+use App\Security\MediaVoter;
 use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -57,6 +60,36 @@ class MediaController extends AbstractController
         }
 
         return new JsonResponse("Error when deleting image " . $imageUrl);
+    }
+
+    /**
+     * @Route("/admin/delete-unused-images", name="admin_delete_unused_images")
+     */
+    public function deleteUnusedImages(ImageRepository $repository)
+    {
+        $this->denyAccessUnlessGranted(MediaVoter::DELETE_UNUSED_IMAGES);
+
+        $imagesUrls = $repository->getUrls();
+        $rootDirectory = dirname(dirname(__DIR__));
+        $imagesDirectory = "$rootDirectory/public/img/tricks";
+        $filesNames = array_diff(scandir($imagesDirectory, SCANDIR_SORT_DESCENDING), [".", ".."]);
+        $deletedFiles = [];
+
+        foreach ($filesNames as $fileName) {
+            if (!in_array("/img/tricks/$fileName", $imagesUrls)) {
+                $deletedFiles[] = $fileName;
+                unlink("$imagesDirectory/$fileName");
+            }
+        }
+
+        if (!empty($deletedFiles)) {
+            return new JsonResponse([
+                "Message" => "Unused images deleted",
+                "Deleted files" => $deletedFiles
+            ]);
+        }
+
+        return new JsonResponse(["Message" => "No file deleted"]);
     }
 
     private function addImageUrlToSession(string $imageUrl, SessionInterface $session)
