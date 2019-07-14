@@ -83,13 +83,20 @@ class MediaController extends AbstractController
         }
 
         if (!empty($deletedFiles)) {
-            return new JsonResponse([
-                "message" => "Unused images deleted",
-                "deleted_files" => $deletedFiles
-            ]);
+            $deletedFilesCount = count($deletedFiles);
+            if ($deletedFilesCount > 1) {
+                $this->addFlash("notice", "$deletedFilesCount fichiers ont été supprimés");
+
+            } else {
+                $this->addFlash("notice", "$deletedFilesCount fichier a été supprimé");
+            }
+        } else {
+            $this->addFlash("notice", "Aucun fichier n'a été supprimé");
         }
 
-        return new JsonResponse(["message" => "No file deleted"]);
+        return $this->redirectToRoute("member_profile", [
+            "id" => $this->getUser()->getId()
+        ]);
     }
 
     private function addImageUrlToSession(string $imageUrl, SessionInterface $session)
