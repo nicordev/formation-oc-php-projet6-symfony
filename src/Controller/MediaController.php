@@ -86,7 +86,6 @@ class MediaController extends AbstractController
             $deletedFilesCount = count($deletedFiles);
             if ($deletedFilesCount > 1) {
                 $this->addFlash("notice", "$deletedFilesCount fichiers ont été supprimés");
-
             } else {
                 $this->addFlash("notice", "$deletedFilesCount fichier a été supprimé");
             }
@@ -105,7 +104,6 @@ class MediaController extends AbstractController
 
         if ($uploadedFiles === null) {
             $session->set(self::KEY_UPLOADED_IMAGES, [$imageUrl]);
-
         } else {
             $uploadedFiles[] = $imageUrl;
             $session->set(self::KEY_UPLOADED_IMAGES, $uploadedFiles);

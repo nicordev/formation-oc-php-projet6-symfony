@@ -35,7 +35,6 @@ class TrickRepository extends ServiceEntityRepository
 
         if ($count > 1) {
             return true;
-
         } elseif ($count === 1) {
             $duplicate = $this->getByName($trick->getName());
 
