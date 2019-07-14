@@ -3,21 +3,16 @@
 namespace App\Security;
 
 use App\Entity\Member;
-use App\Entity\Trick;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class TrickVoter extends Voter
+class MediaVoter extends Voter
 {
-    public const ADD = "add";
-    public const EDIT = "edit";
-    public const DELETE = "delete";
+    public const DELETE_UNUSED_IMAGES = "delete unused images";
 
     public const ACTIONS = [
-        self::ADD,
-        self::EDIT,
-        self::DELETE
+        self::DELETE_UNUSED_IMAGES
     ];
 
     /**
@@ -44,11 +39,7 @@ class TrickVoter extends Voter
             return false;
         }
 
-        if ($subject instanceof Trick || $subject === null) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -68,35 +59,17 @@ class TrickVoter extends Voter
         if (!$user instanceof Member) {
             // the user must be logged in; if not, deny access
             return false;
-        } elseif ($attribute === self::ADD) {
-            // Every member can add tricks
-            return true;
         }
 
-        $trick = $subject;
+        if (in_array($attribute, [self::DELETE_UNUSED_IMAGES])) {
+            // The user must be an admin
+            if (in_array(Member::ROLE_ADMIN, $user->getRoles())) {
+                return true;
+            }
 
-        if (in_array($attribute, [self::EDIT, self::DELETE])) {
-            return $this->isAuthorized($trick, $user);
+            return false;
         }
 
         throw new \LogicException('This code should not be reached!');
-    }
-
-    /**
-     * Check if a Member can add, edit or delete a trick
-     *
-     * @param Trick $trick
-     * @param Member $member
-     * @return bool
-     */
-    private function isAuthorized(Trick $trick, Member $member)
-    {
-        if ($member->isAuthor($trick) ||
-            $this->authorizationChecker->isGranted(Member::ROLE_EDITOR, $member)
-        ) {
-            return true;
-        }
-
-        return false;
     }
 }

@@ -18,4 +18,18 @@ class ImageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Image::class);
     }
+
+    public function getUrls()
+    {
+        $urls = [];
+        $connection = $this->getEntityManager()->getConnection();
+        $sqlRequest = "SELECT url FROM image";
+        $requestUrls = $connection->query($sqlRequest);
+
+        while ($data = $requestUrls->fetch(\PDO::FETCH_NUM)) {
+            $urls[] = $data[0];
+        }
+
+        return $urls;
+    }
 }

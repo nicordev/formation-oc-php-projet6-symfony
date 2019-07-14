@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use App\Controller\MediaController;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
@@ -11,6 +12,7 @@ class RequestListener
 
     public function onKernelRequest(GetResponseEvent $event)
     {
+        // To get back to the last visited page after login
         $this->saveCurrentRouteInSession($event);
     }
 

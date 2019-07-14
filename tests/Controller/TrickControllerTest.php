@@ -70,7 +70,7 @@ class TrickControllerTest extends WebTestCase
         $this->assertContains("Création d'un trick de foufou", $crawler->filter("h1")->text());
         $form = $crawler->selectButton("Ajouter le trick")->form();
         $form['trick[name]'] = self::NEW_TEST_TRICK_NAME;
-        $form['trick[description]'] = "Trick test - description";
+        $form['trick[description]'] = "Trick test - description - Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet at debitis harum, hic iste nobis quaerat? Ad at consectetur, consequatur consequuntur dolor ea fugit harum, illum temporibus, unde vero?";
         $form['trick[mainImage]'] = "http://testimage.test";
         $this->client->submit($form);
 
@@ -88,7 +88,7 @@ class TrickControllerTest extends WebTestCase
         $trick = $this->getTestTrick();
 
         // Anonymous users are redirected to the login page
-        $this->client->request('GET', "/edit-trick/{$trick->getId()}");
+        $this->client->request('GET', "/edit-trick/{$trick->getSlug()}");
         $crawler = $this->client->followRedirect();
         $this->assertContains("Connexion", $crawler->filter("h1")->text());
 
@@ -100,7 +100,7 @@ class TrickControllerTest extends WebTestCase
         // Add a test trick
         $form = $crawler->selectButton("Enregistrer les modifications")->form();
         $form['trick[name]'] = self::EDITED_TEST_TRICK_NAME;
-        $form['trick[description]'] = "Trick test - description - edited";
+        $form['trick[description]'] = "Trick test - description - edited - Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet at debitis harum, hic iste nobis quaerat? Ad at consectetur, consequatur consequuntur dolor ea fugit harum, illum temporibus, unde vero?";
         $form['trick[mainImage]'] = "http://testimageedited.test";
         $this->client->submit($form);
 
@@ -115,7 +115,7 @@ class TrickControllerTest extends WebTestCase
         $trick = $this->getTestTrick();
 
         // Anonymous users are redirected to the login page
-        $this->client->request('GET', "/delete-trick/{$trick->getId()}");
+        $this->client->request('GET', "/delete-trick/{$trick->getSlug()}");
         $crawler = $this->client->followRedirect();
         $this->assertContains("Connexion", $crawler->filter("h1")->text());
 

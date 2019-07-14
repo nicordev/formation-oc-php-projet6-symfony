@@ -24,7 +24,7 @@
 {% block body %}
 
     {% if editMode %}
-        <div><a class="btn btn-primary" href="{{ path("trick_show", {"slug": slug}) }}">Annuler</a></div>
+        <div class="mb-4"><a class="btn btn-primary" href="{{ path("trick_show", {"slug": slug}) }}">Annuler</a></div>
     {% endif %}
 
     {{ form_start(trickForm) }}
@@ -66,6 +66,8 @@
         {{ form_errors(trickForm.images) }}
         {{ form_widget(trickForm.images) }}
 
+        <div id="image-manager-message" class="d-none m-3"></div>
+
         <div id="image-library"></div>
 
         {{ form_row(trickForm.mainImage, {
@@ -74,6 +76,11 @@
                 "placeholder": "Adresse : https://url.de.ma.superbe.image"
             }
         }) }}
+
+        <figure>
+            <figcaption>Aperçu de l'image principale</figcaption>
+            <img id="main-image-preview" src="/img/no_image_text.jpg" alt="Aperçu de l'image principale">
+        </figure>
     </div>
 
     <hr>
@@ -102,240 +109,50 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="/js/image.js"></script>
+    <script src="/js/myTrickEditor.js"></script>
     <script>
         // Image manager
 
-        let imageManager = {
-
-            uploadInputElt: document.getElementById("image_upload"),
-
-            init: () => {
-
-                imageManager.uploadInputElt.addEventListener("change", imageManager.upload);
-            },
-
-            /**
-             * Upload the image file
-             */
-            upload: () => {
-
-                var xhr = new XMLHttpRequest(),
-                    form = new FormData();
-
-                form.append(imageManager.uploadInputElt.name, imageManager.uploadInputElt.files[0]);
-                xhr.open("POST", "{{ path("image_upload") }}");
-                xhr.addEventListener("readystatechange", () => {
-
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            let imageUrl = JSON.parse(xhr.responseText);
-
-                            if (imageUrl) {
-                                let imageInputElt = myTrickEditor.addInput('trick_images', true);
-                                imageInputElt.value = imageUrl;
-                                imageLibrary.addImage(imageUrl, imageInputElt);
-                                console.log("Image successfully uploaded");
-
-                            } else {
-                                console.log("Error when uploading an image on the server");
-                            }
-
-                        } else {
-                            console.log("Error with AJAX request to load an image: " + xhr.status);
-                        }
-                    }
-                });
-
-                xhr.send(form);
-            },
-
-            /**
-             * Delete the image file on the server
-             */
-            delete: (filePath) => {
-
-                let xhr = new XMLHttpRequest(),
-                    form = new FormData();
-
-                form.append("imageUrl", filePath);
-                xhr.open("POST", "{{ path("image_delete") }}");
-                xhr.addEventListener("readystatechange", () => {
-
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            console.log("Image " + filePath + " deleted");
-
-                        } else {
-                            console.log("Error " + xhr.status + " with AJAX request to delete image: " + filePath);
-                        }
-                    }
-                });
-
-                xhr.send(form);
-            }
-        };
+        let imageManager = new ImageManager("{{ path("image_upload") }}", "{{ path("image_delete") }}", document.getElementById("image_upload"));
 
         imageManager.init();
 
         // Image library
 
-        let imageLibrary = {
+        let imageLibrary = new ImageLibrary(document.getElementById("image-library"), document.getElementById("trick_mainImage"), "main-image-selected"),
+            imagesInputsElements = document.querySelectorAll('input[name*="trick[images]"]'),
+            mainImageInputElement = document.getElementById("trick_mainImage");
 
-            element: document.getElementById("image-library"),
-            mainImageClass: "main-image-selected",
+        // Show images from inputs at loading
+        let imageElt, images = [];
 
-            addImage: (imageUrl, imageInputElt) => {
+        for (let i = 0, size = imagesInputsElements.length; i < size; i++) {
+            imageElt = imageLibrary.addImage(imagesInputsElements[i].value, imagesInputsElements[i]);
 
-                let figureElt = document.createElement("figure"),
-                    deleteElt = document.createElement("figcaption"),
-                    imageElt = document.createElement("img");
-
-                imageElt.src = imageUrl;
-                imageElt.alt = "Image de snowboard";
-                figureElt.classList.add("image-library-element");
-                figureElt.appendChild(imageElt);
-                deleteElt.textContent = "×";
-                deleteElt.classList.add("image-library-element-delete");
-                figureElt.appendChild(deleteElt);
-                imageLibrary.element.appendChild(figureElt);
-
-                // Delete image on click
-                deleteElt.addEventListener("click", () => {
-
-                    imageManager.delete(imageUrl);
-                    figureElt.remove();
-                    imageInputElt.remove();
-                });
-
-                // Select this image as main image on click
-                imageElt.addEventListener("click", () => {
-
-                    imageLibrary.setAsMainImage(imageElt);
-                });
-            },
-
-            setAsMainImage: (imageElt) => {
-
-                let mainImageInput = document.getElementById("trick_mainImage"),
-                    imgElements = document.getElementsByTagName("img");
-
-                for (let i = 0, size = imgElements.length; i < size; i++) {
-                    if (imgElements[i].classList.contains(imageLibrary.mainImageClass)) {
-                        imgElements[i].classList.remove(imageLibrary.mainImageClass);
-                    }
-                }
-
-                imageElt.classList.add(imageLibrary.mainImageClass);
-                mainImageInput.value = imageElt.src;
+            if (mainImageInputElement.value.includes(imagesInputsElements[i].value)) {
+                imageLibrary.setAsMainImage(imageElt);
             }
-        };
+
+            images.push({
+                imgElement: imageElt,
+                inputElement: imagesInputsElements[i]
+            });
+
+            imagesInputsElements[i].addEventListener("change", () => {
+
+                images[i].inputElement.value = images[i].imgElement.src;
+            });
+        }
+
+        mainImageInputElement.addEventListener("change", () => {
+            myTrickEditor.updateMainImagePreview(mainImageInputElement.value);
+        });
+
+        myTrickEditor.updateMainImagePreview(mainImageInputElement.value);
+
 
         // Trick editor
-
-        var myTrickEditor = {
-
-            addDeleteButtons: function () {
-
-                var imageInputElts = document.querySelectorAll('input[id*="trick_images_"]'),
-                    videoInputElts = document.querySelectorAll('input[id*="trick_videos_"]');
-
-                for (var imageInputElt of imageInputElts) {
-                    myTrickEditor.addADeleteButton(imageInputElt.parentElement, imageInputElt.parentElement.parentElement.parentElement);
-                }
-
-                for (var videoInputElt of videoInputElts) {
-                    myTrickEditor.addADeleteButton(videoInputElt.parentElement, videoInputElt.parentElement.parentElement.parentElement);
-                }
-            },
-
-            addADeleteButton: function (parentElement, targetElement) {
-
-                parentElement.appendChild(buildDeleteButton(targetElement));
-                addBootstrapClasses(parentElement);
-
-                function buildDeleteButton(targetElt) {
-
-                    var btnElt = document.createElement("button"),
-                        spanElt = document.createElement("span");
-
-                    spanElt.setAttribute("aria-hidden", "true");
-                    spanElt.textContent = "×";
-
-                    btnElt.type = "button";
-                    btnElt.classList.add("close");
-                    btnElt.setAttribute("arial-label", "Close");
-
-                    btnElt.appendChild(spanElt);
-
-                    btnElt.addEventListener("click", function () {
-                        myApp.elementTool.removeElement(targetElt);
-                    });
-
-                    return btnElt;
-                }
-
-                function addBootstrapClasses(parentElt) {
-
-                    parentElt.classList.add('d-flex');
-                    parentElt.children[0].classList.add('mr-3');
-                    parentElt.children[1].classList.add('mr-3');
-                }
-            },
-
-            /**
-             * Add an input field
-             *
-             * @param wrapperId
-             * @param hidden
-             * @returns {DOM Element} the input field
-             */
-            addInput: function (wrapperId, hidden = false, placeholder = null) {
-
-                var wrapperElt = document.getElementById(wrapperId),
-                    lastKey = wrapperElt.children.length,
-                    newInputWrapperElt = buildNewInputWrapperElt(wrapperElt.getAttribute("data-prototype"), lastKey);
-
-                wrapperElt.appendChild(newInputWrapperElt);
-
-                var lastInput = getLastInput(wrapperElt, lastKey);
-
-                if (placeholder) {
-                    lastInput.placeholder = placeholder;
-                }
-
-                if (hidden) {
-                    lastInput.parentElement.parentElement.parentElement.style.display = "none";
-                    lastInput.type = "hidden";
-
-                } else {
-                    myTrickEditor.addADeleteButton(lastInput.parentElement, lastInput.parentElement.parentElement.parentElement);
-                }
-
-                console.log(lastInput);
-
-                return lastInput;
-
-                /**
-                 * Build a new input from a prototype
-                 *
-                 * @param prototype
-                 * @param lastKey
-                 * @returns {Element}
-                 */
-                function buildNewInputWrapperElt(prototype, lastKey) {
-
-                    var elt = document.createElement('div');
-                    elt.innerHTML = prototype.replace(/__name__/g, lastKey);
-
-                    return elt.firstElementChild;
-                }
-
-                function getLastInput(wrapperElt, lastKey) {
-
-                    return wrapperElt.children[lastKey].firstElementChild.firstElementChild.firstElementChild;
-                }
-            }
-        };
 
         myTrickEditor.addDeleteButtons();
         // myTrickEditor.addInput("trick_images");

@@ -46,7 +46,6 @@
                 }) }}
             {% endif %}
 
-            {# TODO: replace the select tag by an input #}
             {{ form_row(memberForm.picture, {
                 "label": "Photo"
             }) }}
@@ -100,5 +99,11 @@
             <p>{{ member.name }} n'a publié aucun trick.</p>
         {% endif %}
     </div>
+
+    {% if is_granted(constant("App\\Entity\\Member::ROLE_ADMIN")) %}
+        <div class="mb-3">
+            <a id="delete-unused-images-btn" class="btn btn-warning" href="{{ path("delete_unused_images") }}">Supprimer les images inutilisées</a>
+        </div>
+    {% endif %}
 
 {% endblock %}
