@@ -19,6 +19,9 @@ class MemberFixtures extends Fixture
     private $membersCount = 20;
     private $tricksCount = 100;
     private $trickGroupsCount = 10;
+    private $imagesPerTrick = [2, 7];
+    private $videosPerTrick = [2, 5];
+    private $commentsPerTrick = [20, 50];
     private $manager;
     private $members = [];
     private $tricks = [];
@@ -111,7 +114,7 @@ class MemberFixtures extends Fixture
             ->setCreatedAt($this->faker->dateTimeThisYear());
 
         // Images
-        for ($i = 0, $count = mt_rand(0, 10); $i < $count; $i++) {
+        for ($i = 0, $count = mt_rand($this->imagesPerTrick[0], $this->imagesPerTrick[1]); $i < $count; $i++) {
             $image = $this->addRealisticImage();
             $trick->addImage($image);
             $image->setTrick($trick);
@@ -278,9 +281,8 @@ class MemberFixtures extends Fixture
         }
 
         for ($i = 0; $i < $this->tricksCount; $i++) {
-            $addVideos = rand(0, 3);
-            if ($addVideos && $k < $numberOfVideos) {
-                for ($j = 0, $size = mt_rand(0, 5); $j < $size; $j++) {
+            if ($k < $numberOfVideos) {
+                for ($j = 0, $size = mt_rand($this->videosPerTrick[0], $this->videosPerTrick[1]); $j < $size; $j++) {
                     $this->tricks[$i]->addVideo($this->videos[$k]);
                     $this->videos[$k]->setTrick($this->tricks[$i]);
                     $this->manager->persist($this->videos[$k]);
@@ -289,6 +291,8 @@ class MemberFixtures extends Fixture
                         break;
                     }
                 }
+            } else {
+                $k = 0;
             }
         }
     }
@@ -361,7 +365,7 @@ class MemberFixtures extends Fixture
 
     private function generateDummyTrick($i)
     {
-        $description = $this->generateParagraphs(3, 5);
+        $description = $this->generateParagraphs(5, 15);
         $imageWidth = 1024;
         $imageHeight = 768;
 
@@ -372,7 +376,7 @@ class MemberFixtures extends Fixture
             ->setMainImage($this->faker->imageUrl($imageWidth, $imageHeight));
 
         // Images
-        for ($j = 0, $size = rand(0, 10); $j < $size; $j++) {
+        for ($j = 0, $size = rand($this->imagesPerTrick[0], $this->imagesPerTrick[1]); $j < $size; $j++) {
             $image = self::newImage($imageWidth, $imageHeight);
             $trick->addImage($image);
             $image->setTrick($trick);
@@ -405,7 +409,7 @@ class MemberFixtures extends Fixture
 
     private function addCommentsToTrick(Trick $trick)
     {
-        for ($j = 0, $size = rand(0, 20); $j < $size; $j++) {
+        for ($j = 0, $size = rand($this->commentsPerTrick[0], $this->commentsPerTrick[1]); $j < $size; $j++) {
             $comment = new Comment();
             $comment->setAuthor($this->members[
             mt_rand(0, $this->membersCount - 1)
