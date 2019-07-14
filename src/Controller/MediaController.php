@@ -63,7 +63,7 @@ class MediaController extends AbstractController
     }
 
     /**
-     * @Route("/admin/delete-unused-images", name="admin_delete_unused_images")
+     * @Route("/delete-unused-images", name="delete_unused_images")
      */
     public function deleteUnusedImages(ImageRepository $repository)
     {
@@ -84,12 +84,12 @@ class MediaController extends AbstractController
 
         if (!empty($deletedFiles)) {
             return new JsonResponse([
-                "Message" => "Unused images deleted",
-                "Deleted files" => $deletedFiles
+                "message" => "Unused images deleted",
+                "deleted_files" => $deletedFiles
             ]);
         }
 
-        return new JsonResponse(["Message" => "No file deleted"]);
+        return new JsonResponse(["message" => "No file deleted"]);
     }
 
     private function addImageUrlToSession(string $imageUrl, SessionInterface $session)

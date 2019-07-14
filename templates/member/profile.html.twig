@@ -100,4 +100,74 @@
         {% endif %}
     </div>
 
+    {% if is_granted(constant("App\\Entity\\Member::ROLE_ADMIN")) %}
+        <div class="mb-3">
+            <a id="delete-unused-images-btn" class="btn btn-warning" href="{{ path("delete_unused_images") }}">Supprimer les images inutilisées</a>
+            <div id="delete_unused-images-response" class="mt-3"></div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Launch the deletion of unused images via ajax
+        document.getElementById("delete-unused-images-btn").addEventListener("click", (event) => {
+            event.preventDefault();
+            let xhr = new XMLHttpRequest();
+
+            xhr.open(event.target.href, "GET");
+            xhr.addEventListener("readystatechange", () => {
+
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        let data = JSON.parse(xhr.responseText);
+                        showResponse(data);
+
+                    } else {
+                        showResponse("Il y a eu un problème, la suppression n'a pas eu lieu.");
+                        console.log("Error with AJAX request to delete unused images: " + xhr.status);
+                    }
+
+                    imageManager.hideUploadMessage();
+                }
+            });
+
+            xhr.send();
+
+            function showResponse(response) {
+
+                let responseElement = document.getElementById("delete_unused-images-response");
+
+                if (Array.isArray(response) && typeof response["message"] != "undefined") {
+                    let messageElement = document.createElement("p");
+
+                    if (response["message"] === "No file deleted") {
+                        messageElement.textContent = "Aucune image n'a été supprimée.";
+
+                    } else if (response["message"] === "Unused images deleted" && typeof response["deleted_files"] != "undefined") {
+                        messageElement.textContent = response["deleted_files"].length + "images supprimées";
+
+                        let filesList = document.createElement("ul"),
+                            files = response["deleted_files"];
+
+                        for (let file in files) {
+                            let fileElement = document.createElement("li");
+
+                            fileElement.textContent = file;
+                            filesList.appendChild(fileElement);
+                        }
+
+                        responseElement.appendChild(filesList);
+                    }
+
+                    responseElement.appendChild(messageElement);
+
+                } else {
+                    responseElement.textContent = response;
+                }
+            }
+        });
+    </script>
 {% endblock %}
