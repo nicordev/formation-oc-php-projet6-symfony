@@ -111,8 +111,7 @@ class TrickController extends AbstractController
         EntityManagerInterface $manager,
         TrickRepository $repository,
         SessionInterface $session
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(TrickVoter::ADD);
 
         $trick = new Trick();
@@ -127,7 +126,6 @@ class TrickController extends AbstractController
                     "notice",
                     "Le trick {$trick->getName()} existe déjà"
                 );
-
             } else {
                 $this->removeHttpFromUploadedImages($trick);
                 $trick->setAuthor($this->getUser());
@@ -169,8 +167,7 @@ class TrickController extends AbstractController
         TrickRepository $repository,
         Trick $trick,
         SessionInterface $session
-    )
-    {
+    ) {
         $this->denyAccessUnlessGranted(TrickVoter::EDIT, $trick);
 
         $form = $this->createForm(TrickType::class, $trick);
@@ -183,7 +180,6 @@ class TrickController extends AbstractController
                     "notice",
                     "Le trick {$trick->getName()} existe déjà"
                 );
-
             } else {
                 $this->removeHttpFromUploadedImages($trick);
                 $manager->flush();

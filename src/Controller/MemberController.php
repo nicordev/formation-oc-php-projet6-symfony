@@ -42,7 +42,6 @@ class MemberController extends AbstractController
         if ($registrationForm->isSubmitted() && $registrationForm->isValid()) {
             if (!SecurityHelper::hasStrongPassword($newMember->getPassword())) {
                 $this->addFlash("warning", self::PASSWORD_REQUIREMENTS);
-
             } else {
                 $hash = $encoder->encodePassword($newMember, $newMember->getPassword());
                 $newMember->setPassword($hash);
@@ -55,7 +54,6 @@ class MemberController extends AbstractController
 
                 return $this->redirectToRoute("app_login");
             }
-
         }
 
         return $this->render('member/registration.html.twig', [

@@ -8,9 +8,21 @@
     animation-iteration-count: infinite;
 }
 
+.main-image-preview-wrapper {
+    text-align: center;
+    background-color: rgba(149, 165, 166, 0.6);
+    border-radius: 0.25rem;
+}
+
+.main-image-preview-wrapper figcaption {
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.6);
+}
+
 #main-image-preview {
     max-width: 300px;
     max-height: 300px;
+    border-radius: 0.25rem;
 }
 
 #image-library {

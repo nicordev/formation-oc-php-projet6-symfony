@@ -22,8 +22,17 @@ class AppExtension extends AbstractExtension
      */
     public function buildYouTubeEmbedUrl(string $url): string
     {
-        $toReplace = "watch?v=";
+        $count = 0;
 
-        return str_replace($toReplace, "embed/", $url);
+        $toReplace = "watch?v=";
+        $replaced = str_replace($toReplace, "embed/", $url, $count);
+
+        if ($count === 1) {
+            return $replaced;
+        }
+
+        $shareYouTubeUrl = "youtu.be/";
+
+        return str_replace($shareYouTubeUrl, "www.youtube.com/embed/", $url, $count);
     }
 }

@@ -109,6 +109,10 @@ function ImageLibrary(libraryElement, mainImageInputElement, mainImageClass) {
                 deleteElt = document.createElement("figcaption"),
                 imageElt = document.createElement("img");
 
+            if (imageUrl.includes("http:///")) {
+                imageUrl = imageUrl.replace("http:///", "");
+            }
+
             imageElt.src = imageUrl;
             imageElt.alt = "Image de snowboard";
             figureElt.classList.add("image-library-element");
