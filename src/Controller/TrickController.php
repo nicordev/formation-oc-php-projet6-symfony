@@ -109,8 +109,8 @@ class TrickController extends AbstractController
     public function addTrick(
         Request $request,
         EntityManagerInterface $manager,
-        TrickRepository $repository,
-        SessionInterface $session
+        SessionInterface $session,
+        TrickRepository $repository = null
     ) {
         $this->denyAccessUnlessGranted(TrickVoter::ADD);
 
